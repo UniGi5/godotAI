@@ -229,8 +229,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 	String json_body = JSON::stringify(body);
 	String pending_sse;
 
-	Ref<HTTPClient> client;
-	client.instantiate();
+	Ref<HTTPClient> client = Ref<HTTPClient>(HTTPClient::create());
 	client->set_blocking_mode(false);
 	client->set_read_chunk_size(64 * 1024);
 
