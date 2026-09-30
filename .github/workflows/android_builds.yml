@@ -103,10 +103,28 @@ jobs:
       - name: Validate APK output
         shell: bash
         run: |
-          test -f dist/godot-android-editor-arm64.apk
-          file dist/godot-android-editor-arm64.apk
-          du -h dist/godot-android-editor-arm64.apk
-          echo "APK ready: dist/godot-android-editor-arm64.apk"
+          APK="dist/godot-android-editor-arm64.apk"
+          test -f "$APK"
+          file "$APK"
+          du -h "$APK"
+
+          if command -v zipalign >/dev/null 2>&1; then
+            zipalign -c -v 4 "$APK"
+          else
+            ZIPALIGN="$(find "$ANDROID_HOME/build-tools" -type f -name zipalign 2>/dev/null | sort -V | tail -n 1 || true)"
+            test -n "$ZIPALIGN"
+            "$ZIPALIGN" -c -v 4 "$APK"
+          fi
+
+          if command -v apksigner >/dev/null 2>&1; then
+            apksigner verify --verbose "$APK"
+          else
+            APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1 || true)"
+            test -n "$APKSIGNER"
+            "$APKSIGNER" verify --verbose "$APK"
+          fi
+
+          echo "APK ready and structurally/signature validated: $APK"
 
       - name: Publish direct APK release
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
