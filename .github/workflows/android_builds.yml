@@ -135,13 +135,21 @@ jobs:
         run: |
           TAG="build-${GITHUB_SHA:0:12}"
 
-          gh release create "$TAG" \
-            dist/godot-android-editor-arm64.apk \
-            --repo "${GITHUB_REPOSITORY}" \
-            --target "${GITHUB_SHA}" \
-            --title "Android APK ${GITHUB_SHA:0:12}" \
-            --notes "Automatic Android ARM64 release build for commit ${GITHUB_SHA}." \
-            --prerelease
+          if gh release view "$TAG" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; refreshing APK asset."
+            gh release upload "$TAG" \
+              dist/godot-android-editor-arm64.apk \
+              --repo "${GITHUB_REPOSITORY}" \
+              --clobber
+          else
+            gh release create "$TAG" \
+              dist/godot-android-editor-arm64.apk \
+              --repo "${GITHUB_REPOSITORY}" \
+              --target "${GITHUB_SHA}" \
+              --title "Android APK ${GITHUB_SHA:0:12}" \
+              --notes "Automatic Android ARM64 release build for commit ${GITHUB_SHA}." \
+              --prerelease
+          fi
 
       - name: Build summary
         shell: bash
