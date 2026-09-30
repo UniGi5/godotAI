@@ -29,6 +29,7 @@
 /**************************************************************************/
 
 #include "editor_node.h"
+#include "editor/ai_bridge/runtime/ai_bridge_runtime.h"
 
 #include "core/config/engine.h"
 #include "core/config/project_settings.h"
