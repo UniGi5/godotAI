@@ -3,6 +3,7 @@
 /**************************************************************************/
 
 #include "editor/ai_bridge/core/config/in_memory_secret_storage.h"
+#include "core/string/string_name.h"
 
 bool AIInMemorySecretStorage::has_secret(const StringName &p_key) const {
 	return secrets.has(p_key);
