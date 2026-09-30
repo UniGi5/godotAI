@@ -1,55 +1,30 @@
-name: 🤖 Android Builds
+name: 📱 Android APK
 on:
   workflow_call:
-    secrets:
-      SERVICE_ACCOUNT_KEY:
-        required: true
-
   workflow_dispatch:
 
-# Global Settings
+permissions:
+  contents: write
+
 env:
   SCONS_FLAGS: >-
     dev_mode=yes
     module_text_server_fb_enabled=yes
 
 jobs:
-  build-android:
+  build-android-apk:
+    name: Android Editor ARM64 Release APK
     runs-on: ubuntu-24.04
-    name: ${{ matrix.name }}
-    timeout-minutes: 60
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: Editor (target=editor)
-            cache-name: android-editor
-            target: editor
-            instrumented_tests: true
-            scons-flags: >-
-              arch=arm64
-              production=yes
-
-          - name: Template arm32 (target=template_debug, arch=arm32)
-            cache-name: android-template-arm32
-            target: template_debug
-            instrumented_tests: false
-            scons-flags: arch=arm32
-
-          - name: Template arm64 (target=template_debug, arch=arm64)
-            cache-name: android-template-arm64
-            target: template_debug
-            instrumented_tests: true
-            scons-flags: arch=arm64
+    timeout-minutes: 90
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
       - name: Set up Java 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
@@ -57,7 +32,7 @@ jobs:
       - name: Restore Godot build cache
         uses: ./.github/actions/godot-cache-restore
         with:
-          cache-name: ${{ matrix.cache-name }}
+          cache-name: android-editor-arm64
         continue-on-error: true
 
       - name: Setup Python and SCons
@@ -70,137 +45,98 @@ jobs:
           if python ./misc/scripts/install_accesskit.py; then
             echo "ACCESSKIT_ENABLED=yes" >> "$GITHUB_OUTPUT"
           else
-            echo "::warning::AccessKit SDK installation failed, building without AccessKit support."
+            echo "::warning::AccessKit installation failed; continuing without AccessKit."
             echo "ACCESSKIT_ENABLED=no" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Download Swappy
         shell: sh
-        id: swappy_sdk
+        id: swappy-sdk
         run: |
           if python ./misc/scripts/install_swappy_android.py; then
             echo "SWAPPY_ENABLED=yes" >> "$GITHUB_OUTPUT"
           else
-            echo "::warning::Swappy installation failed, building without Swappy support."
+            echo "::warning::Swappy installation failed; continuing without Swappy."
             echo "SWAPPY_ENABLED=no" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Download Perfetto
         shell: sh
-        id: perfetto_sdk
+        id: perfetto-sdk
         run: |
           if python ./misc/scripts/install_perfetto.py; then
             echo "PROFILER_ENABLED=perfetto" >> "$GITHUB_OUTPUT"
           else
-            echo "::warning::Perfetto installation failed, building without Perfetto support."
+            echo "::warning::Perfetto installation failed; continuing without Perfetto."
             echo "PROFILER_ENABLED=none" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Compilation
+      - name: Build Godot Editor native libraries
         uses: ./.github/actions/godot-build
         with:
-          scons-flags: ${{ env.SCONS_FLAGS }} ${{ matrix.scons-flags }} profiler=${{ steps.perfetto_sdk.outputs.PROFILER_ENABLED }} swappy=${{ steps.swappy_sdk.outputs.SWAPPY_ENABLED }} accesskit=${{ steps.accesskit-sdk.outputs.ACCESSKIT_ENABLED }}
+          scons-flags: >-
+            ${{ env.SCONS_FLAGS }}
+            arch=arm64
+            production=yes
+            profiler=${{ steps.perfetto-sdk.outputs.PROFILER_ENABLED }}
+            swappy=${{ steps.swappy-sdk.outputs.SWAPPY_ENABLED }}
+            accesskit=${{ steps.accesskit-sdk.outputs.ACCESSKIT_ENABLED }}
           platform: android
-          target: ${{ matrix.target }}
+          target: editor
+
+      - name: Build release APK only
+        working-directory: platform/android/java
+        shell: bash
+        run: |
+          ./gradlew :editor:assembleAndroidRelease --no-daemon --stacktrace
+
+          APK_SOURCE=$(find editor/build/outputs/apk -type f -name '*.apk' -path '*/release/*' | head -n 1)
+          if [ -z "$APK_SOURCE" ]; then
+            echo "::error::Release APK was not produced."
+            find editor/build/outputs/apk -maxdepth 4 -type f -print || true
+            exit 1
+          fi
+
+          mkdir -p "$GITHUB_WORKSPACE/dist"
+          cp "$APK_SOURCE" "$GITHUB_WORKSPACE/dist/godot-android-editor-arm64.apk"
+
+      - name: Validate APK output
+        shell: bash
+        run: |
+          test -f dist/godot-android-editor-arm64.apk
+          file dist/godot-android-editor-arm64.apk
+          du -h dist/godot-android-editor-arm64.apk
+          echo "APK ready: dist/godot-android-editor-arm64.apk"
+
+      - name: Publish direct APK release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="build-${GITHUB_SHA:0:12}"
+
+          gh release create "$TAG" \
+            dist/godot-android-editor-arm64.apk \
+            --repo "${GITHUB_REPOSITORY}" \
+            --target "${GITHUB_SHA}" \
+            --title "Android APK ${GITHUB_SHA:0:12}" \
+            --notes "Automatic Android ARM64 release build for commit ${GITHUB_SHA}." \
+            --prerelease
+
+      - name: Build summary
+        shell: bash
+        run: |
+          APK_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/build-${GITHUB_SHA:0:12}/godot-android-editor-arm64.apk"
+          {
+            echo "## 📱 Android APK"
+            echo
+            echo "[Download APK directly]($APK_URL)"
+            echo
+            echo "`godot-android-editor-arm64.apk`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Save Godot build cache
         uses: ./.github/actions/godot-cache-save
         with:
-          cache-name: ${{ matrix.cache-name }}
+          cache-name: android-editor-arm64
         continue-on-error: true
-
-      - name: Generate Godot templates
-        if: matrix.target == 'template_debug'
-        run: |
-          cd platform/android/java
-          ./gradlew generateGodotTemplates
-          cd ../../..
-          ls -l bin/
-
-      - name: Generate Godot editor
-        if: matrix.target == 'editor'
-        run: |
-          cd platform/android/java
-          ./gradlew generateGodotEditor
-          ./gradlew generateGodotHorizonOSEditor
-          ./gradlew generateGodotPicoOSEditor
-          cd ../../..
-          ls -l bin/android_editor_builds/
-
-          # Separate different editors for multiple artifacts
-          mkdir horizonos
-          mv bin/android_editor_builds/*-horizonos-* horizonos
-          mkdir picoos
-          mv bin/android_editor_builds/*-picoos-* picoos
-
-      - name: Upload artifact
-        uses: ./.github/actions/upload-artifact
-        with:
-          name: ${{ matrix.cache-name }}
-
-      - name: Upload artifact (Horizon OS)
-        if: matrix.target == 'editor'
-        uses: ./.github/actions/upload-artifact
-        with:
-          name: ${{ matrix.cache-name }}-horizonos
-          path: horizonos
-
-      - name: Upload artifact (PICO OS)
-        if: matrix.target == 'editor'
-        uses: ./.github/actions/upload-artifact
-        with:
-          name: ${{ matrix.cache-name }}-picoos
-          path: picoos
-
-      - name: Generate Instrumented test APKs
-        if: matrix.instrumented_tests && github.repository == 'godotengine/godot' && github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
-        run: |
-          cd platform/android/java
-          if [ "${{ matrix.target }}" = "editor" ]; then
-            ./gradlew :editor:assembleAndroidAndroidTest :editor:assembleAndroidDebug -Pperform_signing=true
-          else
-            ./gradlew :app:assembleAndroidTest :app:assembleInstrumentedDebug -Pperform_signing=true
-          fi
-          cd ../../..
-
-      - name: Create credentials file
-        if: matrix.instrumented_tests && github.repository == 'godotengine/godot' && github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
-        uses: google-github-actions/auth@v3
-        with:
-          credentials_json: ${{ secrets.SERVICE_ACCOUNT_KEY }}
-
-      - name: Set up gcloud CLI
-        if: matrix.instrumented_tests && github.repository == 'godotengine/godot' && github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
-        uses: google-github-actions/setup-gcloud@v3
-
-      - name: Run tests on Firebase Test Lab
-        if: matrix.instrumented_tests && github.repository == 'godotengine/godot' && github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
-        run: |
-          set +e
-
-          if [ "${{ matrix.target }}" = "editor" ]; then
-            APP_APK="platform/android/java/editor/build/outputs/apk/android/debug/android_editor-android-debug.apk"
-            TEST_APK="platform/android/java/editor/build/outputs/apk/androidTest/android/debug/android_editor-android-debug-androidTest.apk"
-          else
-            APP_APK="platform/android/java/app/build/outputs/apk/instrumented/debug/android_debug.apk"
-            TEST_APK="platform/android/java/app/build/outputs/apk/androidTest/instrumented/debug/app-instrumented-debug-androidTest.apk"
-          fi
-
-          output=$(gcloud firebase test android run \
-            --type instrumentation \
-            --app "$APP_APK" \
-            --test "$TEST_APK" \
-            --device model=MediumPhone.arm,version=26 \
-            --device model=java,version=30 \
-            --device model=MediumPhone.arm,version=32 \
-            --device model=MediumTablet.arm,version=35 \
-            --device model=rango,version=36 \
-            --use-orchestrator \
-            --timeout 2m 2>&1)
-          exit_code=$?
-          echo "$output"
-          if [[ $exit_code -eq 1 && "$output" == *"TEST_QUOTA_EXCEEDED"* ]]; then
-            echo "::warning title=Firebase Test Lab::Test quota exceeded."
-            exit_code=0
-          fi
-          exit "$exit_code"
