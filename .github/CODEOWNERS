@@ -2,6 +2,10 @@
 # Each line is a file pattern followed by one or more owners.
 # Owners can be @users, @org/teams or emails.
 
+# Godot AI Bridge
+/AGENTS.md                                     @UniGi5
+/docs/ai/                                      @UniGi5
+
 # Core
 
 /core/                                        @godotengine/core
