@@ -109,6 +109,7 @@ jobs:
           echo "APK ready: dist/godot-android-editor-arm64.apk"
 
       - name: Publish direct APK release
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
