@@ -159,11 +159,11 @@ bool AIOpenAICompatibleProvider::start_chat(const AIRequest &p_request, StreamCa
 		request_thread.wait_to_finish();
 	}
 
+	active_request = p_request;
 	if (_get_api_key().is_empty()) {
+		_emit_error("missing_api_key", "Provider API key is not configured.");
 		return false;
 	}
-
-	active_request = p_request;
 	active_callback = p_callback;
 	cancel_requested.store(false);
 	request_thread.start(_thread_entry, this);
@@ -194,14 +194,10 @@ void AIOpenAICompatibleProvider::_run_request() {
 		return;
 	}
 
-	if (!path.ends_with("/")) {
-		path += "/";
+	if (path.ends_with("/")) {
+		path = path.substr(0, path.length() - 1);
 	}
-	if (path.ends_with("/v1/")) {
-		path += "chat/completions";
-	} else {
-		path += "chat/completions";
-	}
+	path += "/chat/completions";
 
 	Dictionary body;
 	body["model"] = model;
