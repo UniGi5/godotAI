@@ -37,6 +37,7 @@
 - Permission manager.
 - AI Bridge editor dock.
 - Runtime device smoke automation.
+- NVIDIA transport/provider implementation.
 
 ## Rule
 
