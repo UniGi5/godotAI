@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "core/string/string_name.h"
+
 #include "editor/ai_bridge/core/interfaces/secret_storage.h"
 
 #include "core/templates/hash_map.h"
