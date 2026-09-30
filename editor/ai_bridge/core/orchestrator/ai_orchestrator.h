@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  ai_orchestrator.h                                                     */
+/*  ai_orchestrator.h                                                   */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -37,7 +37,6 @@ class AIOrchestrator final : public IAIOrchestrator {
 	uint64_t next_request_id = 1;
 
 public:
-	// The provider is non-owning. Provider lifetime must exceed the orchestrator.
 	void set_provider(IAIProvider *p_provider);
 
 	uint64_t submit(const AIRequest &p_request, StreamCallback p_callback) override;

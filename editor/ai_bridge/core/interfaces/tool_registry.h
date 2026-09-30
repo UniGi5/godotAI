@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  tool_registry.h                                                 */
+/*  tool_registry.h                                                     */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,8 +30,8 @@
 
 #pragma once
 
-#include "editor/ai_bridge/core/interfaces/tool.h"
 #include "core/templates/vector.h"
+#include "editor/ai_bridge/core/interfaces/tool.h"
 
 class IToolRegistry {
 public:
