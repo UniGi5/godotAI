@@ -10,9 +10,6 @@
 #include "core/string/ustring.h"
 
 namespace {
-static const char *CONFIG_BASE_URL = "ai.provider.base_url";
-static const char *CONFIG_MODEL = "ai.provider.model";
-static const char *SECRET_API_KEY = "ai.provider.api_key";
 
 static String _role_to_string(AIMessageRole p_role) {
 	switch (p_role) {
@@ -99,8 +96,9 @@ AIProviderCapabilities AIOpenAICompatibleProvider::get_capabilities() const {
 }
 
 String AIOpenAICompatibleProvider::_get_base_url() const {
-	if (configuration && configuration->has_value(CONFIG_BASE_URL)) {
-		Variant value = configuration->get_value(CONFIG_BASE_URL);
+	String key = vformat("ai.providers.%s.base_url", String(provider_id));
+	if (configuration && configuration->has_value(key)) {
+		Variant value = configuration->get_value(key);
 		if (value.get_type() == Variant::STRING && !String(value).is_empty()) {
 			return String(value).strip_edges();
 		}
@@ -112,8 +110,9 @@ String AIOpenAICompatibleProvider::_get_model(const AIRequest &p_request) const 
 	if (!p_request.model.is_empty()) {
 		return p_request.model;
 	}
-	if (configuration && configuration->has_value(CONFIG_MODEL)) {
-		Variant value = configuration->get_value(CONFIG_MODEL);
+	String key = vformat("ai.providers.%s.model", String(provider_id));
+	if (configuration && configuration->has_value(key)) {
+		Variant value = configuration->get_value(key);
 		if (value.get_type() == Variant::STRING && !String(value).is_empty()) {
 			return String(value);
 		}
@@ -125,7 +124,8 @@ String AIOpenAICompatibleProvider::_get_api_key() const {
 	if (!secrets) {
 		return String();
 	}
-	return secrets->get_secret(SECRET_API_KEY);
+	String key = vformat("ai.providers.%s.api_key", String(provider_id));
+	return secrets->get_secret(key);
 }
 
 void AIOpenAICompatibleProvider::_emit_error(const String &p_code, const String &p_message) {
