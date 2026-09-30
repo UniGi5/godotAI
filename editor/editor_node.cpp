@@ -8492,6 +8492,7 @@ HashMap<String, Variant> EditorNode::get_initial_settings() {
 EditorNode::EditorNode() {
 	DEV_ASSERT(!singleton);
 	singleton = this;
+	ai_bridge_runtime = memnew(AIBridgeRuntime);
 
 	// Detecting headless mode, that means the editor is running in command line.
 	cmdline_mode = (DisplayServer::get_singleton()->get_name() == "headless");
@@ -9849,6 +9850,7 @@ EditorNode::~EditorNode() {
 #if defined(MODULE_GDSCRIPT_ENABLED) || defined(MODULE_MONO_ENABLED)
 	EditorHelpHighlighter::free_singleton();
 #endif
+	memdelete(ai_bridge_runtime);
 	memdelete(editor_selection);
 	memdelete(editor_plugins_over);
 	memdelete(editor_plugins_force_over);
