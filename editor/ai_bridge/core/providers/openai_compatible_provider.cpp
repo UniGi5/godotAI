@@ -156,7 +156,7 @@ bool AIOpenAICompatibleProvider::start_chat(const AIRequest &p_request, StreamCa
 	}
 
 	if (request_thread.is_started()) {
-		return false;
+		request_thread.wait_to_finish();
 	}
 
 	if (_get_api_key().is_empty()) {
@@ -227,6 +227,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 	}
 
 	String json_body = JSON::stringify(body);
+	String pending_sse;
 
 	Ref<HTTPClient> client;
 	client.instantiate();
@@ -235,7 +236,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 
 	Error err = client->connect_to_host(https ? String("https://") + host : String("http://") + host, port);
 	if (err != OK) {
-		_emit_error("connect_failed", vformat("Unable to start connection: %s", error_names[err]));
+		_emit_error("connect_failed", vformat("Unable to start connection (error %d).", err));
 		return;
 	}
 
@@ -304,15 +305,17 @@ void AIOpenAICompatibleProvider::_run_request() {
 			}
 
 			PackedByteArray chunk = client->read_response_body_chunk();
-			String text = String::utf8((const char *)chunk.ptr(), chunk.size());
-			PackedStringArray lines = text.split("\n", true);
-			for (const String &raw_line : lines) {
-				if (cancel_requested.load()) {
-					client->close();
-					_emit_event(AIStreamEventType::CANCELLED);
-					return;
+			if (!chunk.is_empty()) {
+				pending_sse += String::utf8((const char *)chunk.ptr(), chunk.size());
+			}
+
+			while (true) {
+				int newline = pending_sse.find("\n");
+				if (newline < 0) {
+					break;
 				}
-				String line = raw_line.strip_edges();
+				String line = pending_sse.substr(0, newline).strip_edges();
+				pending_sse = pending_sse.substr(newline + 1);
 				if (!line.begins_with("data:")) {
 					continue;
 				}
