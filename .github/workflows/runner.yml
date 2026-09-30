@@ -1,17 +1,16 @@
-name: 📱 Android APK CI
+name: 🧪 Godot AI CI Orchestrator
 on:
-  push:
-    branches: ["**"]
   pull_request:
     branches: ["**"]
   workflow_dispatch:
 
-# Every push is a separate build checkpoint.
-# PR builds may be cancelled when a newer commit supersedes them.
+# The Android build workflow already runs on every push.
+# This orchestrator is intentionally limited to PRs and manual runs
+# to avoid duplicate push builds.
 concurrency:
   group: >-
     ${{ github.workflow }}|
-    ${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.sha }}
+    ${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
