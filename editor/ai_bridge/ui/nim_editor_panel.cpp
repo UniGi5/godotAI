@@ -5,7 +5,6 @@
 #include "nim_editor_panel.h"
 
 #include "core/object/class_db.h"
-#include "core/object/object_db.h"
 #include "editor/ai_bridge/runtime/ai_bridge_runtime.h"
 #include "editor/docks/editor_dock.h"
 #include "editor/themes/editor_scale.h"
