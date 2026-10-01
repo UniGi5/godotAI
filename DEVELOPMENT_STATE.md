@@ -11,7 +11,7 @@
 - Android target: ARM64
 
 ## Current position
-**1.7 — First physical smoke test**
+**1.7 — First physical smoke test / launch diagnosis**
 
 Status:
 - 1.1 Provider transport: 🟩🟩
@@ -20,13 +20,14 @@ Status:
 - 1.4 Secret storage: 🟩🟥
 - 1.5 Chat: 🟩🟥
 - 1.6 Runtime/UI event bridge: 🟩🟥
-- 1.7 Physical smoke test: 🟥🟥 READY TO TEST
+- 1.7 Physical smoke test: 🟥🟥 FAIL — silent/clean early exit on physical Android device
 - 1.8 First milestone gate: 🟥🟥
 - v0.2: 🟥🟥 NOT READY
 - Release: 🟥🟥 NOT READY
 
 ## Last verified CI
-- Run #58: 🟩 success
+- Last successful CI before launch diagnostics: #58 🟩 success
+- Diagnostic code commit: 025846eaa556f187035f2f0f56df6171464c0ffc
 - Commit: 4f5028ef9f87447ab71f75bbef6f925f9e63d220
 - Build: Android ARM64 release APK
 - APK SHA-256: 33332749c987ad64707022008bb898bc641b71d0c92e6629597a7fca2353dbe4
@@ -44,8 +45,17 @@ Status:
 - EditorNode destroys NIMEditorPanel before AIBridgeRuntime.
 - Cross-window handoff state is stored in this file.
 
+## Physical test result — 1.7
+
+Observed on the user's real Android device:
+- APK installed successfully.
+- APK size was approximately 22 MB.
+- Tapping the launcher icon caused the application to immediately close/minimize.
+- No visible crash dialog or on-screen error appeared.
+- This is classified as **silent/clean early exit — diagnostic required**; it is not treated as a proven crash.
+
 ## Physical test gate — 1.7
-Use exactly the APK from the direct release link above.
+Use the new diagnostic APK produced from commit `025846eaa556f187035f2f0f56df6171464c0ffc` or its later documentation-only descendant. Do not reuse the old #58 APK for diagnosis.
 
 Required verification:
 1. Install APK on a real ARM64 Android device.

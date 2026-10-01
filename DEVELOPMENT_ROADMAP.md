@@ -76,10 +76,10 @@
 Worker/provider events доставляются в UI через deferred main-thread обработку; request-id guard защищает от stale events; lifecycle Panel → Runtime исправлен.
 Остаётся подтверждение поведения на реальном Android Editor.
 
-### 1.7 First physical smoke test
-🟥🟥 READY TO TEST — ТРЕБУЕТСЯ ФИЗИЧЕСКИЙ ТЕСТ
+### 1.7 First physical smoke test / launch diagnosis
+🟥🟥 FAIL — SILENT EARLY EXIT; ТРЕБУЕТСЯ ДИАГНОСТИКА
 
-Тестовый пакет:
+Тестовый пакет до диагностики:
 - Commit: 4f5028ef9f87447ab71f75bbef6f925f9e63d220
 - CI run: #58 🟩
 - APK: godot-android-editor-arm64.apk
@@ -101,7 +101,11 @@ Worker/provider events доставляются в UI через deferred main-t
 11. Test network-error handling.
 12. Reopen editor and verify current key persistence.
 
-Переход 1.7 → 1.8: только после реального устройства.
+Фактический результат физического теста: APK устанавливается, но при запуске практически сразу закрывается без видимой ошибки. Причина пока не доказана.
+
+Диагностический commit: `025846eaa556f187035f2f0f56df6171464c0ffc`.
+
+Переход 1.7 → 1.8: только после исправления/подтверждения launch path на реальном устройстве.
 
 ### 1.8 First milestone gate
 🟥🟥
@@ -192,12 +196,12 @@ MCP, shell и автономные действия не добавляются 
 
 ## Current position
 
-1.7 — First physical smoke test
+1.7 — First physical smoke test / launch diagnosis
 
 Последний CI: #58 🟩.
 Тестовый APK опубликован как prerelease asset.
 Следующий переход:
 1.7 → 1.8 → v0.2 после физического smoke test.
 
-Текущий physical-test requirement: 🟥🟥 READY TO TEST.
+Текущий physical-test requirement: 🟥🟥 FAIL — silent early exit; diagnostic APK pending.
 Current v0.2 gate: 🟥🟥 NOT READY.
