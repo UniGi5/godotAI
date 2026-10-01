@@ -82,6 +82,7 @@ jobs:
             profiler=${{ steps.perfetto-sdk.outputs.PROFILER_ENABLED }}
             swappy=${{ steps.swappy-sdk.outputs.SWAPPY_ENABLED }}
             accesskit=${{ steps.accesskit-sdk.outputs.ACCESSKIT_ENABLED }}
+            store_release=yes
           platform: android
           target: editor
 
@@ -89,12 +90,14 @@ jobs:
         working-directory: platform/android/java
         shell: bash
         run: |
-          ./gradlew :editor:assembleAndroidRelease --no-daemon --stacktrace
+          ./gradlew generateGodotEditor --no-daemon --stacktrace
 
-          APK_SOURCE=$(find editor/build/outputs/apk -type f -name '*.apk' -path '*/release/*' | head -n 1)
-          if [ -z "$APK_SOURCE" ]; then
+          APK_SOURCE="bin/android_editor_builds/android_editor-android-release.apk"
+          if [ ! -f "$APK_SOURCE" ]; then
             echo "::error::Release APK was not produced."
-            find editor/build/outputs/apk -maxdepth 4 -type f -print || true
+            echo "Expected generated editor APK: $APK_SOURCE"
+            find bin/android_editor_builds -maxdepth 2 -type f -print || true
+            find lib/libs/tools -maxdepth 3 -type f -print || true
             exit 1
           fi
 
