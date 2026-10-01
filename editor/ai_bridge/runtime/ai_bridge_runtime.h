@@ -5,14 +5,14 @@
 #pragma once
 
 #include "editor/ai_bridge/core/config/in_memory_configuration_manager.h"
-#include "editor/ai_bridge/core/config/in_memory_secret_storage.h"
+#include "editor/ai_bridge/core/config/file_secret_storage.h"
 #include "editor/ai_bridge/core/orchestrator/ai_orchestrator.h"
 #include "editor/ai_bridge/core/providers/openai_compatible_provider.h"
 #include "editor/ai_bridge/core/providers/provider_registry.h"
 
 class AIBridgeRuntime {
 	AIInMemoryConfigurationManager configuration;
-	AIInMemorySecretStorage secrets;
+	AIFileSecretStorage secrets;
 	AIProviderRegistry provider_registry;
 	AINVIDIAProvider nvidia_provider;
 	AIOrchestrator orchestrator;
