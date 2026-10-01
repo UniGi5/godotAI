@@ -251,13 +251,6 @@ void AIOpenAICompatibleProvider::_run_request() {
 		}
 
 		err = client->poll();
-		const uint64_t now_msec = OS::get_singleton()->get_ticks_msec();
-		if (now_msec - response_started_msec > response_timeout_msec) {
-			_emit_error("response_timeout", "NVIDIA NIM did not complete a response within 60 seconds.");
-			client->close();
-			return;
-		}
-
 		HTTPClient::Status status = client->get_status();
 		if (status == HTTPClient::STATUS_CONNECTED) {
 			break;
