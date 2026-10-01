@@ -202,7 +202,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 
 	Dictionary body;
 	body["model"] = model;
-	body["stream"] = true;
+	body["stream"] = stream_response;
 	Array messages;
 	for (const AIMessage &message : active_request.messages) {
 		Dictionary item;
@@ -225,6 +225,8 @@ void AIOpenAICompatibleProvider::_run_request() {
 
 	String json_body = JSON::stringify(body);
 	String pending_sse;
+	String pending_body;
+	const bool stream_response = active_request.extra_parameters.has("stream") ? bool(active_request.extra_parameters["stream"]) : true;
 
 	Ref<HTTPClient> client = Ref<HTTPClient>(HTTPClient::create());
 	client->set_blocking_mode(false);
@@ -337,7 +339,39 @@ void AIOpenAICompatibleProvider::_run_request() {
 			PackedByteArray chunk = client->read_response_body_chunk();
 			if (!chunk.is_empty()) {
 				last_data_msec = now_msec;
-				pending_sse += String::utf8((const char *)chunk.ptr(), chunk.size());
+				String chunk_text = String::utf8((const char *)chunk.ptr(), chunk.size());
+				if (stream_response) {
+					pending_sse += chunk_text;
+				} else {
+					pending_body += chunk_text;
+				}
+			}
+
+			if (!stream_response) {
+				if (pending_body.is_empty()) {
+					continue;
+				}
+				Variant parsed = JSON::parse_string(pending_body);
+				if (parsed.get_type() == Variant::DICTIONARY) {
+					Dictionary payload = parsed;
+					Array choices = payload.get("choices", Array());
+					if (!choices.is_empty()) {
+						Dictionary choice = choices[0];
+						Dictionary message = choice.get("message", Dictionary());
+						String reasoning = message.get("reasoning_content", String());
+						String content = message.get("content", String());
+						if (!reasoning.is_empty()) {
+							_emit_event(AIStreamEventType::DELTA, reasoning);
+						}
+						if (!content.is_empty()) {
+							_emit_event(AIStreamEventType::DELTA, content);
+						}
+						_emit_event(AIStreamEventType::COMPLETED, String(), choice.get("finish_reason", String("stop")));
+						client->close();
+						return;
+					}
+				}
+				continue;
 			}
 
 			while (true) {
