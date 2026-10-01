@@ -6,6 +6,7 @@
 
 #include "core/object/class_db.h"
 #include "editor/ai_bridge/runtime/ai_bridge_runtime.h"
+#include "editor/docks/editor_dock.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/button.h"
 #include "scene/gui/label.h"
@@ -14,6 +15,7 @@
 
 void NIMEditorPanel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_test_connection"), &NIMEditorPanel::_test_connection);
+	ClassDB::bind_method(D_METHOD("_close_panel"), &NIMEditorPanel::_close_panel);
 	ClassDB::bind_method(D_METHOD("_send_chat"), &NIMEditorPanel::_send_chat);
 	ClassDB::bind_method(
 			D_METHOD("_handle_event", "request_id", "type", "delta", "finish_reason", "error_code", "error_message"),
@@ -26,6 +28,12 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	set_custom_minimum_size(Vector2(0, 340 * EDSCALE));
 	set_v_size_flags(SIZE_EXPAND_FILL);
 	set_h_size_flags(SIZE_EXPAND_FILL);
+
+	close_button = memnew(Button);
+	close_button->set_text(TTRC("Close NIM Panel"));
+	close_button->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
+	close_button->connect(SceneStringName(pressed), Callable(this, "_close_panel"));
+	add_child(close_button);
 
 	Label *title = memnew(Label);
 	title->set_text(TTRC("NVIDIA NIM"));
@@ -90,6 +98,14 @@ NIMEditorPanel::~NIMEditorPanel() {
 	}
 }
 
+void NIMEditorPanel::_close_panel() {
+	Control *parent = get_parent();
+	EditorDock *dock = parent ? Object::cast_to<EditorDock>(parent) : nullptr;
+	if (dock) {
+		dock->close();
+	}
+}
+
 void NIMEditorPanel::_test_connection() {
 	if (!runtime) {
 		status_label->set_text(TTRC("Error: NIM runtime unavailable"));
@@ -108,6 +124,7 @@ void NIMEditorPanel::_test_connection() {
 	request.model = "nvidia/nemotron-3-ultra-550b-a55b";
 	request.temperature = 0.0;
 	request.max_tokens = 16;
+	request.extra_parameters["stream"] = false;
 
 	AIMessage message;
 	message.role = AIMessageRole::USER;
