@@ -179,6 +179,7 @@ void NIMEditorPanel::_send_chat() {
 	active_request_id = runtime->get_orchestrator().submit(request, [this](const AIStreamEvent &p_event) {
 		call_deferred(
 				"_handle_event",
+				(uint64_t)p_event.request_id,
 				(int)p_event.type,
 				p_event.delta,
 				p_event.finish_reason,
