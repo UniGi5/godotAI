@@ -229,7 +229,8 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 			break;
 		case AIStreamEventType::ERROR:
 			status_label->set_text(vformat(TTRC("Error: %s"), p_error_code));
-			output->append_text(vformat("\n%s", p_error_message.is_empty() ? TTRC("NVIDIA NIM request failed.") : p_error_message));
+			output->clear();
+			output->append_text(vformat(TTRC("NVIDIA NIM request failed.\n%s"), p_error_message.is_empty() ? TTRC("No additional error details.") : p_error_message));
 			if (active_is_chat && !conversation.is_empty()) {
 				conversation.remove_at(conversation.size() - 1);
 			}
