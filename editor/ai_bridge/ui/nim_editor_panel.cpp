@@ -216,7 +216,7 @@ void NIMEditorPanel::_send_chat() {
 	request.model = "nvidia/nemotron-3-ultra-550b-a55b";
 	request.temperature = 0.7;
 	request.max_tokens = 512;
-	AIContext project_context = runtime->get_context_provider().build_context("project_identity");
+	AIContext project_context = runtime->get_context_provider().build_context("editor_context");
 	request.messages = project_context.messages;
 	for (const AIMessage &message : conversation) {
 		request.messages.push_back(message);
