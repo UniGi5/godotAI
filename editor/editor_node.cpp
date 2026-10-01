@@ -30,6 +30,7 @@
 
 #include "editor_node.h"
 #include "editor/ai_bridge/runtime/ai_bridge_runtime.h"
+#include "editor/ai_bridge/ui/nim_editor_panel.h"
 
 #include "core/config/engine.h"
 #include "core/config/project_settings.h"
@@ -9388,6 +9389,9 @@ EditorNode::EditorNode() {
 	center_split->add_child(bottom_panel);
 	center_split->set_dragger_visibility(SplitContainer::DRAGGER_HIDDEN);
 
+	nim_editor_panel = memnew(NIMEditorPanel(ai_bridge_runtime));
+	bottom_panel->add_item(TTRC("NVIDIA NIM"), nim_editor_panel);
+
 	log = memnew(EditorLog);
 	editor_dock_manager->add_dock(log);
 
@@ -9851,6 +9855,7 @@ EditorNode::~EditorNode() {
 #if defined(MODULE_GDSCRIPT_ENABLED) || defined(MODULE_MONO_ENABLED)
 	EditorHelpHighlighter::free_singleton();
 #endif
+	memdelete(nim_editor_panel);
 	memdelete(ai_bridge_runtime);
 	memdelete(editor_selection);
 	memdelete(editor_plugins_over);
