@@ -304,7 +304,9 @@ abstract class BaseGodotEditor : GodotActivity(), GameMenuFragment.GameMenuListe
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
+		Log.i(TAG, "GODOTAI_STARTUP stage=activity_onCreate")
 		installSplashScreen()
+		Log.i(TAG, "GODOTAI_STARTUP stage=splash_installed")
 
 		val editorWindowInfo = getEditorWindowInfo()
 		if (editorWindowInfo == EDITOR_MAIN_INFO || isRunGameInfo(editorWindowInfo)) {
@@ -315,21 +317,28 @@ abstract class BaseGodotEditor : GodotActivity(), GameMenuFragment.GameMenuListe
 		// intent (e.g. instrumentation tests).
 		val skipPermissionsRequest = isRunningInInstrumentationOrUserTestHarness()
 		if (!skipPermissionsRequest) {
+			Log.i(TAG, "GODOTAI_STARTUP stage=permissions_request_begin")
 			// We exclude certain permissions from the set we request at startup, as they'll be
 			// requested on demand based on use cases.
 			PermissionsUtil.requestManifestPermissions(this, getExcludedPermissions())
+			Log.i(TAG, "GODOTAI_STARTUP stage=permissions_request_end")
 		}
 
+		Log.i(TAG, "GODOTAI_STARTUP stage=parse_start_intent_begin")
 		editorMessageDispatcher.parseStartIntent(packageManager, intent)
+		Log.i(TAG, "GODOTAI_STARTUP stage=parse_start_intent_end")
 
 		if (BuildConfig.BUILD_TYPE == "debug" && WAIT_FOR_DEBUGGER) {
 			Debug.waitForDebugger()
 		}
 
+		Log.i(TAG, "GODOTAI_STARTUP stage=godot_super_onCreate_begin")
 		super.onCreate(savedInstanceState)
+		Log.i(TAG, "GODOTAI_STARTUP stage=godot_super_onCreate_end")
 
 		// Add the game menu bar.
 		setupGameMenuBar()
+		Log.i(TAG, "GODOTAI_STARTUP stage=game_menu_ready")
 
 		if (!isLargeScreen && !isNativeXRDevice(applicationContext) && godot?.isEditorHint() == true) {
 			// Lock the editor screen orientation to landscape on small screens.
@@ -337,6 +346,7 @@ abstract class BaseGodotEditor : GodotActivity(), GameMenuFragment.GameMenuListe
 			requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
 			changingOrientationAllowed = false
 		}
+		Log.i(TAG, "GODOTAI_STARTUP stage=activity_onCreate_complete")
 	}
 
 	override fun onConfigurationChanged(newConfig: Configuration) {

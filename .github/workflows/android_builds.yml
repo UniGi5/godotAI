@@ -101,6 +101,18 @@ jobs:
           mkdir -p "$GITHUB_WORKSPACE/dist"
           cp "$APK_SOURCE" "$GITHUB_WORKSPACE/dist/godot-android-editor-arm64.apk"
 
+      - name: Audit APK runtime payload
+        shell: bash
+        run: |
+          APK="dist/godot-android-editor-arm64.apk"
+          echo "## APK runtime payload audit"
+          unzip -l "$APK" | grep -E 'lib/arm64-v8a/|AndroidManifest.xml|classes.*\.dex|assets/' | head -n 80 || true
+          echo
+          echo "Native payload sizes:"
+          unzip -l "$APK" | grep 'lib/arm64-v8a/' || true
+          echo
+          echo "APK size bytes: $(stat -c '%s' "$APK")"
+
       - name: Validate APK output
         shell: bash
         run: |
