@@ -76,8 +76,8 @@
 Worker/provider events доставляются в UI через deferred main-thread обработку; request-id guard защищает от stale events; lifecycle Panel → Runtime исправлен.
 Остаётся подтверждение поведения на реальном Android Editor.
 
-### 1.7 First physical smoke test / launch diagnosis
-🟥🟥 FAIL — SILENT EARLY EXIT; ТРЕБУЕТСЯ ДИАГНОСТИКА
+### 1.7 First physical smoke test / corrected APK ready
+🟥🟥 PHYSICAL RETEST REQUIRED — previous silent early exit diagnosed
 
 Тестовый пакет до диагностики:
 - Commit: 4f5028ef9f87447ab71f75bbef6f925f9e63d220
@@ -101,9 +101,14 @@ Worker/provider events доставляются в UI через deferred main-t
 11. Test network-error handling.
 12. Reopen editor and verify current key persistence.
 
-Фактический результат физического теста: APK устанавливается, но при запуске практически сразу закрывается без видимой ошибки. Причина пока не доказана.
+Фактический результат предыдущего физического теста: APK устанавливался, но при запуске практически сразу закрывался без видимой ошибки. Причина установлена: release APK не содержал основной native `libgodot_android.so`.
+
+Исправление подтверждено CI #64: корректный APK 192,421,503 bytes содержит `lib/arm64-v8a/libgodot_android.so` размером 168,766,080 bytes; zipalign и apksigner проходят.
+
+Новый физический тестовый APK: https://github.com/UniGi5/godotAI/releases/download/build-11e68e28cfc8/godot-android-editor-arm64.apk
 
 Диагностический commit: `025846eaa556f187035f2f0f56df6171464c0ffc`.
+Исправление packaging: `11e68e28cfc80d7d705e0cccb0a29b96cb8d9cb6`.
 
 Переход 1.7 → 1.8: только после исправления/подтверждения launch path на реальном устройстве.
 
@@ -196,12 +201,12 @@ MCP, shell и автономные действия не добавляются 
 
 ## Current position
 
-1.7 — First physical smoke test / launch diagnosis
+1.7 — First physical smoke test / corrected APK ready
 
-Последний CI: #58 🟩.
-Тестовый APK опубликован как prerelease asset.
+Последний CI: #64 🟩.
+Корректный APK опубликован как prerelease asset.
 Следующий переход:
 1.7 → 1.8 → v0.2 после физического smoke test.
 
-Текущий physical-test requirement: 🟥🟥 FAIL — silent early exit; diagnostic APK pending.
+Текущий physical-test requirement: 🟥🟥 REQUIRED — проверить исправленный APK на реальном ARM64 Android устройстве.
 Current v0.2 gate: 🟥🟥 NOT READY.
