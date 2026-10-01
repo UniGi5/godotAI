@@ -11,7 +11,7 @@
 - Android target: ARM64
 
 ## Current position
-**1.7 — First physical smoke test / launch diagnosis**
+**1.7 — First physical smoke test / corrected APK ready**
 
 Status:
 - 1.1 Provider transport: 🟩🟩
@@ -20,21 +20,21 @@ Status:
 - 1.4 Secret storage: 🟩🟥
 - 1.5 Chat: 🟩🟥
 - 1.6 Runtime/UI event bridge: 🟩🟥
-- 1.7 Physical smoke test: 🟥🟥 FAIL — silent/clean early exit on physical Android device
+- 1.7 Physical smoke test: 🟥🟥 BLOCKED — previous APK failure diagnosed; corrected APK ready for physical retest
 - 1.8 First milestone gate: 🟥🟥
 - v0.2: 🟥🟥 NOT READY
 - Release: 🟥🟥 NOT READY
 
 ## Last verified CI
-- Last successful CI before launch diagnostics: #58 🟩 success
+- Latest successful CI: #64 🟩 success
 - Diagnostic code commit: 025846eaa556f187035f2f0f56df6171464c0ffc
-- Commit: 4f5028ef9f87447ab71f75bbef6f925f9e63d220
+- Commit: 11e68e28cfc80d7d705e0cccb0a29b96cb8d9cb6
 - Build: Android ARM64 release APK
 - APK SHA-256: 33332749c987ad64707022008bb898bc641b71d0c92e6629597a7fca2353dbe4
-- APK size: 22,273,508 bytes
-- Direct release tag: build-4f5028ef9f87
+- APK size: 192,421,503 bytes
+- Direct release tag: build-11e68e28cfc8
 - Direct APK:
-  https://github.com/UniGi5/godotAI/releases/download/build-4f5028ef9f87/godot-android-editor-arm64.apk
+  https://github.com/UniGi5/godotAI/releases/download/build-11e68e28cfc8/godot-android-editor-arm64.apk
 
 ## Important recent fixes
 - Native NIM panel with API key, Test Connection, Send and streaming chat.
@@ -98,3 +98,20 @@ Every substantial continuation should end with:
 - 📱 PHYSICAL TEST
 - 🚀 v0.2
 - 📦 RELEASE
+
+
+## Corrected Android packaging — CI #64
+
+The silent early exit was traced to the release APK being assembled without the main native Godot editor library. SCons had produced the library but the old workflow consumed the wrong packaging path.
+
+Fixes:
+- SCons builds release native editor library with `store_release=yes`.
+- Gradle uses `generateGodotEditor`.
+- Workflow consumes the canonical Gradle APK output.
+- CI #64 audit confirms `lib/arm64-v8a/libgodot_android.so` is present.
+- Native library size in APK: 168,766,080 bytes.
+- APK size: 192,421,503 bytes.
+- zipalign and apksigner validation: passed.
+- Direct prerelease APK: https://github.com/UniGi5/godotAI/releases/download/build-11e68e28cfc8/godot-android-editor-arm64.apk
+
+The previous 22 MB APK must not be used for physical testing. Physical validation is now required on the corrected 192 MB APK.
