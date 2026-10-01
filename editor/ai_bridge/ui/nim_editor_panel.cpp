@@ -5,6 +5,7 @@
 #include "nim_editor_panel.h"
 
 #include "core/object/class_db.h"
+#include "core/object/object_db.h"
 #include "editor/ai_bridge/runtime/ai_bridge_runtime.h"
 #include "editor/docks/editor_dock.h"
 #include "editor/themes/editor_scale.h"
@@ -138,8 +139,14 @@ void NIMEditorPanel::_test_connection() {
 	send_button->set_disabled(true);
 
 	active_is_chat = false;
-	active_request_id = runtime->get_orchestrator().submit(request, [this](const AIStreamEvent &p_event) {
-		call_deferred(
+	const ObjectID panel_id = get_instance_id();
+	active_request_id = runtime->get_orchestrator().submit(request, [panel_id](const AIStreamEvent &p_event) {
+		Object *object = ObjectDB::get_instance(panel_id);
+		NIMEditorPanel *panel = Object::cast_to<NIMEditorPanel>(object);
+		if (!panel) {
+			return;
+		}
+		panel->call_deferred(
 				"_handle_event",
 				(uint64_t)p_event.request_id,
 				(int)p_event.type,
@@ -193,8 +200,14 @@ void NIMEditorPanel::_send_chat() {
 	request.messages = conversation;
 
 	active_is_chat = true;
-	active_request_id = runtime->get_orchestrator().submit(request, [this](const AIStreamEvent &p_event) {
-		call_deferred(
+	const ObjectID panel_id = get_instance_id();
+	active_request_id = runtime->get_orchestrator().submit(request, [panel_id](const AIStreamEvent &p_event) {
+		Object *object = ObjectDB::get_instance(panel_id);
+		NIMEditorPanel *panel = Object::cast_to<NIMEditorPanel>(object);
+		if (!panel) {
+			return;
+		}
+		panel->call_deferred(
 				"_handle_event",
 				(uint64_t)p_event.request_id,
 				(int)p_event.type,
