@@ -243,6 +243,11 @@ void AIOpenAICompatibleProvider::_run_request() {
 	const uint64_t connect_started_msec = OS::get_singleton()->get_ticks_msec();
 	const uint64_t connect_timeout_msec = 20000;
 
+	const uint64_t response_started_msec = OS::get_singleton()->get_ticks_msec();
+	uint64_t last_data_msec = response_started_msec;
+	const uint64_t response_timeout_msec = 60000;
+	const uint64_t idle_timeout_msec = 30000;
+
 	while (true) {
 		if (cancel_requested.load()) {
 			client->close();
@@ -251,6 +256,13 @@ void AIOpenAICompatibleProvider::_run_request() {
 		}
 
 		err = client->poll();
+		const uint64_t now_msec = OS::get_singleton()->get_ticks_msec();
+		if (now_msec - response_started_msec > response_timeout_msec) {
+			_emit_error("response_timeout", "NVIDIA NIM did not complete a response within 60 seconds.");
+			client->close();
+			return;
+		}
+
 		HTTPClient::Status status = client->get_status();
 		if (status == HTTPClient::STATUS_CONNECTED) {
 			break;
@@ -324,6 +336,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 
 			PackedByteArray chunk = client->read_response_body_chunk();
 			if (!chunk.is_empty()) {
+				last_data_msec = now_msec;
 				pending_sse += String::utf8((const char *)chunk.ptr(), chunk.size());
 			}
 
@@ -368,14 +381,22 @@ void AIOpenAICompatibleProvider::_run_request() {
 				}
 			}
 		} else if (status == HTTPClient::STATUS_DISCONNECTED) {
-			break;
+			_emit_error("connection_lost", "NVIDIA NIM connection closed before a complete response was received.");
+			client->close();
+			return;
+		}
+
+		if (now_msec - last_data_msec > idle_timeout_msec) {
+			_emit_error("response_idle_timeout", "NVIDIA NIM stopped sending data for 30 seconds.");
+			client->close();
+			return;
 		}
 
 		Thread::yield();
 	}
 
 	client->close();
-	_emit_event(AIStreamEventType::COMPLETED, String(), "stop");
+	_emit_error("connection_lost", "NVIDIA NIM connection closed before a complete response was received.");
 }
 
 AINVIDIAProvider::AINVIDIAProvider(IConfigurationManager *p_configuration, ISecretStorage *p_secrets) :
