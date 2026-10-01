@@ -23,6 +23,7 @@ class NIMEditorPanel : public VBoxContainer {
 	RichTextLabel *output = nullptr;
 	Button *test_button = nullptr;
 	Button *send_button = nullptr;
+	Button *close_button = nullptr;
 
 	Vector<AIMessage> conversation;
 	uint64_t active_request_id = 0;
@@ -30,6 +31,7 @@ class NIMEditorPanel : public VBoxContainer {
 	String current_response;
 
 	void _test_connection();
+	void _close_panel();
 	void _send_chat();
 	void _handle_event(uint64_t p_request_id, int p_type, const String &p_delta, const String &p_finish_reason, const String &p_error_code, const String &p_error_message);
 
