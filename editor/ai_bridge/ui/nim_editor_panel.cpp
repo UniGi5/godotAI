@@ -126,6 +126,10 @@ void NIMEditorPanel::_test_connection() {
 	request.temperature = 0.0;
 	request.max_tokens = 16;
 	request.extra_parameters["stream"] = false;
+	Dictionary chat_template_kwargs;
+	chat_template_kwargs["enable_thinking"] = false;
+	chat_template_kwargs["force_nonempty_content"] = true;
+	request.extra_parameters["chat_template_kwargs"] = chat_template_kwargs;
 
 	AIMessage message;
 	message.role = AIMessageRole::USER;
