@@ -358,13 +358,19 @@ void AIOpenAICompatibleProvider::_run_request() {
 					if (!choices.is_empty()) {
 						Dictionary choice = choices[0];
 						Dictionary message = choice.get("message", Dictionary());
-						String reasoning = message.get("reasoning_content", String());
-						String content = message.get("content", String());
-						if (!reasoning.is_empty()) {
-							_emit_event(AIStreamEventType::DELTA, reasoning);
+						Variant reasoning_value = message.get("reasoning_content", Variant());
+						Variant content_value = message.get("content", Variant());
+						if (reasoning_value.get_type() == Variant::STRING) {
+							String reasoning = reasoning_value;
+							if (!reasoning.is_empty()) {
+								_emit_event(AIStreamEventType::DELTA, reasoning);
+							}
 						}
-						if (!content.is_empty()) {
-							_emit_event(AIStreamEventType::DELTA, content);
+						if (content_value.get_type() == Variant::STRING) {
+							String content = content_value;
+							if (!content.is_empty()) {
+								_emit_event(AIStreamEventType::DELTA, content);
+							}
 						}
 						_emit_event(AIStreamEventType::COMPLETED, String(), choice.get("finish_reason", String("stop")));
 						client->close();
