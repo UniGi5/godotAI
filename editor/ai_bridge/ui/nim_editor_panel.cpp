@@ -74,7 +74,6 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	prompt_edit->set_placeholder(TTRC("Ask Nemotron..."));
 	prompt_edit->set_clear_button_enabled(true);
 	prompt_edit->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
-	prompt_edit->connect(SceneStringName(text_submitted), Callable(this, "_send_chat"));
 	add_child(prompt_edit);
 
 	send_button = memnew(Button);
