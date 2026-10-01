@@ -4,6 +4,8 @@
 
 #include "nim_editor_panel.h"
 
+#include "core/object/callable_method_pointer.h"
+#include "core/object/class_db.h"
 #include "editor/ai_bridge/core/interfaces/ai_types.h"
 #include "editor/ai_bridge/runtime/ai_bridge_runtime.h"
 #include "editor/themes/editor_scale.h"
@@ -11,11 +13,6 @@
 #include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/rich_text_label.h"
-
-void NIMEditorPanel::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_test_connection"), &NIMEditorPanel::_test_connection);
-	ClassDB::bind_method(D_METHOD("_handle_event", "type", "delta", "finish_reason", "error_code", "error_message"), &NIMEditorPanel::_handle_event);
-}
 
 NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	runtime = p_runtime;
@@ -42,14 +39,13 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	api_key_edit->set_placeholder(TTRC("Enter your NVIDIA API key"));
 	api_key_edit->set_secret(true);
 	api_key_edit->set_clear_button_enabled(true);
-	api_key_edit->set_expand_to_text_length(false);
 	api_key_edit->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
 	add_child(api_key_edit);
 
 	test_button = memnew(Button);
 	test_button->set_text(TTRC("Test Connection"));
 	test_button->set_custom_minimum_size(Vector2(0, 46 * EDSCALE));
-	test_button->connect(SceneStringName(pressed), callable_mp(this, &NIMEditorPanel::_test_connection));
+	test_button->connect(SceneStringName(pressed), Callable(this, "_test_connection"));
 	add_child(test_button);
 
 	status_label = memnew(Label);
