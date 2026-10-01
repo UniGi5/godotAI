@@ -4,7 +4,7 @@
 
 #include "editor/ai_bridge/core/config/file_secret_storage.h"
 
-#include "core/config/config_file.h"
+#include "core/io/config_file.h"
 
 AIFileSecretStorage::AIFileSecretStorage(const String &p_storage_path) :
 		storage_path(p_storage_path) {
