@@ -21,12 +21,10 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 
 	String identity = "You are assisting inside the Godot Editor.";
 	if (!project_name.is_empty()) {
-		identity += vformat("
-Project name: %s", project_name);
+		identity += vformat("\nProject name: %s", project_name);
 	}
 	if (!project_path.is_empty()) {
-		identity += vformat("
-Project path: %s", project_path);
+		identity += vformat("\nProject path: %s", project_path);
 	}
 
 	AIMessage message;
