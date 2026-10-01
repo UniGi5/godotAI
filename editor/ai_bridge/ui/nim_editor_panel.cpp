@@ -5,6 +5,7 @@
 #include "nim_editor_panel.h"
 
 #include "core/object/class_db.h"
+#include "editor/editor_node.h"
 #include "editor/ai_bridge/runtime/ai_bridge_runtime.h"
 #include "editor/docks/editor_dock.h"
 #include "editor/themes/editor_scale.h"
@@ -99,10 +100,9 @@ NIMEditorPanel::~NIMEditorPanel() {
 }
 
 void NIMEditorPanel::_close_panel() {
-	Node *parent = get_parent();
-	EditorDock *dock = parent ? Object::cast_to<EditorDock>(parent) : nullptr;
-	if (dock) {
-		dock->close();
+	EditorBottomPanel *bottom_panel = EditorNode::get_bottom_panel();
+	if (bottom_panel) {
+		bottom_panel->hide_bottom_panel();
 	}
 }
 
