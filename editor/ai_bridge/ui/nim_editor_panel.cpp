@@ -10,6 +10,7 @@
 #include "editor/ai_bridge/runtime/ai_bridge_runtime.h"
 #include "editor/docks/editor_dock.h"
 #include "editor/themes/editor_scale.h"
+#include "editor/ai_bridge/core/interfaces/context_provider.h"
 #include "scene/gui/button.h"
 #include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
@@ -41,6 +42,20 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	title->set_text(TTRC("NVIDIA NIM"));
 	title->add_theme_font_size_override("font_size", 18 * EDSCALE);
 	add_child(title);
+
+	Label *project = memnew(Label);
+	AIContext project_context = runtime ? runtime->get_context_provider().build_context("project_identity") : AIContext();
+	String project_name;
+	if (!project_context.messages.is_empty()) {
+		const String identity = project_context.messages[0].content;
+		const int name_marker = identity.find("\nProject name: ");
+		if (name_marker >= 0) {
+			project_name = identity.substr(name_marker + 15).get_slice("\n", 0);
+		}
+	}
+	project->set_text(project_name.is_empty() ? TTRC("Project context unavailable") : vformat(TTRC("Project: %s"), project_name));
+	project->set_modulate(Color(1, 1, 1, 0.7));
+	add_child(project);
 
 	Label *model = memnew(Label);
 	model->set_text(TTRC("Nemotron 3 Ultra 550B"));
@@ -201,7 +216,11 @@ void NIMEditorPanel::_send_chat() {
 	request.model = "nvidia/nemotron-3-ultra-550b-a55b";
 	request.temperature = 0.7;
 	request.max_tokens = 512;
-	request.messages = conversation;
+	AIContext project_context = runtime->get_context_provider().build_context("project_identity");
+	request.messages = project_context.messages;
+	for (const AIMessage &message : conversation) {
+		request.messages.push_back(message);
+	}
 
 	active_is_chat = true;
 	const ObjectID panel_id = get_instance_id();
