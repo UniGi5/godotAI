@@ -16,7 +16,7 @@ void NIMEditorPanel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_test_connection"), &NIMEditorPanel::_test_connection);
 	ClassDB::bind_method(D_METHOD("_send_chat"), &NIMEditorPanel::_send_chat);
 	ClassDB::bind_method(
-			D_METHOD("_handle_event", "type", "delta", "finish_reason", "error_code", "error_message"),
+			D_METHOD("_handle_event", "request_id", "type", "delta", "finish_reason", "error_code", "error_message"),
 			&NIMEditorPanel::_handle_event);
 }
 
@@ -124,6 +124,7 @@ void NIMEditorPanel::_test_connection() {
 	active_request_id = runtime->get_orchestrator().submit(request, [this](const AIStreamEvent &p_event) {
 		call_deferred(
 				"_handle_event",
+				(uint64_t)p_event.request_id,
 				(int)p_event.type,
 				p_event.delta,
 				p_event.finish_reason,
@@ -193,7 +194,11 @@ void NIMEditorPanel::_send_chat() {
 	}
 }
 
-void NIMEditorPanel::_handle_event(int p_type, const String &p_delta, const String &p_finish_reason, const String &p_error_code, const String &p_error_message) {
+void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const String &p_delta, const String &p_finish_reason, const String &p_error_code, const String &p_error_message) {
+	if (p_request_id == 0 || p_request_id != active_request_id) {
+		return;
+	}
+
 	if (p_type == (int)AIStreamEventType::DELTA) {
 		if (output->get_text().contains(TTRC("Waiting for NVIDIA NIM..."))) {
 			output->clear();
