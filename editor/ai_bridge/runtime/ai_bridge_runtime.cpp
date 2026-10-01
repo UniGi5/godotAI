@@ -25,3 +25,7 @@ IConfigurationManager &AIBridgeRuntime::get_configuration() {
 ISecretStorage &AIBridgeRuntime::get_secret_storage() {
 	return secrets;
 }
+
+IContextProvider &AIBridgeRuntime::get_context_provider() {
+	return context_provider;
+}
