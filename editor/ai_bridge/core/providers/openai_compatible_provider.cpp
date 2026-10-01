@@ -200,6 +200,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 	}
 	path += "/chat/completions";
 
+	const bool stream_response = active_request.extra_parameters.has("stream") ? bool(active_request.extra_parameters["stream"]) : true;
 	Dictionary body;
 	body["model"] = model;
 	body["stream"] = stream_response;
@@ -226,7 +227,6 @@ void AIOpenAICompatibleProvider::_run_request() {
 	String json_body = JSON::stringify(body);
 	String pending_sse;
 	String pending_body;
-	const bool stream_response = active_request.extra_parameters.has("stream") ? bool(active_request.extra_parameters["stream"]) : true;
 
 	Ref<HTTPClient> client = Ref<HTTPClient>(HTTPClient::create());
 	client->set_blocking_mode(false);
