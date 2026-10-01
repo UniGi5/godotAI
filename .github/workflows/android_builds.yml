@@ -92,11 +92,14 @@ jobs:
         run: |
           ./gradlew generateGodotEditor --no-daemon --stacktrace
 
-          APK_SOURCE="bin/android_editor_builds/android_editor-android-release.apk"
+          # Consume the canonical Gradle output directly. The generator can
+          # complete successfully without materializing the optional bin copy.
+          APK_SOURCE="editor/build/outputs/apk/android/release/android_editor-android-release.apk"
           if [ ! -f "$APK_SOURCE" ]; then
-            echo "::error::Release APK was not produced."
+            echo "::error::Release APK was not produced at the canonical Gradle output path."
             echo "Expected generated editor APK: $APK_SOURCE"
-            find bin/android_editor_builds -maxdepth 2 -type f -print || true
+            find editor/build/outputs/apk -maxdepth 4 -type f -name '*.apk' -print || true
+            find bin/android_editor_builds -maxdepth 2 -type f -print 2>/dev/null || true
             find lib/libs/tools -maxdepth 3 -type f -print || true
             exit 1
           fi
