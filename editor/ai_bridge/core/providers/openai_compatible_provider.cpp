@@ -243,11 +243,6 @@ void AIOpenAICompatibleProvider::_run_request() {
 	const uint64_t connect_started_msec = OS::get_singleton()->get_ticks_msec();
 	const uint64_t connect_timeout_msec = 20000;
 
-	const uint64_t response_started_msec = OS::get_singleton()->get_ticks_msec();
-	uint64_t last_data_msec = response_started_msec;
-	const uint64_t response_timeout_msec = 60000;
-	const uint64_t idle_timeout_msec = 30000;
-
 	while (true) {
 		if (cancel_requested.load()) {
 			client->close();
@@ -309,6 +304,11 @@ void AIOpenAICompatibleProvider::_run_request() {
 		return;
 	}
 
+	const uint64_t response_started_msec = OS::get_singleton()->get_ticks_msec();
+	uint64_t last_data_msec = response_started_msec;
+	const uint64_t response_timeout_msec = 60000;
+	const uint64_t idle_timeout_msec = 30000;
+
 	while (true) {
 		if (cancel_requested.load()) {
 			client->close();
@@ -319,6 +319,13 @@ void AIOpenAICompatibleProvider::_run_request() {
 		err = client->poll();
 		if (err != OK) {
 			_emit_error("poll_failed", vformat("HTTP polling failed: %d.", err));
+			client->close();
+			return;
+		}
+
+		const uint64_t now_msec = OS::get_singleton()->get_ticks_msec();
+		if (now_msec - response_started_msec > response_timeout_msec) {
+			_emit_error("response_timeout", "NVIDIA NIM did not complete a response within 60 seconds.");
 			client->close();
 			return;
 		}
