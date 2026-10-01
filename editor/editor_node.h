@@ -68,6 +68,8 @@ class VBoxContainer;
 class VSplitContainer;
 class Window;
 
+class AIBridgeRuntime;
+
 class AudioStreamImportSettingsDialog;
 class AudioStreamPreviewGenerator;
 class BackgroundProgress;
@@ -266,6 +268,7 @@ private:
 	static EditorNode *singleton;
 
 	EditorData editor_data;
+	AIBridgeRuntime *ai_bridge_runtime = nullptr;
 	EditorFolding editor_folding;
 	EditorSelectionHistory editor_history;
 
