@@ -198,6 +198,9 @@ void NIMEditorPanel::_handle_event(int p_type, const String &p_delta, const Stri
 		if (output->get_text().contains(TTRC("Waiting for NVIDIA NIM..."))) {
 			output->clear();
 		}
+		if (active_is_chat) {
+			current_response += p_delta;
+		}
 		output->append_text(p_delta);
 		return;
 	}
@@ -209,15 +212,13 @@ void NIMEditorPanel::_handle_event(int p_type, const String &p_delta, const Stri
 	switch ((AIStreamEventType)p_type) {
 		case AIStreamEventType::COMPLETED:
 			status_label->set_text(active_is_chat ? TTRC("Connected") : TTRC("Connected"));
-			if (active_is_chat && !p_finish_reason.is_empty()) {
+			if (active_is_chat) {
 				AIMessage assistant_message;
 				assistant_message.role = AIMessageRole::ASSISTANT;
-				assistant_message.content = output->get_text();
-				int marker = assistant_message.content.rfind("Nemotron: ");
-				if (marker >= 0) {
-					assistant_message.content = assistant_message.content.substr(marker + 10);
+				assistant_message.content = current_response;
+				if (!assistant_message.content.is_empty()) {
+					conversation.push_back(assistant_message);
 				}
-				conversation.push_back(assistant_message);
 			}
 			break;
 		case AIStreamEventType::ERROR:
