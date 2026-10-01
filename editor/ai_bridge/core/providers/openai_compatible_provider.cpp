@@ -283,7 +283,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 
 	Vector<String> headers;
 	headers.push_back("Content-Type: application/json");
-	headers.push_back("Accept: text/event-stream");
+	headers.push_back(stream_response ? "Accept: text/event-stream" : "Accept: application/json");
 	headers.push_back("Authorization: Bearer " + api_key);
 
 	CharString body_utf8 = json_body.utf8();
@@ -301,8 +301,8 @@ void AIOpenAICompatibleProvider::_run_request() {
 
 	const uint64_t response_started_msec = OS::get_singleton()->get_ticks_msec();
 	uint64_t last_data_msec = response_started_msec;
-	const uint64_t response_timeout_msec = 60000;
-	const uint64_t idle_timeout_msec = 30000;
+	const uint64_t response_timeout_msec = 120000;
+	const uint64_t idle_timeout_msec = 45000;
 
 	while (true) {
 		if (cancel_requested.load()) {
