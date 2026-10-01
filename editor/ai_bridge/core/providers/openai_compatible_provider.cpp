@@ -361,5 +361,5 @@ AINVIDIAProvider::AINVIDIAProvider(IConfigurationManager *p_configuration, ISecr
 				p_configuration,
 				p_secrets,
 				"https://integrate.api.nvidia.com/v1",
-				"nvidia/llama-3.1-nemotron-ultra-253b-v1") {
+				"nvidia/nemotron-3-ultra-550b-a55b") {
 }
