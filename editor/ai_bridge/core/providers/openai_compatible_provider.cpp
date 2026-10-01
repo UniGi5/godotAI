@@ -5,6 +5,7 @@
 #include "editor/ai_bridge/core/providers/openai_compatible_provider.h"
 
 #include "core/io/http_client.h"
+#include "core/crypto/crypto.h"
 #include "core/io/json.h"
 #include "core/os/os.h"
 #include "core/string/ustring.h"
@@ -229,11 +230,18 @@ void AIOpenAICompatibleProvider::_run_request() {
 	client->set_blocking_mode(false);
 	client->set_read_chunk_size(64 * 1024);
 
-	Error err = client->connect_to_host(https ? String("https://") + host : String("http://") + host, port);
+	Ref<TLSOptions> tls_options;
+	if (https) {
+		tls_options = TLSOptions::client();
+	}
+	Error err = client->connect_to_host(host, port, tls_options);
 	if (err != OK) {
-		_emit_error("connect_failed", vformat("Unable to start connection (error %d).", err));
+		_emit_error("connect_failed", vformat("Unable to start connection to %s:%d (error %d).", host, port, err));
 		return;
 	}
+
+	const uint64_t connect_started_msec = OS::get_singleton()->get_ticks_msec();
+	const uint64_t connect_timeout_msec = 20000;
 
 	while (true) {
 		if (cancel_requested.load()) {
@@ -242,14 +250,29 @@ void AIOpenAICompatibleProvider::_run_request() {
 			return;
 		}
 
-		client->poll();
+		err = client->poll();
 		HTTPClient::Status status = client->get_status();
 		if (status == HTTPClient::STATUS_CONNECTED) {
 			break;
 		}
-		if (status == HTTPClient::STATUS_CANT_CONNECT || status == HTTPClient::STATUS_CANT_RESOLVE ||
-				status == HTTPClient::STATUS_CONNECTION_ERROR || status == HTTPClient::STATUS_TLS_HANDSHAKE_ERROR) {
-			_emit_error("connect_failed", vformat("Connection failed with status %d.", status));
+
+		if (status == HTTPClient::STATUS_CANT_RESOLVE) {
+			_emit_error("dns_failed", vformat("DNS resolution failed for %s.", host));
+			client->close();
+			return;
+		}
+		if (status == HTTPClient::STATUS_TLS_HANDSHAKE_ERROR) {
+			_emit_error("tls_failed", vformat("TLS handshake failed for %s:%d.", host, port));
+			client->close();
+			return;
+		}
+		if (status == HTTPClient::STATUS_CANT_CONNECT || status == HTTPClient::STATUS_CONNECTION_ERROR) {
+			_emit_error("connect_failed", vformat("Connection failed to %s:%d (status %d, error %d).", host, port, status, err));
+			client->close();
+			return;
+		}
+		if (connect_timeout_msec < OS::get_singleton()->get_ticks_msec() - connect_started_msec) {
+			_emit_error("connect_timeout", vformat("Timed out connecting to %s:%d after %d seconds.", host, port, int(connect_timeout_msec / 1000)));
 			client->close();
 			return;
 		}
