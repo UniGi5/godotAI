@@ -156,6 +156,7 @@ void NIMEditorPanel::_send_chat() {
 
 	runtime->get_secret_storage().set_secret("ai.providers.nvidia_nemotron.api_key", api_key);
 
+	current_response = String();
 	AIMessage user_message;
 	user_message.role = AIMessageRole::USER;
 	user_message.content = prompt;
