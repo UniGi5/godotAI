@@ -99,7 +99,7 @@ NIMEditorPanel::~NIMEditorPanel() {
 }
 
 void NIMEditorPanel::_close_panel() {
-	Control *parent = get_parent();
+	Node *parent = get_parent();
 	EditorDock *dock = parent ? Object::cast_to<EditorDock>(parent) : nullptr;
 	if (dock) {
 		dock->close();
