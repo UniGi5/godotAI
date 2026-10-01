@@ -10,6 +10,7 @@
 class AIBridgeRuntime;
 class Button;
 class Label;
+class Label;
 class LineEdit;
 class RichTextLabel;
 
