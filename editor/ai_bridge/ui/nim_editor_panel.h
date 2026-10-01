@@ -27,8 +27,6 @@ class NIMEditorPanel : public VBoxContainer {
 	void _handle_event(int p_type, const String &p_delta, const String &p_finish_reason, const String &p_error_code, const String &p_error_message);
 
 protected:
-	static void _bind_methods();
-
 public:
 	explicit NIMEditorPanel(AIBridgeRuntime *p_runtime);
 	~NIMEditorPanel();
