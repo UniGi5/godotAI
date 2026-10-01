@@ -49,7 +49,7 @@
 - model: `nvidia/nemotron-3-ultra-550b-a55b`
 
 ### 1.3 NIM Editor UI
-🟥🟥 **ТЕКУЩАЯ ПОЗИЦИЯ**
+🟩🟥 Частично готов.
 - найти правильную точку интеграции в Android Editor;
 - создать touch-friendly NIM panel;
 - статус подключения;
@@ -57,13 +57,13 @@
 - Test Connection.
 
 ### 1.4 Secret storage
-🟥🟥
+🟩🟥 Частично готов.
 - Android-compatible local storage;
 - API key не попадает в Git/project/logs;
 - storage abstraction оставить пригодной для последующего secure backend.
 
 ### 1.5 Chat
-🟥🟥
+🟩🟥 Частично готов.
 - message input;
 - send/cancel;
 - streamed response;
@@ -72,7 +72,8 @@
 
 ### 1.6 Runtime/UI event bridge
 🟩🟥 Частично готов.
-Нужно окончательно связать worker/provider events с UI без блокировки Editor.
+Worker/provider events доставляются в UI через deferred main-thread обработку; добавлены request-id guard и корректный lifecycle Panel → Runtime.
+Остаётся физическая проверка реального Android Editor и дальнейшее укрепление обработки edge cases.
 
 ### 1.7 First physical smoke test
 🟥🟥 **ТРЕБУЕТСЯ ФИЗИЧЕСКИЙ ТЕСТ**
@@ -191,10 +192,11 @@ MCP, shell и автономные действия не добавляются 
 
 ## Current position
 
-**1.3 — NIM Editor UI**
+**1.6 — Runtime/UI event bridge**
 
+Последние CI: #56 🟩.
 Следующий переход:
-**1.3 → 1.4 → 1.5 → 1.6 → 1.7 → 1.8 → v0.2**
+**1.7 → 1.8 → v0.2** после закрытия физического smoke test.
 
 Текущий physical-test requirement: 🟥🟥 NOT YET.
 Current v0.2 gate: 🟥🟥 NOT READY.
