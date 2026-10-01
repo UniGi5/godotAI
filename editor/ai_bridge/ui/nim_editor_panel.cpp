@@ -37,6 +37,10 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 
 	api_key_edit = memnew(LineEdit);
 	api_key_edit->set_placeholder(TTRC("Enter your NVIDIA API key"));
+	String stored_key = runtime ? runtime->get_secret_storage().get_secret("ai.providers.nvidia_nemotron.api_key") : String();
+	if (!stored_key.is_empty()) {
+		api_key_edit->set_text(stored_key);
+	}
 	api_key_edit->set_secret(true);
 	api_key_edit->set_clear_button_enabled(true);
 	api_key_edit->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
