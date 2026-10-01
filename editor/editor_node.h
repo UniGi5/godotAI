@@ -69,6 +69,7 @@ class VSplitContainer;
 class Window;
 
 class AIBridgeRuntime;
+class NIMEditorPanel;
 
 class AudioStreamImportSettingsDialog;
 class AudioStreamPreviewGenerator;
@@ -269,6 +270,7 @@ private:
 
 	EditorData editor_data;
 	AIBridgeRuntime *ai_bridge_runtime = nullptr;
+	NIMEditorPanel *nim_editor_panel = nullptr;
 	EditorFolding editor_folding;
 	EditorSelectionHistory editor_history;
 
