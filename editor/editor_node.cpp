@@ -9855,6 +9855,8 @@ EditorNode::~EditorNode() {
 #if defined(MODULE_GDSCRIPT_ENABLED) || defined(MODULE_MONO_ENABLED)
 	EditorHelpHighlighter::free_singleton();
 #endif
+	memdelete(nim_editor_panel);
+	nim_editor_panel = nullptr;
 	memdelete(ai_bridge_runtime);
 	memdelete(editor_selection);
 	memdelete(editor_plugins_over);
