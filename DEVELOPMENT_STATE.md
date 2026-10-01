@@ -11,7 +11,7 @@
 - Android target: ARM64
 
 ## Current position
-**1.6 — Runtime/UI event bridge**
+**1.7 — First physical smoke test**
 
 Status:
 - 1.1 Provider transport: 🟩🟩
@@ -20,16 +20,20 @@ Status:
 - 1.4 Secret storage: 🟩🟥
 - 1.5 Chat: 🟩🟥
 - 1.6 Runtime/UI event bridge: 🟩🟥
-- 1.7 Physical smoke test: 🟥🟥
+- 1.7 Physical smoke test: 🟥🟥 READY TO TEST
 - 1.8 First milestone gate: 🟥🟥
 - v0.2: 🟥🟥 NOT READY
 - Release: 🟥🟥 NOT READY
 
 ## Last verified CI
-- Run #56: 🟩 success
-- Commit: a8526e6c51c354693f9ae20e65aa25723c888a1e
-- Fix: destroy NIM panel before AI runtime.
-- Previous run #55: 🟩 success — request-id protection for UI events.
+- Run #58: 🟩 success
+- Commit: 4f5028ef9f87447ab71f75bbef6f925f9e63d220
+- Build: Android ARM64 release APK
+- APK SHA-256: 33332749c987ad64707022008bb898bc641b71d0c92e6629597a7fca2353dbe4
+- APK size: 22,273,508 bytes
+- Direct release tag: build-4f5028ef9f87
+- Direct APK:
+  https://github.com/UniGi5/godotAI/releases/download/build-4f5028ef9f87/godot-android-editor-arm64.apk
 
 ## Important recent fixes
 - Native NIM panel with API key, Test Connection, Send and streaming chat.
@@ -38,23 +42,36 @@ Status:
 - Deferred provider events delivered to the editor/UI thread.
 - UI ignores stale events whose request_id does not match the active request.
 - EditorNode destroys NIMEditorPanel before AIBridgeRuntime.
+- Cross-window handoff state is stored in this file.
 
-## Physical test gate
-Do NOT mark 1.7 or 1.8 complete without a real Android device.
+## Physical test gate — 1.7
+Use exactly the APK from the direct release link above.
+
 Required verification:
-1. Install APK.
+1. Install APK on a real ARM64 Android device.
 2. Launch Godot Editor.
-3. Open NVIDIA NIM panel.
-4. Enter/save API key.
-5. Test Connection.
-6. Verify NIM_OK response.
-7. Send a second coding request.
-8. Verify streaming.
-9. Verify invalid-key/network error handling.
+3. Confirm the editor reaches the main UI without startup crash.
+4. Open the NVIDIA NIM panel.
+5. Enter and save an NVIDIA API key.
+6. Press Test Connection.
+7. Verify the response is exactly NIM_OK.
+8. Send a second coding request.
+9. Verify streamed response arrives progressively.
+10. Verify a deliberately invalid API key produces a clear error without crashing.
+11. Verify network failure/disconnection produces a clear error without crashing.
+12. Close/reopen the editor and verify the stored key remains available through the current local storage implementation.
+
+Record the actual result for each item before marking 1.7 complete.
 
 ## v0.2 gate
 Only after:
 BUILD + INSTALL + LAUNCH + NIM REQUEST + RESPONSE on physical Android device.
+
+Additional first-milestone evidence should include:
+- streaming works;
+- invalid-key handling works;
+- network-error handling works;
+- no startup/request crash.
 
 ## Handoff rule for a new chat/window
 Read this file and DEVELOPMENT_ROADMAP.md first.
