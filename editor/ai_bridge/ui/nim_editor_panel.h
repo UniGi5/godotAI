@@ -27,6 +27,7 @@ class NIMEditorPanel : public VBoxContainer {
 	Vector<AIMessage> conversation;
 	uint64_t active_request_id = 0;
 	bool active_is_chat = false;
+	String current_response;
 
 	void _test_connection();
 	void _send_chat();
