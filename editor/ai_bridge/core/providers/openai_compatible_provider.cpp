@@ -354,7 +354,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 		HTTPClient::Status status = client->get_status();
 		if (status == HTTPClient::STATUS_BODY) {
 			int response_code = client->get_response_code();
-			if (response_code < 200 || response_code >= 300) {
+			if (response_code != 200) {
 				PackedByteArray error_body = client->read_response_body_chunk();
 				String error_text = String::utf8((const char *)error_body.ptr(), error_body.size());
 				_emit_error(_error_from_http(response_code), error_text);
