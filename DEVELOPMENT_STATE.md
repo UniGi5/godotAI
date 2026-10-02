@@ -11,7 +11,7 @@
 - Android target: ARM64
 
 ## Current position
-**2.4 — Scene-root script context implementation ready; physical verification pending**
+**v0.2 — Robust NVIDIA NIM Streaming / SSE implementation — CI verification pending**
 
 Status:
 - 1.1 Provider transport: 🟩🟩
@@ -58,8 +58,8 @@ Observed on the user's real Android device:
 - The verified baseline is the deterministic non-stream request path with thinking disabled.
 
 
-## Physical test gate — next regression test
-A new physical test is required only after CI produces the APK containing the chat-baseline fix `cd8b31cc0e6191967282e4dd0e790a41dbedee19`.
+## Physical test gate — v0.2 SSE regression
+A new physical test is required only after CI produces an APK containing the v0.2 SSE implementation. The physical test must verify both streaming and the existing non-stream fallback.
 
 Required verification:
 1. Install APK on a real ARM64 Android device.
