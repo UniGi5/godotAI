@@ -51,6 +51,7 @@ void NIMEditorPanel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_send_chat"), &NIMEditorPanel::_send_chat);
 	ClassDB::bind_method(D_METHOD("_copy_chat"), &NIMEditorPanel::_copy_chat);
 	ClassDB::bind_method(D_METHOD("_clear_chat"), &NIMEditorPanel::_clear_chat);
+	ClassDB::bind_method(D_METHOD("_copy_code"), &NIMEditorPanel::_copy_code);
 	ClassDB::bind_method(D_METHOD("_retry_chat"), &NIMEditorPanel::_retry_chat);
 	ClassDB::bind_method(D_METHOD("_cancel_chat"), &NIMEditorPanel::_cancel_chat);
 	ClassDB::bind_method(
@@ -149,6 +150,13 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	clear_button->set_custom_minimum_size(Vector2(0, 38 * EDSCALE));
 	clear_button->connect(SceneStringName(pressed), Callable(this, "_clear_chat"));
 	chat_toolbar->add_child(clear_button);
+
+	copy_code_button = memnew(Button);
+	copy_code_button->set_text(TTRC("Copy code"));
+	copy_code_button->set_custom_minimum_size(Vector2(0, 38 * EDSCALE));
+	copy_code_button->set_disabled(true);
+	copy_code_button->connect(SceneStringName(pressed), Callable(this, "_copy_code"));
+	chat_toolbar->add_child(copy_code_button);
 
 	retry_button = memnew(Button);
 	retry_button->set_text(TTRC("Retry"));
@@ -293,6 +301,15 @@ void NIMEditorPanel::_copy_chat() {
 	}
 	DisplayServer::get_singleton()->clipboard_set(text);
 	status_label->set_text(TTRC("Chat copied"));
+}
+
+void NIMEditorPanel::_copy_code() {
+	if (last_code_block.is_empty()) {
+		status_label->set_text(TTRC("No code block available"));
+		return;
+	}
+	DisplayServer::get_singleton()->clipboard_set(last_code_block);
+	status_label->set_text(TTRC("Code copied"));
 }
 
 void NIMEditorPanel::_clear_chat() {
