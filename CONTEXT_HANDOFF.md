@@ -17,6 +17,7 @@ The current development line has a physically verified NIM chat baseline:
 - Chat request returns an immediate Nemotron response.
 - Nemotron receives editor/project context and identified the project name.
 - The verified reliable request shape is non-streaming with thinking disabled.
+- Streaming is now implemented as a separate SSE path and must not replace the verified fallback.
 
 ## Important implementation rule
 Keep the verified chat path stable:
@@ -35,8 +36,18 @@ Do not replace the stable non-stream path with SSE until streaming is implemente
 - Latest selected-node API/lifecycle fixes are on master, including `EditorNode::get_singleton()->get_editor_selection()`.
 - Selected-node context still requires physical verification on the APK containing the latest code.
 
+## v0.2 SSE checkpoint
+- SSE parser keeps incomplete network data buffered until an SSE event boundary.
+- Multiple `data:` lines are accumulated per event.
+- `[DONE]` produces `COMPLETED`.
+- `finish_reason` also produces `COMPLETED`, preventing UI from remaining in a waiting state.
+- `reasoning_content` is emitted with `AIStreamEvent.reasoning=true`; final `content` remains separate.
+- Provider work runs on the request thread, not the Android UI thread.
+- Missing API key now emits `ERROR` through the callback before `start_chat()` returns false.
+- Normal chat remains explicitly `stream=false` with `enable_thinking=false` and `force_nonempty_content=true`.
+
 ## Current position
-**2.3 — Selected node context implementation ready; physical verification pending**
+**v0.2 — Robust NVIDIA NIM Streaming / SSE implementation in CI verification**
 
 Status:
 - 1.7 physical Android launch/NIM baseline: 🟩🟩
@@ -44,7 +55,8 @@ Status:
 - 2.1 project identity: 🟩🟩
 - 2.2 current scene: 🟩🟥
 - 2.3 selected node: 🟩🟥
-- 2.4 current script: 🟥🟥 next
+- 2.4 current script: 🟩🟥 implemented
+- v0.2 SSE: 🟩🟥 implementation complete; CI verification pending
 - 2.5 debugger/errors: 🟥🟥
 - 2.6 controlled context assembly: 🟥🟥
 - v0.2: 🟩🟥 partial
@@ -63,8 +75,9 @@ Status:
    - project/scene context;
    - selected-node context;
    - invalid-key/network error regression.
-7. Implement/test streaming as a separate path.
-8. Then move toward v0.2 packaging.
+7. Verify the current Android CI build.
+8. Physically test streaming on the resulting APK.
+9. Then move toward v0.2 packaging.
 
 ## Physical-test rule
 Do not ask the user to repeat already verified launch/API-key/NIM-chat setup without a new behavior change. When a new physical test is required, provide:
