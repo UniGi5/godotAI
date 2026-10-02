@@ -41,11 +41,11 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 			String scene_context = "Current edited scene:";
 			const String scene_path = scene_root->get_scene_file_path();
 			if (!scene_path.is_empty()) {
-				scene_context += vformat("\\nScene path: %s", scene_path);
+				scene_context += vformat("\nScene path: %s", scene_path);
 			}
-			scene_context += vformat("\\nRoot node: %s (%s)", scene_root->get_name(), scene_root->get_class());
+			scene_context += vformat("\nRoot node: %s (%s)", scene_root->get_name(), scene_root->get_class());
 			if (scene_root->is_inside_tree()) {
-				scene_context += vformat("\\nRoot node path: %s", scene_root->get_path());
+				scene_context += vformat("\nRoot node path: %s", scene_root->get_path());
 			}
 			AIMessage scene_message;
 			scene_message.role = AIMessageRole::SYSTEM;
@@ -60,9 +60,9 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 				Node *selected_node = selected_nodes.front()->get();
 				if (selected_node) {
 					String selected_context = "Selected node:";
-					selected_context += vformat("\\nName: %s", selected_node->get_name());
-					selected_context += vformat("\\nType: %s", selected_node->get_class());
-					selected_context += vformat("\\nPath: %s", selected_node->get_path());
+					selected_context += vformat("\nName: %s", selected_node->get_name());
+					selected_context += vformat("\nType: %s", selected_node->get_class());
+					selected_context += vformat("\nPath: %s", selected_node->get_path());
 					AIMessage selected_message;
 					selected_message.role = AIMessageRole::SYSTEM;
 					selected_message.content = selected_context;
