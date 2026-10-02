@@ -77,7 +77,7 @@ class NIMEditorPanel : public VBoxContainer {
 	String _escape_bbcode(const String &p_text) const;
 	String _markdown_to_bbcode(const String &p_text);
 	void _rebuild_chat_output();
-	void _handle_event(uint64_t p_request_id, int p_type, const String &p_delta, const String &p_finish_reason, const String &p_error_code, const String &p_error_message);
+	void _handle_event(uint64_t p_request_id, int p_type, const String &p_delta, const String &p_finish_reason, const String &p_error_code, const String &p_error_message, bool p_reasoning);
 
 protected:
 	static void _bind_methods();
