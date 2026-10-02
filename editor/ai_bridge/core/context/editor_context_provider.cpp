@@ -1,13 +1,39 @@
 /**************************************************************************/
-/*  editor_context_provider.cpp                                          */
+/*  editor_context_provider.cpp                                           */
+/**************************************************************************/
+/*                         This file is part of:                          */
+/*                             GODOT ENGINE                               */
+/*                        https://godotengine.org                         */
+/**************************************************************************/
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
+/*                                                                        */
+/* Permission is hereby granted, free of charge, to any person obtaining  */
+/* a copy of this software and associated documentation files (the        */
+/* "Software"), to deal in the Software without restriction, including    */
+/* without limitation the rights to use, copy, modify, merge, publish,    */
+/* distribute, sublicense, and/or sell copies of the Software, and to     */
+/* permit persons to whom the Software is furnished to do so, subject to  */
+/* the following conditions:                                              */
+/*                                                                        */
+/* The above copyright notice and this permission notice shall be         */
+/* included in all copies or substantial portions of the Software.        */
+/*                                                                        */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,        */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
 #include "editor_context_provider.h"
 
 #include "core/config/project_settings.h"
 #include "core/string/ustring.h"
-#include "editor/editor_node.h"
 #include "editor/editor_data.h"
+#include "editor/editor_node.h"
 #include "scene/main/node.h"
 
 AIContext AIEditorContextProvider::build_context(const String &p_scope) {
@@ -41,11 +67,11 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 			String scene_context = "Current edited scene:";
 			const String scene_path = scene_root->get_scene_file_path();
 			if (!scene_path.is_empty()) {
-				scene_context += vformat("\\nScene path: %s", scene_path);
+				scene_context += vformat("\nScene path: %s", scene_path);
 			}
-			scene_context += vformat("\\nRoot node: %s (%s)", scene_root->get_name(), scene_root->get_class());
+			scene_context += vformat("\nRoot node: %s (%s)", scene_root->get_name(), scene_root->get_class());
 			if (scene_root->is_inside_tree()) {
-				scene_context += vformat("\\nRoot node path: %s", scene_root->get_path());
+				scene_context += vformat("\nRoot node path: %s", scene_root->get_path());
 			}
 			AIMessage scene_message;
 			scene_message.role = AIMessageRole::SYSTEM;
@@ -60,9 +86,9 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 				Node *selected_node = selected_nodes.front()->get();
 				if (selected_node) {
 					String selected_context = "Selected node:";
-					selected_context += vformat("\\nName: %s", selected_node->get_name());
-					selected_context += vformat("\\nType: %s", selected_node->get_class());
-					selected_context += vformat("\\nPath: %s", selected_node->get_path());
+					selected_context += vformat("\nName: %s", selected_node->get_name());
+					selected_context += vformat("\nType: %s", selected_node->get_class());
+					selected_context += vformat("\nPath: %s", selected_node->get_path());
 					AIMessage selected_message;
 					selected_message.role = AIMessageRole::SYSTEM;
 					selected_message.content = selected_context;

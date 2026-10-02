@@ -1,20 +1,48 @@
 /**************************************************************************/
 /*  nim_editor_panel.cpp                                                  */
 /**************************************************************************/
+/*                         This file is part of:                          */
+/*                             GODOT ENGINE                               */
+/*                        https://godotengine.org                         */
+/**************************************************************************/
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
+/*                                                                        */
+/* Permission is hereby granted, free of charge, to any person obtaining  */
+/* a copy of this software and associated documentation files (the        */
+/* "Software"), to deal in the Software without restriction, including    */
+/* without limitation the rights to use, copy, modify, merge, publish,    */
+/* distribute, sublicense, and/or sell copies of the Software, and to     */
+/* permit persons to whom the Software is furnished to do so, subject to  */
+/* the following conditions:                                              */
+/*                                                                        */
+/* The above copyright notice and this permission notice shall be         */
+/* included in all copies or substantial portions of the Software.        */
+/*                                                                        */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,        */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
+/**************************************************************************/
 
 #include "nim_editor_panel.h"
 
 #include "core/object/class_db.h"
-#include "editor/editor_node.h"
-#include "editor/gui/editor_bottom_panel.h"
+#include "editor/ai_bridge/core/interfaces/context_provider.h"
 #include "editor/ai_bridge/runtime/ai_bridge_runtime.h"
 #include "editor/docks/editor_dock.h"
+#include "editor/editor_node.h"
+#include "editor/gui/editor_bottom_panel.h"
 #include "editor/themes/editor_scale.h"
-#include "editor/ai_bridge/core/interfaces/context_provider.h"
+#include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 #include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/rich_text_label.h"
+#include "scene/gui/scroll_container.h"
 
 void NIMEditorPanel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_test_connection"), &NIMEditorPanel::_test_connection);
@@ -62,9 +90,27 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	model->set_modulate(Color(1, 1, 1, 0.7));
 	add_child(model);
 
+	status_label = memnew(Label);
+	status_label->set_text(TTRC("Idle"));
+	add_child(status_label);
+
+	// Keep connection settings in their own bounded scroll region. On small
+	// Android viewports this prevents the chat controls from being pushed
+	// below the visible bottom-panel area.
+	ScrollContainer *settings_scroll = memnew(ScrollContainer);
+	settings_scroll->set_custom_minimum_size(Vector2(0, 88 * EDSCALE));
+	settings_scroll->set_h_size_flags(SIZE_EXPAND_FILL);
+	settings_scroll->set_horizontal_scroll_mode(ScrollContainer::SCROLL_MODE_DISABLED);
+	settings_scroll->set_vertical_scroll_mode(ScrollContainer::SCROLL_MODE_AUTO);
+	add_child(settings_scroll);
+
+	VBoxContainer *settings = memnew(VBoxContainer);
+	settings->set_h_size_flags(SIZE_EXPAND_FILL);
+	settings_scroll->add_child(settings);
+
 	Label *key_label = memnew(Label);
 	key_label->set_text(TTRC("NVIDIA API key"));
-	add_child(key_label);
+	settings->add_child(key_label);
 
 	api_key_edit = memnew(LineEdit);
 	api_key_edit->set_placeholder(TTRC("Enter your NVIDIA API key"));
@@ -75,37 +121,39 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	api_key_edit->set_secret(true);
 	api_key_edit->set_clear_button_enabled(true);
 	api_key_edit->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
-	add_child(api_key_edit);
+	settings->add_child(api_key_edit);
 
 	test_button = memnew(Button);
 	test_button->set_text(TTRC("Test Connection"));
 	test_button->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
 	test_button->connect(SceneStringName(pressed), Callable(this, "_test_connection"));
-	add_child(test_button);
-
-	status_label = memnew(Label);
-	status_label->set_text(TTRC("Idle"));
-	add_child(status_label);
+	settings->add_child(test_button);
 
 	output = memnew(RichTextLabel);
 	output->set_fit_content(false);
 	output->set_scroll_active(true);
 	output->set_selection_enabled(true);
+	output->set_h_size_flags(SIZE_EXPAND_FILL);
 	output->set_v_size_flags(SIZE_EXPAND_FILL);
-	output->set_custom_minimum_size(Vector2(0, 150 * EDSCALE));
+	output->set_custom_minimum_size(Vector2(0, 60 * EDSCALE));
 	add_child(output);
+
+	HBoxContainer *input_row = memnew(HBoxContainer);
+	input_row->set_h_size_flags(SIZE_EXPAND_FILL);
+	add_child(input_row);
 
 	prompt_edit = memnew(LineEdit);
 	prompt_edit->set_placeholder(TTRC("Ask Nemotron..."));
 	prompt_edit->set_clear_button_enabled(true);
+	prompt_edit->set_h_size_flags(SIZE_EXPAND_FILL);
 	prompt_edit->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
-	add_child(prompt_edit);
+	input_row->add_child(prompt_edit);
 
 	send_button = memnew(Button);
 	send_button->set_text(TTRC("Send"));
-	send_button->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
+	send_button->set_custom_minimum_size(Vector2(92 * EDSCALE, 42 * EDSCALE));
 	send_button->connect(SceneStringName(pressed), Callable(this, "_send_chat"));
-	add_child(send_button);
+	input_row->add_child(send_button);
 }
 
 NIMEditorPanel::~NIMEditorPanel() {
@@ -208,14 +256,19 @@ void NIMEditorPanel::_send_chat() {
 
 	output->append_text(vformat("\n\nYou: %s\nNemotron: ", prompt));
 	prompt_edit->clear();
-	status_label->set_text(TTRC("Connecting..."));
+	status_label->set_text(TTRC("Waiting for NVIDIA NIM..."));
 	test_button->set_disabled(true);
 	send_button->set_disabled(true);
 
 	AIRequest request;
 	request.model = "nvidia/nemotron-3-ultra-550b-a55b";
 	request.temperature = 0.7;
-	request.max_tokens = 512;
+	request.max_tokens = 256;
+	request.extra_parameters["stream"] = false;
+	Dictionary chat_template_kwargs;
+	chat_template_kwargs["enable_thinking"] = false;
+	chat_template_kwargs["force_nonempty_content"] = true;
+	request.extra_parameters["chat_template_kwargs"] = chat_template_kwargs;
 	AIContext project_context = runtime->get_context_provider().build_context("editor_context");
 	request.messages = project_context.messages;
 	for (const AIMessage &message : conversation) {
