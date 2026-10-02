@@ -146,7 +146,7 @@ jobs:
           echo "APK ready and structurally/signature validated: $APK"
 
       - name: Publish direct APK release
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -178,7 +178,7 @@ jobs:
             echo
             echo "[Download APK directly]($APK_URL)"
             echo
-            echo "`godot-android-editor-arm64.apk`"
+            echo "godot-android-editor-arm64.apk"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Save Godot build cache
