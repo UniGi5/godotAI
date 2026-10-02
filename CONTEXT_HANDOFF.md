@@ -43,11 +43,12 @@ Do not replace the stable non-stream path with SSE until streaming is implemente
 - `finish_reason` also produces `COMPLETED`, preventing UI from remaining in a waiting state.
 - `reasoning_content` is emitted with `AIStreamEvent.reasoning=true`; final `content` remains separate.
 - Provider work runs on the request thread, not the Android UI thread.
+- Malformed completed SSE JSON now emits `ERROR` immediately instead of waiting for timeout.
 - Missing API key now emits `ERROR` through the callback before `start_chat()` returns false.
 - Normal chat remains explicitly `stream=false` with `enable_thinking=false` and `force_nonempty_content=true`.
 
 ## Current position
-**v0.2 — Robust NVIDIA NIM Streaming / SSE implementation in CI verification**
+**v0.2 — Robust NVIDIA NIM Streaming / SSE implementation — CI verification pending**
 
 Status:
 - 1.7 physical Android launch/NIM baseline: 🟩🟩
