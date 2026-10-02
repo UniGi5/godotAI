@@ -87,14 +87,8 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	status_label->set_text(TTRC("Idle"));
 	add_child(status_label);
 
-	output = memnew(RichTextLabel);
-	output->set_fit_content(false);
-	output->set_scroll_active(true);
-	output->set_selection_enabled(true);
-	output->set_v_size_flags(SIZE_EXPAND_FILL);
-	output->set_custom_minimum_size(Vector2(0, 150 * EDSCALE));
-	add_child(output);
-
+	// Keep chat controls before the expandable transcript so they remain
+	// reachable on compact Android editor layouts.
 	prompt_edit = memnew(LineEdit);
 	prompt_edit->set_placeholder(TTRC("Ask Nemotron..."));
 	prompt_edit->set_clear_button_enabled(true);
@@ -106,6 +100,14 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	send_button->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
 	send_button->connect(SceneStringName(pressed), Callable(this, "_send_chat"));
 	add_child(send_button);
+
+	output = memnew(RichTextLabel);
+	output->set_fit_content(false);
+	output->set_scroll_active(true);
+	output->set_selection_enabled(true);
+	output->set_v_size_flags(SIZE_EXPAND_FILL);
+	output->set_custom_minimum_size(Vector2(0, 90 * EDSCALE));
+	add_child(output);
 }
 
 NIMEditorPanel::~NIMEditorPanel() {
