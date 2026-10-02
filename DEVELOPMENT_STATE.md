@@ -11,7 +11,7 @@
 - Android target: ARM64
 
 ## Current position
-**v0.2 — Robust NVIDIA NIM Streaming / SSE implementation — CI verification pending**
+**v0.2 — Robust NVIDIA NIM Streaming / SSE implementation — Android UI regression fix pending CI**
 
 Status:
 - 1.1 Provider transport: 🟩🟩
@@ -22,7 +22,7 @@ Status:
 - 1.6 Runtime/UI event bridge: 🟩🟥
 - 1.7 Physical smoke test: 🟩🟩 verified on corrected Android build
 - 1.8 First milestone gate: 🟩🟥 partial — NIM chat/context baseline physically verified; current APK regression remains
-- v0.2: 🟩🟥 PARTIAL — stable NIM chat baseline verified; context expansion/streaming regression remain
+- v0.2: 🟩🟥 PARTIAL — stable NIM chat baseline and network/auth error handling verified; compact chat UI regression fixed in `3105b223`, pending CI/physical confirmation
 - Release: 🟥🟥 NOT READY
 
 ## Last verified CI
@@ -59,6 +59,8 @@ Observed on the user's real Android device:
 
 
 ## Physical test gate — v0.2 SSE regression
+
+Current UI regression fix: `3105b22383cac25038bd6d1b7172a5a8dfe99ce0` moves the chat prompt and Send button before the expandable transcript so they remain reachable on compact Android layouts.
 A new physical test is required only after CI produces an APK containing the v0.2 SSE implementation. The physical test must verify both streaming and the existing non-stream fallback.
 
 Required verification:
