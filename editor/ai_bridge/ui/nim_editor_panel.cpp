@@ -303,6 +303,7 @@ void NIMEditorPanel::_clear_chat() {
 	conversation.clear();
 	current_response = String();
 	last_prompt = String();
+	last_code_block = String();
 	retry_available = false;
 	active_is_chat = false;
 	active_is_test_connection = false;
@@ -468,6 +469,7 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 				if (!assistant_message.content.is_empty()) {
 					conversation.push_back(assistant_message);
 				}
+				_rebuild_chat_output();
 			}
 			break;
 		case AIStreamEventType::ERROR:
@@ -490,4 +492,42 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 			break;
 	}
 	active_is_chat = false;
+}String NIMEditorPanel::_escape_bbcode(const String &p_text) const {
+	return p_text.replace("[", "[lb]").replace("]", "[rb]");
 }
+
+String NIMEditorPanel::_markdown_to_bbcode(const String &p_text) {
+	last_code_block = String();
+	PackedStringArray parts = p_text.split("```");
+	String result;
+	for (int i = 0; i < parts.size(); i++) {
+		String part = parts[i];
+		if ((i % 2) == 1) {
+			int newline = part.find("\n");
+			String code = newline >= 0 ? part.substr(newline + 1) : part;
+			last_code_block = code.strip_edges(false, true);
+			result += "[code]" + _escape_bbcode(code) + "[/code]";
+		} else {
+			String normal = _escape_bbcode(part);
+			PackedStringArray bold_parts = normal.split("**");
+			for (int j = 0; j < bold_parts.size(); j++) {
+				if (j > 0) result += (j % 2 == 1) ? "[b]" : "[/b]";
+				result += bold_parts[j];
+			}
+		}
+	}
+	return result;
+}
+
+void NIMEditorPanel::_rebuild_chat_output() {
+	if (!output) return;
+	output->clear();
+	last_code_block = String();
+	for (const AIMessage &message : conversation) {
+		if (message.role == AIMessageRole::USER) output->append_text(vformat("[b]You:[/b] %s\n", _escape_bbcode(message.content)));
+		else if (message.role == AIMessageRole::ASSISTANT) output->append_text(vformat("[b]Nemotron:[/b] %s\n", _markdown_to_bbcode(message.content)));
+	}
+	copy_code_button->set_disabled(last_code_block.is_empty());
+	if (!last_prompt.is_empty() && active_request_id != 0) output->append_text(vformat("[b]You:[/b] %s\n[b]Nemotron:[/b] ", _escape_bbcode(last_prompt)));
+}
+
