@@ -44,11 +44,12 @@ Do not replace the stable non-stream path with SSE until streaming is implemente
 - `reasoning_content` is emitted with `AIStreamEvent.reasoning=true`; final `content` remains separate.
 - Provider work runs on the request thread, not the Android UI thread.
 - Malformed completed SSE JSON now emits `ERROR` immediately instead of waiting for timeout.
+- Android compact-layout regression found: chat input/Send were below the expandable transcript; controls were moved before the transcript and transcript minimum height reduced to keep chat reachable.
 - Missing API key now emits `ERROR` through the callback before `start_chat()` returns false.
 - Normal chat remains explicitly `stream=false` with `enable_thinking=false` and `force_nonempty_content=true`.
 
 ## Current position
-**v0.2 — Robust NVIDIA NIM Streaming / SSE implementation — CI verification pending**
+**v0.2 — Robust NVIDIA NIM Streaming / SSE implementation — Android UI regression fix pending CI**
 
 Status:
 - 1.7 physical Android launch/NIM baseline: 🟩🟩
@@ -57,7 +58,7 @@ Status:
 - 2.2 current scene: 🟩🟥
 - 2.3 selected node: 🟩🟥
 - 2.4 current script: 🟩🟥 implemented
-- v0.2 SSE: 🟩🟥 implementation complete; CI verification pending
+- v0.2 SSE: 🟩🟥 implementation complete; CI verified on `f38894b8`; compact Android chat UI fix `3105b223` pending CI
 - 2.5 debugger/errors: 🟥🟥
 - 2.6 controlled context assembly: 🟥🟥
 - v0.2: 🟩🟥 partial
