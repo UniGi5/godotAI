@@ -227,6 +227,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 
 	String json_body = JSON::stringify(body);
 	String pending_sse;
+	String pending_sse_event;
 	String pending_body;
 
 	Ref<HTTPClient> client = Ref<HTTPClient>(HTTPClient::create());
@@ -364,7 +365,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 						if (reasoning_value.get_type() == Variant::STRING) {
 							String reasoning = reasoning_value;
 							if (!reasoning.is_empty()) {
-								_emit_event(AIStreamEventType::DELTA, reasoning);
+								_emit_event(AIStreamEventType::DELTA, reasoning, String(), true);
 							}
 						}
 						if (content_value.get_type() == Variant::STRING) {
@@ -391,58 +392,67 @@ void AIOpenAICompatibleProvider::_run_request() {
 				pending_sse = pending_sse.substr(newline + 1);
 				line = line.strip_edges();
 
-				// An empty line terminates one SSE event. Multiple data: lines are
-				// joined before JSON parsing, so a JSON payload is never parsed until
-				// its complete event has arrived.
+				// SSE events are terminated by a blank line. Keep data fields
+				// together so JSON is parsed only after the complete event arrives.
 				if (line.is_empty()) {
+					if (pending_sse_event.is_empty()) {
+						continue;
+					}
+					String data = pending_sse_event;
+					pending_sse_event = String();
+
+					if (data == "[DONE]") {
+						_emit_event(AIStreamEventType::COMPLETED, String(), "stop");
+						client->close();
+						return;
+					}
+
+					Variant parsed = JSON::parse_string(data);
+					if (parsed.get_type() != Variant::DICTIONARY) {
+						continue;
+					}
+
+					Dictionary payload = parsed;
+					Array choices = payload.get("choices", Array());
+					if (choices.is_empty()) {
+						continue;
+					}
+
+					Dictionary choice = choices[0];
+					Dictionary delta = choice.get("delta", Dictionary());
+					Variant reasoning_value = delta.get("reasoning_content", Variant());
+					Variant content_value = delta.get("content", Variant());
+					String finish_reason = choice.get("finish_reason", String());
+
+					if (reasoning_value.get_type() == Variant::STRING) {
+						String reasoning = reasoning_value;
+						if (!reasoning.is_empty()) {
+							_emit_event(AIStreamEventType::DELTA, reasoning, String(), true);
+						}
+					}
+					if (content_value.get_type() == Variant::STRING) {
+						String content = content_value;
+						if (!content.is_empty()) {
+							_emit_event(AIStreamEventType::DELTA, content, String(), false);
+						}
+					}
+
+					if (!finish_reason.is_empty()) {
+						_emit_event(AIStreamEventType::COMPLETED, String(), finish_reason);
+						client->close();
+						return;
+					}
 					continue;
 				}
+
 				if (!line.begins_with("data:")) {
 					continue;
 				}
-
-				String data = line.substr(5).strip_edges();
-				if (data == "[DONE]") {
-					_emit_event(AIStreamEventType::COMPLETED, String(), "stop");
-					client->close();
-					return;
-				}
-
-				Variant parsed = JSON::parse_string(data);
-				if (parsed.get_type() != Variant::DICTIONARY) {
-					continue;
-				}
-
-				Dictionary payload = parsed;
-				Array choices = payload.get("choices", Array());
-				if (choices.is_empty()) {
-					continue;
-				}
-
-				Dictionary choice = choices[0];
-				Dictionary delta = choice.get("delta", Dictionary());
-				Variant reasoning_value = delta.get("reasoning_content", Variant());
-				Variant content_value = delta.get("content", Variant());
-				String finish_reason = choice.get("finish_reason", String());
-
-				if (reasoning_value.get_type() == Variant::STRING) {
-					String reasoning = reasoning_value;
-					if (!reasoning.is_empty()) {
-						_emit_event(AIStreamEventType::DELTA, reasoning, String(), true);
-					}
-				}
-				if (content_value.get_type() == Variant::STRING) {
-					String content = content_value;
-					if (!content.is_empty()) {
-						_emit_event(AIStreamEventType::DELTA, content, String(), false);
-					}
-				}
-
-				if (!finish_reason.is_empty()) {
-					_emit_event(AIStreamEventType::COMPLETED, String(), finish_reason);
-					client->close();
-					return;
-				}
+			String data_line = line.substr(5).strip_edges();
+			if (!pending_sse_event.is_empty()) {
+				pending_sse_event += "\\n";
+			}
+			pending_sse_event += data_line;
 			}
 
 		} else if (status == HTTPClient::STATUS_DISCONNECTED) {
