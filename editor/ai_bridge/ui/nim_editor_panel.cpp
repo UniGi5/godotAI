@@ -43,11 +43,14 @@
 #include "scene/gui/line_edit.h"
 #include "scene/gui/rich_text_label.h"
 #include "scene/gui/scroll_container.h"
+#include "servers/display_server.h"
 
 void NIMEditorPanel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_test_connection"), &NIMEditorPanel::_test_connection);
 	ClassDB::bind_method(D_METHOD("_close_panel"), &NIMEditorPanel::_close_panel);
 	ClassDB::bind_method(D_METHOD("_send_chat"), &NIMEditorPanel::_send_chat);
+	ClassDB::bind_method(D_METHOD("_copy_chat"), &NIMEditorPanel::_copy_chat);
+	ClassDB::bind_method(D_METHOD("_clear_chat"), &NIMEditorPanel::_clear_chat);
 	ClassDB::bind_method(
 			D_METHOD("_handle_event", "request_id", "type", "delta", "finish_reason", "error_code", "error_message"),
 			&NIMEditorPanel::_handle_event);
@@ -128,6 +131,22 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	test_button->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
 	test_button->connect(SceneStringName(pressed), Callable(this, "_test_connection"));
 	settings->add_child(test_button);
+
+	HBoxContainer *chat_toolbar = memnew(HBoxContainer);
+	chat_toolbar->set_h_size_flags(SIZE_EXPAND_FILL);
+	add_child(chat_toolbar);
+
+	copy_button = memnew(Button);
+	copy_button->set_text(TTRC("Copy chat"));
+	copy_button->set_custom_minimum_size(Vector2(0, 38 * EDSCALE));
+	copy_button->connect(SceneStringName(pressed), Callable(this, "_copy_chat"));
+	chat_toolbar->add_child(copy_button);
+
+	clear_button = memnew(Button);
+	clear_button->set_text(TTRC("Clear chat"));
+	clear_button->set_custom_minimum_size(Vector2(0, 38 * EDSCALE));
+	clear_button->connect(SceneStringName(pressed), Callable(this, "_clear_chat"));
+	chat_toolbar->add_child(clear_button);
 
 	output = memnew(RichTextLabel);
 	output->set_fit_content(false);
@@ -242,6 +261,31 @@ void NIMEditorPanel::_test_connection() {
 		test_button->set_text(TTRC("Test Connection"));
 		status_label->set_text(TTRC("Request could not be started"));
 	}
+}
+
+void NIMEditorPanel::_copy_chat() {
+	if (!output) {
+		return;
+	}
+	const String text = output->get_text();
+	if (text.is_empty()) {
+		status_label->set_text(TTRC("Chat is empty"));
+		return;
+	}
+	DisplayServer::get_singleton()->clipboard_set(text);
+	status_label->set_text(TTRC("Chat copied"));
+}
+
+void NIMEditorPanel::_clear_chat() {
+	if (active_request_id != 0) {
+		status_label->set_text(TTRC("Wait for the active request to finish"));
+		return;
+	}
+	conversation.clear();
+	current_response = String();
+	active_is_chat = false;
+	output->clear();
+	status_label->set_text(TTRC("Idle"));
 }
 
 void NIMEditorPanel::_send_chat() {
