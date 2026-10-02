@@ -451,7 +451,7 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 
 	switch ((AIStreamEventType)p_type) {
 		case AIStreamEventType::COMPLETED:
-			if (active_is_chat && current_response.is_empty()) {
+			if (was_chat && current_response.is_empty()) {
 				status_label->set_text(TTRC("Error: empty_response"));
 				output->append_text(TTRC("\n\nNVIDIA NIM completed without a response. Please retry."));
 				if (was_chat) {
@@ -461,7 +461,7 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 				break;
 			}
 			status_label->set_text(TTRC("Connected"));
-			if (active_is_chat) {
+			if (was_chat) {
 				AIMessage assistant_message;
 				assistant_message.role = AIMessageRole::ASSISTANT;
 				assistant_message.content = current_response;
