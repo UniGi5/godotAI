@@ -401,6 +401,9 @@ void AIOpenAICompatibleProvider::_run_request() {
 					String data = pending_sse_event;
 					pending_sse_event = String();
 
+					if (data.is_empty()) {
+						continue;
+					}
 					if (data == "[DONE]") {
 						_emit_event(AIStreamEventType::COMPLETED, String(), "stop");
 						client->close();
@@ -409,7 +412,9 @@ void AIOpenAICompatibleProvider::_run_request() {
 
 					Variant parsed = JSON::parse_string(data);
 					if (parsed.get_type() != Variant::DICTIONARY) {
-						continue;
+						_emit_error("invalid_sse_json", "NVIDIA NIM returned an invalid SSE JSON event.");
+						client->close();
+						return;
 					}
 
 					Dictionary payload = parsed;
