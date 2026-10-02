@@ -216,6 +216,12 @@ void NIMEditorPanel::_send_chat() {
 	request.model = "nvidia/nemotron-3-ultra-550b-a55b";
 	request.temperature = 0.7;
 	request.max_tokens = 512;
+	// Keep the physically verified non-stream path as the stable chat baseline.
+	request.extra_parameters["stream"] = false;
+	Dictionary chat_template_kwargs;
+	chat_template_kwargs["enable_thinking"] = false;
+	chat_template_kwargs["force_nonempty_content"] = true;
+	request.extra_parameters["chat_template_kwargs"] = chat_template_kwargs;
 	AIContext project_context = runtime->get_context_provider().build_context("editor_context");
 	request.messages = project_context.messages;
 	for (const AIMessage &message : conversation) {
