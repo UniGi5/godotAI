@@ -28,7 +28,7 @@ class AIOpenAICompatibleProvider : public IAIProvider {
 	void _run_request();
 
 	void _emit_error(const String &p_code, const String &p_message);
-	void _emit_event(AIStreamEventType p_type, const String &p_delta = String(), const String &p_finish_reason = String());
+	void _emit_event(AIStreamEventType p_type, const String &p_delta = String(), const String &p_finish_reason = String(), bool p_reasoning = false);
 
 	String _get_base_url() const;
 	String _get_model(const AIRequest &p_request) const;
