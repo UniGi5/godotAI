@@ -194,6 +194,9 @@ void NIMEditorPanel::_test_connection() {
 	chat_template_kwargs["force_nonempty_content"] = true;
 	request.extra_parameters["chat_template_kwargs"] = chat_template_kwargs;
 
+	AIContext project_context = runtime->get_context_provider().build_context("editor_context");
+	request.messages = project_context.messages;
+
 	AIMessage message;
 	message.role = AIMessageRole::USER;
 	message.content = "Hello. Reply with exactly: NIM_OK";
@@ -203,6 +206,7 @@ void NIMEditorPanel::_test_connection() {
 	output->append_text(TTRC("Waiting for NVIDIA NIM..."));
 	status_label->set_text(TTRC("Connecting..."));
 	test_button->set_disabled(true);
+	test_button->set_text(TTRC("Testing..."));
 	send_button->set_disabled(true);
 
 	// The connection check is a real, visible validation transaction.
