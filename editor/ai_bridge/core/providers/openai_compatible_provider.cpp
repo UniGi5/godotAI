@@ -140,12 +140,13 @@ void AIOpenAICompatibleProvider::_emit_error(const String &p_code, const String 
 	}
 }
 
-void AIOpenAICompatibleProvider::_emit_event(AIStreamEventType p_type, const String &p_delta, const String &p_finish_reason) {
+void AIOpenAICompatibleProvider::_emit_event(AIStreamEventType p_type, const String &p_delta, const String &p_finish_reason, bool p_reasoning) {
 	AIStreamEvent event;
 	event.type = p_type;
 	event.request_id = active_request.request_id;
 	event.delta = p_delta;
 	event.finish_reason = p_finish_reason;
+	event.reasoning = p_reasoning;
 	if (active_callback) {
 		active_callback(event);
 	}
@@ -161,11 +162,11 @@ bool AIOpenAICompatibleProvider::start_chat(const AIRequest &p_request, StreamCa
 	}
 
 	active_request = p_request;
+	active_callback = p_callback;
 	if (_get_api_key().is_empty()) {
 		_emit_error("missing_api_key", "Provider API key is not configured.");
 		return false;
 	}
-	active_callback = p_callback;
 	cancel_requested.store(false);
 	request_thread.start(_thread_entry, this);
 	return true;
@@ -320,7 +321,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 
 		const uint64_t now_msec = OS::get_singleton()->get_ticks_msec();
 		if (now_msec - response_started_msec > response_timeout_msec) {
-			_emit_error("response_timeout", "NVIDIA NIM did not complete a response within 60 seconds.");
+			_emit_error("response_timeout", "NVIDIA NIM did not complete a response within 120 seconds.");
 			client->close();
 			return;
 		}
@@ -385,8 +386,17 @@ void AIOpenAICompatibleProvider::_run_request() {
 				if (newline < 0) {
 					break;
 				}
-				String line = pending_sse.substr(0, newline).strip_edges();
+
+				String line = pending_sse.substr(0, newline);
 				pending_sse = pending_sse.substr(newline + 1);
+				line = line.strip_edges();
+
+				// An empty line terminates one SSE event. Multiple data: lines are
+				// joined before JSON parsing, so a JSON payload is never parsed until
+				// its complete event has arrived.
+				if (line.is_empty()) {
+					continue;
+				}
 				if (!line.begins_with("data:")) {
 					continue;
 				}
@@ -402,24 +412,39 @@ void AIOpenAICompatibleProvider::_run_request() {
 				if (parsed.get_type() != Variant::DICTIONARY) {
 					continue;
 				}
+
 				Dictionary payload = parsed;
 				Array choices = payload.get("choices", Array());
 				if (choices.is_empty()) {
 					continue;
 				}
+
 				Dictionary choice = choices[0];
 				Dictionary delta = choice.get("delta", Dictionary());
-				String content = delta.get("content", String());
+				Variant reasoning_value = delta.get("reasoning_content", Variant());
+				Variant content_value = delta.get("content", Variant());
 				String finish_reason = choice.get("finish_reason", String());
-				if (!content.is_empty()) {
-					_emit_event(AIStreamEventType::DELTA, content);
+
+				if (reasoning_value.get_type() == Variant::STRING) {
+					String reasoning = reasoning_value;
+					if (!reasoning.is_empty()) {
+						_emit_event(AIStreamEventType::DELTA, reasoning, String(), true);
+					}
 				}
+				if (content_value.get_type() == Variant::STRING) {
+					String content = content_value;
+					if (!content.is_empty()) {
+						_emit_event(AIStreamEventType::DELTA, content, String(), false);
+					}
+				}
+
 				if (!finish_reason.is_empty()) {
 					_emit_event(AIStreamEventType::COMPLETED, String(), finish_reason);
 					client->close();
 					return;
 				}
 			}
+
 		} else if (status == HTTPClient::STATUS_DISCONNECTED) {
 			_emit_error("connection_lost", "NVIDIA NIM connection closed before a complete response was received.");
 			client->close();
@@ -427,7 +452,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 		}
 
 		if (now_msec - last_data_msec > idle_timeout_msec) {
-			_emit_error("response_idle_timeout", "NVIDIA NIM stopped sending data for 30 seconds.");
+			_emit_error("response_idle_timeout", "NVIDIA NIM stopped sending data for 45 seconds.");
 			client->close();
 			return;
 		}
