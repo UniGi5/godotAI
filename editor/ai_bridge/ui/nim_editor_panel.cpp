@@ -43,7 +43,7 @@
 #include "scene/gui/line_edit.h"
 #include "scene/gui/rich_text_label.h"
 #include "scene/gui/scroll_container.h"
-#include "servers/display_server.h"
+#include "servers/display/display_server.h"
 
 void NIMEditorPanel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_test_connection"), &NIMEditorPanel::_test_connection);
@@ -51,6 +51,8 @@ void NIMEditorPanel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_send_chat"), &NIMEditorPanel::_send_chat);
 	ClassDB::bind_method(D_METHOD("_copy_chat"), &NIMEditorPanel::_copy_chat);
 	ClassDB::bind_method(D_METHOD("_clear_chat"), &NIMEditorPanel::_clear_chat);
+	ClassDB::bind_method(D_METHOD("_retry_chat"), &NIMEditorPanel::_retry_chat);
+	ClassDB::bind_method(D_METHOD("_cancel_chat"), &NIMEditorPanel::_cancel_chat);
 	ClassDB::bind_method(
 			D_METHOD("_handle_event", "request_id", "type", "delta", "finish_reason", "error_code", "error_message"),
 			&NIMEditorPanel::_handle_event);
@@ -148,6 +150,20 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	clear_button->connect(SceneStringName(pressed), Callable(this, "_clear_chat"));
 	chat_toolbar->add_child(clear_button);
 
+	retry_button = memnew(Button);
+	retry_button->set_text(TTRC("Retry"));
+	retry_button->set_custom_minimum_size(Vector2(0, 38 * EDSCALE));
+	retry_button->set_disabled(true);
+	retry_button->connect(SceneStringName(pressed), Callable(this, "_retry_chat"));
+	chat_toolbar->add_child(retry_button);
+
+	stop_button = memnew(Button);
+	stop_button->set_text(TTRC("Stop"));
+	stop_button->set_custom_minimum_size(Vector2(0, 38 * EDSCALE));
+	stop_button->set_disabled(true);
+	stop_button->connect(SceneStringName(pressed), Callable(this, "_cancel_chat"));
+	chat_toolbar->add_child(stop_button);
+
 	output = memnew(RichTextLabel);
 	output->set_fit_content(false);
 	output->set_scroll_active(true);
@@ -227,6 +243,10 @@ void NIMEditorPanel::_test_connection() {
 	test_button->set_disabled(true);
 	test_button->set_text(TTRC("Testing..."));
 	send_button->set_disabled(true);
+	stop_button->set_disabled(true);
+	retry_available = false;
+	active_is_test_connection = true;
+	retry_button->set_disabled(true);
 
 	// The connection check is a real, visible validation transaction.
 	// Keep the test message in the same chat lifecycle as normal requests.
@@ -238,6 +258,7 @@ void NIMEditorPanel::_test_connection() {
 	output->append_text(vformat("\n\nYou: %s\nNemotron: ", test_message.content));
 
 	active_is_chat = true;
+	active_is_test_connection = true;
 	const ObjectID panel_id = get_instance_id();
 	active_request_id = runtime->get_orchestrator().submit(request, [panel_id](const AIStreamEvent &p_event) {
 		Object *object = ObjectDB::get_instance(panel_id);
@@ -256,8 +277,10 @@ void NIMEditorPanel::_test_connection() {
 	});
 
 	if (active_request_id == 0) {
+		active_is_test_connection = false;
 		test_button->set_disabled(false);
 		send_button->set_disabled(false);
+		stop_button->set_disabled(true);
 		test_button->set_text(TTRC("Test Connection"));
 		status_label->set_text(TTRC("Request could not be started"));
 	}
@@ -283,37 +306,55 @@ void NIMEditorPanel::_clear_chat() {
 	}
 	conversation.clear();
 	current_response = String();
+	last_prompt = String();
+	retry_available = false;
 	active_is_chat = false;
+	active_is_test_connection = false;
+	retry_button->set_disabled(true);
+	stop_button->set_disabled(true);
 	output->clear();
 	status_label->set_text(TTRC("Idle"));
 }
 
-void NIMEditorPanel::_send_chat() {
-	if (!runtime || active_request_id != 0) {
+void NIMEditorPanel::_cancel_chat() {
+	if (!runtime || active_request_id == 0) {
 		return;
 	}
+	status_label->set_text(TTRC("Stopping..."));
+	stop_button->set_disabled(true);
+	runtime->get_orchestrator().cancel(active_request_id);
+}
 
-	String prompt = prompt_edit->get_text().strip_edges();
-	if (prompt.is_empty()) {
-		return;
+bool NIMEditorPanel::_start_chat_request(const String &p_prompt, bool p_append_user_message) {
+	if (!runtime || active_request_id != 0 || p_prompt.is_empty()) {
+		return false;
 	}
 
 	String api_key = api_key_edit->get_text().strip_edges();
 	if (api_key.is_empty()) {
 		status_label->set_text(TTRC("API key required"));
-		return;
+		return false;
 	}
 
 	runtime->get_secret_storage().set_secret("ai.providers.nvidia_nemotron.api_key", api_key);
 
 	current_response = String();
-	AIMessage user_message;
-	user_message.role = AIMessageRole::USER;
-	user_message.content = prompt;
-	conversation.push_back(user_message);
+	last_prompt = p_prompt;
+	retry_available = false;
+	retry_button->set_disabled(true);
+	active_is_test_connection = false;
 
-	output->append_text(vformat("\n\nYou: %s\nNemotron: ", prompt));
-	prompt_edit->clear();
+	if (p_append_user_message) {
+		AIMessage user_message;
+		user_message.role = AIMessageRole::USER;
+		user_message.content = p_prompt;
+		conversation.push_back(user_message);
+	}
+
+	output->append_text(vformat("\n\nYou: %s\nNemotron: ", p_prompt));
+	if (p_append_user_message) {
+		prompt_edit->clear();
+	}
 	status_label->set_text(TTRC("Waiting for NVIDIA NIM..."));
 	test_button->set_disabled(true);
 	send_button->set_disabled(true);
@@ -352,11 +393,39 @@ void NIMEditorPanel::_send_chat() {
 	});
 
 	if (active_request_id == 0) {
-		conversation.remove_at(conversation.size() - 1);
+		if (p_append_user_message && !conversation.is_empty()) {
+			conversation.remove_at(conversation.size() - 1);
+		}
+		active_is_chat = false;
 		test_button->set_disabled(false);
 		send_button->set_disabled(false);
+		stop_button->set_disabled(true);
 		status_label->set_text(TTRC("Request could not be started"));
+		return false;
 	}
+
+	stop_button->set_disabled(false);
+	return true;
+}
+
+void NIMEditorPanel::_retry_chat() {
+	if (!retry_available || last_prompt.is_empty() || active_request_id != 0) {
+		return;
+	}
+	_start_chat_request(last_prompt, false);
+}
+
+void NIMEditorPanel::_send_chat() {
+	if (!runtime || active_request_id != 0) {
+		return;
+	}
+
+	String prompt = prompt_edit->get_text().strip_edges();
+	if (prompt.is_empty()) {
+		return;
+	}
+
+	_start_chat_request(prompt, true);
 }
 
 void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const String &p_delta, const String &p_finish_reason, const String &p_error_code, const String &p_error_message) {
@@ -375,15 +444,24 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 		return;
 	}
 
+	const bool was_chat = active_is_chat && !active_is_test_connection;
 	active_request_id = 0;
+	active_is_test_connection = false;
 	test_button->set_disabled(false);
 	send_button->set_disabled(false);
+	stop_button->set_disabled(true);
+	retry_available = false;
+	retry_button->set_disabled(true);
 
 	switch ((AIStreamEventType)p_type) {
 		case AIStreamEventType::COMPLETED:
 			if (active_is_chat && current_response.is_empty()) {
 				status_label->set_text(TTRC("Error: empty_response"));
 				output->append_text(TTRC("\n\nNVIDIA NIM completed without a response. Please retry."));
+				if (was_chat) {
+					retry_available = true;
+					retry_button->set_disabled(false);
+				}
 				break;
 			}
 			status_label->set_text(TTRC("Connected"));
@@ -399,10 +477,18 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 		case AIStreamEventType::ERROR:
 			status_label->set_text(vformat(TTRC("Error: %s"), p_error_code));
 			output->append_text(vformat(TTRC("\n\nNVIDIA NIM request failed.\n%s"), p_error_message.is_empty() ? TTRC("No additional error details.") : p_error_message));
+			if (was_chat) {
+				retry_available = true;
+				retry_button->set_disabled(false);
+			}
 			break;
 		case AIStreamEventType::CANCELLED:
 			status_label->set_text(TTRC("Cancelled"));
 			output->append_text(TTRC("\n\nRequest cancelled."));
+			if (was_chat) {
+				retry_available = true;
+				retry_button->set_disabled(false);
+			}
 			break;
 		default:
 			break;
