@@ -11,7 +11,7 @@
 - Android target: ARM64
 
 ## Current position
-**v0.2 — Robust NVIDIA NIM Streaming / SSE implementation — Android UI regression fix pending CI**
+**v0.2 — NIM mobile chat reliability — physical regression fix pending CI/test**
 
 Status:
 - 1.1 Provider transport: 🟩🟩
@@ -22,8 +22,14 @@ Status:
 - 1.6 Runtime/UI event bridge: 🟩🟥
 - 1.7 Physical smoke test: 🟩🟩 verified on corrected Android build
 - 1.8 First milestone gate: 🟩🟥 partial — NIM chat/context baseline physically verified; current APK regression remains
-- v0.2: 🟩🟥 PARTIAL — stable NIM chat baseline and network/auth error handling verified; compact chat UI regression fixed in `3105b223`, pending CI/physical confirmation
+- v0.2: 🟩🟥 PARTIAL — stable NIM baseline verified; mobile chat flow reliability fixes implemented in `a0faaec` and `143078c`, pending CI + physical confirmation
 - Release: 🟥🟥 NOT READY
+
+## Current reliability fixes
+- `a0faaec397de245bee13830e509ad483b15560f9` keeps user messages in chat history after ERROR/CANCELLED instead of deleting them.
+- Empty successful provider completion is surfaced as `empty_response` instead of falsely showing `Connected`.
+- Send button changes to `Sending...` during an active request and returns to `Send` on completion/error/cancel.
+- `143078c87327195ee037df1c651ffd8097c5b119` fails fast when HTTP connection polling itself returns an error.
 
 ## Last verified CI
 - Latest successful documented CI: #64 🟩 success
@@ -57,6 +63,24 @@ Observed on the user's real Android device:
 - Nemotron receives editor/project context and identified the project name.
 - The verified baseline is the deterministic non-stream request path with thinking disabled.
 
+
+## Physical test gate — current mobile chat reliability
+
+A new Android APK is required for physical verification because the current changes alter visible chat behavior and HTTP error handling.
+
+Required verification:
+1. Install the fresh ARM64 APK.
+2. Open NVIDIA NIM panel and confirm saved API key is present.
+3. Press Test Connection; verify it only saves the key and does not create a duplicate NIM request.
+4. Enter `Привет` and press Send.
+5. Verify the user message remains visible immediately.
+6. Verify `Connecting...` and `Sending...` are visible while waiting.
+7. Verify Nemotron response appears and status becomes `Connected` only when non-empty response content arrives.
+8. Repeat with an invalid key and verify explicit HTTP error without deleting the user message.
+9. Disable network and verify explicit network/timeout error without a stuck `Connected` state.
+10. Confirm chat can be retried after an error.
+
+Do not mark v0.2 release-ready until this physical gate passes.
 
 ## Physical test gate — v0.2 SSE regression
 
