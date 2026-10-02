@@ -166,11 +166,12 @@ void AIOpenAICompatibleProvider::_emit_error(const String &p_code, const String 
 	}
 }
 
-void AIOpenAICompatibleProvider::_emit_event(AIStreamEventType p_type, const String &p_delta, const String &p_finish_reason) {
+void AIOpenAICompatibleProvider::_emit_event(AIStreamEventType p_type, const String &p_delta, const String &p_finish_reason, bool p_reasoning) {
 	AIStreamEvent event;
 	event.type = p_type;
 	event.request_id = active_request.request_id;
 	event.delta = p_delta;
+	event.reasoning = p_reasoning;
 	event.finish_reason = p_finish_reason;
 	if (active_callback) {
 		active_callback(event);
@@ -389,7 +390,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 						if (reasoning_value.get_type() == Variant::STRING) {
 							String reasoning = reasoning_value;
 							if (!reasoning.is_empty()) {
-								_emit_event(AIStreamEventType::DELTA, reasoning);
+								_emit_event(AIStreamEventType::DELTA, reasoning, String(), true);
 							}
 						}
 						if (content_value.get_type() == Variant::STRING) {
@@ -435,7 +436,14 @@ void AIOpenAICompatibleProvider::_run_request() {
 				}
 				Dictionary choice = choices[0];
 				Dictionary delta = choice.get("delta", Dictionary());
+				String reasoning = delta.get("reasoning_content", String());
+				if (reasoning.is_empty()) {
+					reasoning = delta.get("reasoning", String());
+				}
 				String content = delta.get("content", String());
+				if (!reasoning.is_empty()) {
+					_emit_event(AIStreamEventType::DELTA, reasoning, String(), true);
+				}
 				String finish_reason = choice.get("finish_reason", String());
 				if (!content.is_empty()) {
 					_emit_event(AIStreamEventType::DELTA, content);
