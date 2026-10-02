@@ -70,6 +70,7 @@ struct AIStreamEvent {
 	uint64_t request_id = 0;
 	String delta;
 	String finish_reason;
+	bool reasoning = false;
 	String error_code;
 	String error_message;
 };
