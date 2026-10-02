@@ -11,7 +11,7 @@
 - Android target: ARM64
 
 ## Current position
-**1.7 — First physical smoke test / corrected APK ready**
+**2.3 — Selected node context implementation ready; physical verification pending**
 
 Status:
 - 1.1 Provider transport: 🟩🟩
@@ -20,13 +20,14 @@ Status:
 - 1.4 Secret storage: 🟩🟥
 - 1.5 Chat: 🟩🟥
 - 1.6 Runtime/UI event bridge: 🟩🟥
-- 1.7 Physical smoke test: 🟥🟥 BLOCKED — previous APK failure diagnosed; corrected APK ready for physical retest
-- 1.8 First milestone gate: 🟥🟥
-- v0.2: 🟥🟥 NOT READY
+- 1.7 Physical smoke test: 🟩🟩 verified on corrected Android build
+- 1.8 First milestone gate: 🟩🟥 partial — NIM chat/context baseline physically verified; streaming/error regression remains
+- v0.2: 🟩🟥 PARTIAL — stable NIM chat baseline verified; context expansion/streaming regression remain
 - Release: 🟥🟥 NOT READY
 
 ## Last verified CI
-- Latest successful CI: #64 🟩 success
+- Latest successful documented CI: #64 🟩 success
+- Latest code fix: `cd8b31cc0e6191967282e4dd0e790a41dbedee19` — chat explicitly uses the verified non-stream baseline
 - Diagnostic code commit: 025846eaa556f187035f2f0f56df6171464c0ffc
 - Commit: 11e68e28cfc80d7d705e0cccb0a29b96cb8d9cb6
 - Build: Android ARM64 release APK
@@ -45,17 +46,20 @@ Status:
 - EditorNode destroys NIMEditorPanel before AIBridgeRuntime.
 - Cross-window handoff state is stored in this file.
 
-## Physical test result — 1.7
+## Physical test result — verified NIM chat baseline
 
 Observed on the user's real Android device:
-- APK installed successfully.
-- APK size was approximately 22 MB.
-- Tapping the launcher icon caused the application to immediately close/minimize.
-- No visible crash dialog or on-screen error appeared.
-- This is classified as **silent/clean early exit — diagnostic required**; it is not treated as a proven crash.
+- Android Editor starts normally.
+- NVIDIA API key persists across app/project restart.
+- A newly created project can use the stored NVIDIA API key.
+- NVIDIA NIM connection test succeeds.
+- Chat request completes and returns an immediate Nemotron response.
+- Nemotron receives editor/project context and identified the project name.
+- The verified baseline is the deterministic non-stream request path with thinking disabled.
 
-## Physical test gate — 1.7
-Use the new diagnostic APK produced from commit `025846eaa556f187035f2f0f56df6171464c0ffc` or its later documentation-only descendant. Do not reuse the old #58 APK for diagnosis.
+
+## Physical test gate — next regression test
+A new physical test is required only after CI produces the APK containing the chat-baseline fix `cd8b31cc0e6191967282e4dd0e790a41dbedee19`.
 
 Required verification:
 1. Install APK on a real ARM64 Android device.
@@ -74,14 +78,11 @@ Required verification:
 Record the actual result for each item before marking 1.7 complete.
 
 ## v0.2 gate
-Only after:
-BUILD + INSTALL + LAUNCH + NIM REQUEST + RESPONSE on physical Android device.
-
-Additional first-milestone evidence should include:
-- streaming works;
-- invalid-key handling works;
-- network-error handling works;
-- no startup/request crash.
+The launch/NIM baseline is already physically verified. Before v0.2 packaging:
+- selected-node context must be verified on physical Android;
+- streaming must be implemented/tested as a separate path;
+- invalid-key and network-error behavior must be regression-tested on the current APK;
+- context assembly must be documented and stable.
 
 ## Handoff rule for a new chat/window
 Read this file and DEVELOPMENT_ROADMAP.md first.
