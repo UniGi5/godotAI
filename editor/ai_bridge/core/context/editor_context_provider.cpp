@@ -51,6 +51,20 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 			scene_message.role = AIMessageRole::SYSTEM;
 			scene_message.content = scene_context;
 			context.messages.push_back(scene_message);
+
+			Ref<Script> scene_root_script = scene_root->get_script();
+			if (scene_root_script.is_valid()) {
+				String script_context = "Current scene root script:";
+				script_context += vformat("\\nScript path: %s", scene_root_script->get_path());
+				const String script_class = scene_root_script->get_class();
+				if (!script_class.is_empty()) {
+					script_context += vformat("\\nScript resource class: %s", script_class);
+				}
+				AIMessage script_message;
+				script_message.role = AIMessageRole::SYSTEM;
+				script_message.content = script_context;
+				context.messages.push_back(script_message);
+			}
 		}
 
 		EditorSelection *editor_selection = EditorNode::get_singleton()->get_editor_selection();
