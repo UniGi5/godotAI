@@ -14,6 +14,8 @@
 #include "scene/gui/button.h"
 #include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
+#include "scene/gui/box_container.h"
+#include "scene/gui/scroll_container.h"
 #include "scene/gui/rich_text_label.h"
 
 void NIMEditorPanel::_bind_methods() {
@@ -26,105 +28,105 @@ void NIMEditorPanel::_bind_methods() {
 }
 
 NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
-\truntime = p_runtime;
-\tset_name("NIMEditorPanel");
-\tset_v_size_flags(SIZE_EXPAND_FILL);
-\tset_h_size_flags(SIZE_EXPAND_FILL);
+	runtime = p_runtime;
+	set_name("NIMEditorPanel");
+	set_v_size_flags(SIZE_EXPAND_FILL);
+	set_h_size_flags(SIZE_EXPAND_FILL);
 
-\tclose_button = memnew(Button);
-\tclose_button->set_text(TTRC("Close NIM Panel"));
-\tclose_button->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
-\tclose_button->connect(SceneStringName(pressed), Callable(this, "_close_panel"));
-\tadd_child(close_button);
+	close_button = memnew(Button);
+	close_button->set_text(TTRC("Close NIM Panel"));
+	close_button->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
+	close_button->connect(SceneStringName(pressed), Callable(this, "_close_panel"));
+	add_child(close_button);
 
-\tLabel *title = memnew(Label);
-\ttitle->set_text(TTRC("NVIDIA NIM"));
-\ttitle->add_theme_font_size_override("font_size", 18 * EDSCALE);
-\tadd_child(title);
+	Label *title = memnew(Label);
+	title->set_text(TTRC("NVIDIA NIM"));
+	title->add_theme_font_size_override("font_size", 18 * EDSCALE);
+	add_child(title);
 
-\tLabel *project = memnew(Label);
-\tAIContext project_context = runtime ? runtime->get_context_provider().build_context("project_identity") : AIContext();
-\tString project_name;
-\tif (!project_context.messages.is_empty()) {
-\t\tconst String identity = project_context.messages[0].content;
-\t\tconst int name_marker = identity.find("\\nProject name: ");
-\t\tif (name_marker >= 0) {
-\t\t\tproject_name = identity.substr(name_marker + 15).get_slice("\\n", 0);
-\t\t}
-\t}
-\tproject->set_text(project_name.is_empty() ? TTRC("Project context unavailable") : vformat(TTRC("Project: %s"), project_name));
-\tproject->set_modulate(Color(1, 1, 1, 0.7));
-\tadd_child(project);
+	Label *project = memnew(Label);
+	AIContext project_context = runtime ? runtime->get_context_provider().build_context("project_identity") : AIContext();
+	String project_name;
+	if (!project_context.messages.is_empty()) {
+		const String identity = project_context.messages[0].content;
+		const int name_marker = identity.find("\nProject name: ");
+		if (name_marker >= 0) {
+			project_name = identity.substr(name_marker + 15).get_slice("\n", 0);
+		}
+	}
+	project->set_text(project_name.is_empty() ? TTRC("Project context unavailable") : vformat(TTRC("Project: %s"), project_name));
+	project->set_modulate(Color(1, 1, 1, 0.7));
+	add_child(project);
 
-\tLabel *model = memnew(Label);
-\tmodel->set_text(TTRC("Nemotron 3 Ultra 550B"));
-\tmodel->set_modulate(Color(1, 1, 1, 0.7));
-\tadd_child(model);
+	Label *model = memnew(Label);
+	model->set_text(TTRC("Nemotron 3 Ultra 550B"));
+	model->set_modulate(Color(1, 1, 1, 0.7));
+	add_child(model);
 
-\tstatus_label = memnew(Label);
-\tstatus_label->set_text(TTRC("Idle"));
-\tadd_child(status_label);
+	status_label = memnew(Label);
+	status_label->set_text(TTRC("Idle"));
+	add_child(status_label);
 
-\t// Keep connection settings in their own bounded scroll region. On small
-\t// Android viewports this prevents the chat controls from being pushed
-\t// below the visible bottom-panel area.
-\tScrollContainer *settings_scroll = memnew(ScrollContainer);
-\tsettings_scroll->set_custom_minimum_size(Vector2(0, 88 * EDSCALE));
-\tsettings_scroll->set_h_size_flags(SIZE_EXPAND_FILL);
-\tsettings_scroll->set_horizontal_scroll_mode(ScrollContainer::SCROLL_MODE_DISABLED);
-\tsettings_scroll->set_vertical_scroll_mode(ScrollContainer::SCROLL_MODE_AUTO);
-\tadd_child(settings_scroll);
+	// Keep connection settings in their own bounded scroll region. On small
+	// Android viewports this prevents the chat controls from being pushed
+	// below the visible bottom-panel area.
+	ScrollContainer *settings_scroll = memnew(ScrollContainer);
+	settings_scroll->set_custom_minimum_size(Vector2(0, 88 * EDSCALE));
+	settings_scroll->set_h_size_flags(SIZE_EXPAND_FILL);
+	settings_scroll->set_horizontal_scroll_mode(ScrollContainer::SCROLL_MODE_DISABLED);
+	settings_scroll->set_vertical_scroll_mode(ScrollContainer::SCROLL_MODE_AUTO);
+	add_child(settings_scroll);
 
-\tVBoxContainer *settings = memnew(VBoxContainer);
-\tsettings->set_h_size_flags(SIZE_EXPAND_FILL);
-\tsettings_scroll->add_child(settings);
+	VBoxContainer *settings = memnew(VBoxContainer);
+	settings->set_h_size_flags(SIZE_EXPAND_FILL);
+	settings_scroll->add_child(settings);
 
-\tLabel *key_label = memnew(Label);
-\tkey_label->set_text(TTRC("NVIDIA API key"));
-\tsettings->add_child(key_label);
+	Label *key_label = memnew(Label);
+	key_label->set_text(TTRC("NVIDIA API key"));
+	settings->add_child(key_label);
 
-\tapi_key_edit = memnew(LineEdit);
-\tapi_key_edit->set_placeholder(TTRC("Enter your NVIDIA API key"));
-\tString stored_key = runtime ? runtime->get_secret_storage().get_secret("ai.providers.nvidia_nemotron.api_key") : String();
-\tif (!stored_key.is_empty()) {
-\t\tapi_key_edit->set_text(stored_key);
-\t}
-\tapi_key_edit->set_secret(true);
-\tapi_key_edit->set_clear_button_enabled(true);
-\tapi_key_edit->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
-\tsettings->add_child(api_key_edit);
+	api_key_edit = memnew(LineEdit);
+	api_key_edit->set_placeholder(TTRC("Enter your NVIDIA API key"));
+	String stored_key = runtime ? runtime->get_secret_storage().get_secret("ai.providers.nvidia_nemotron.api_key") : String();
+	if (!stored_key.is_empty()) {
+		api_key_edit->set_text(stored_key);
+	}
+	api_key_edit->set_secret(true);
+	api_key_edit->set_clear_button_enabled(true);
+	api_key_edit->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
+	settings->add_child(api_key_edit);
 
-\ttest_button = memnew(Button);
-\ttest_button->set_text(TTRC("Test Connection"));
-\ttest_button->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
-\ttest_button->connect(SceneStringName(pressed), Callable(this, "_test_connection"));
-\tsettings->add_child(test_button);
+	test_button = memnew(Button);
+	test_button->set_text(TTRC("Test Connection"));
+	test_button->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
+	test_button->connect(SceneStringName(pressed), Callable(this, "_test_connection"));
+	settings->add_child(test_button);
 
-\toutput = memnew(RichTextLabel);
-\toutput->set_fit_content(false);
-\toutput->set_scroll_active(true);
-\toutput->set_selection_enabled(true);
-\toutput->set_h_size_flags(SIZE_EXPAND_FILL);
-\toutput->set_v_size_flags(SIZE_EXPAND_FILL);
-\toutput->set_custom_minimum_size(Vector2(0, 60 * EDSCALE));
-\tadd_child(output);
+	output = memnew(RichTextLabel);
+	output->set_fit_content(false);
+	output->set_scroll_active(true);
+	output->set_selection_enabled(true);
+	output->set_h_size_flags(SIZE_EXPAND_FILL);
+	output->set_v_size_flags(SIZE_EXPAND_FILL);
+	output->set_custom_minimum_size(Vector2(0, 60 * EDSCALE));
+	add_child(output);
 
-\tHBoxContainer *input_row = memnew(HBoxContainer);
-\tinput_row->set_h_size_flags(SIZE_EXPAND_FILL);
-\tadd_child(input_row);
+	HBoxContainer *input_row = memnew(HBoxContainer);
+	input_row->set_h_size_flags(SIZE_EXPAND_FILL);
+	add_child(input_row);
 
-\tprompt_edit = memnew(LineEdit);
-\tprompt_edit->set_placeholder(TTRC("Ask Nemotron..."));
-\tprompt_edit->set_clear_button_enabled(true);
-\tprompt_edit->set_h_size_flags(SIZE_EXPAND_FILL);
-\tprompt_edit->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
-\tinput_row->add_child(prompt_edit);
+	prompt_edit = memnew(LineEdit);
+	prompt_edit->set_placeholder(TTRC("Ask Nemotron..."));
+	prompt_edit->set_clear_button_enabled(true);
+	prompt_edit->set_h_size_flags(SIZE_EXPAND_FILL);
+	prompt_edit->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
+	input_row->add_child(prompt_edit);
 
-\tsend_button = memnew(Button);
-\tsend_button->set_text(TTRC("Send"));
-\tsend_button->set_custom_minimum_size(Vector2(92 * EDSCALE, 42 * EDSCALE));
-\tsend_button->connect(SceneStringName(pressed), Callable(this, "_send_chat"));
-\tinput_row->add_child(send_button);
+	send_button = memnew(Button);
+	send_button->set_text(TTRC("Send"));
+	send_button->set_custom_minimum_size(Vector2(92 * EDSCALE, 42 * EDSCALE));
+	send_button->connect(SceneStringName(pressed), Callable(this, "_send_chat"));
+	input_row->add_child(send_button);
 }
 
 NIMEditorPanel::~NIMEditorPanel() {
