@@ -30,8 +30,8 @@
 
 #include "editor/ai_bridge/core/providers/openai_compatible_provider.h"
 
-#include "core/io/http_client.h"
 #include "core/crypto/crypto.h"
+#include "core/io/http_client.h"
 #include "core/io/json.h"
 #include "core/os/os.h"
 #include "core/string/ustring.h"
