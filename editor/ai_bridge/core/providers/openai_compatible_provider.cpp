@@ -301,8 +301,8 @@ void AIOpenAICompatibleProvider::_run_request() {
 
 	const uint64_t response_started_msec = OS::get_singleton()->get_ticks_msec();
 	uint64_t last_data_msec = response_started_msec;
-	const uint64_t response_timeout_msec = 120000;
-	const uint64_t idle_timeout_msec = 45000;
+	const uint64_t response_timeout_msec = 600000;
+	const uint64_t idle_timeout_msec = 180000;
 
 	while (true) {
 		if (cancel_requested.load()) {
@@ -320,7 +320,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 
 		const uint64_t now_msec = OS::get_singleton()->get_ticks_msec();
 		if (now_msec - response_started_msec > response_timeout_msec) {
-			_emit_error("response_timeout", "NVIDIA NIM did not complete a response within 60 seconds.");
+			_emit_error("response_timeout", "NVIDIA NIM did not complete a response within 10 minutes.");
 			client->close();
 			return;
 		}
@@ -427,7 +427,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 		}
 
 		if (now_msec - last_data_msec > idle_timeout_msec) {
-			_emit_error("response_idle_timeout", "NVIDIA NIM stopped sending data for 30 seconds.");
+			_emit_error("response_idle_timeout", "NVIDIA NIM stopped sending data for 180 seconds.");
 			client->close();
 			return;
 		}
