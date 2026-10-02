@@ -49,7 +49,7 @@ Do not replace the stable non-stream path with SSE until streaming is implemente
 - Normal chat remains explicitly `stream=false` with `enable_thinking=false` and `force_nonempty_content=true`.
 
 ## Current position
-**v0.2 — Robust NVIDIA NIM Streaming / SSE implementation — Android UI regression fix pending CI**
+**v0.2 — NIM mobile chat reliability — physical regression fix pending CI/test**
 
 Status:
 - 1.7 physical Android launch/NIM baseline: 🟩🟩
@@ -58,11 +58,17 @@ Status:
 - 2.2 current scene: 🟩🟥
 - 2.3 selected node: 🟩🟥
 - 2.4 current script: 🟩🟥 implemented
-- v0.2 SSE: 🟩🟥 implementation complete; CI verified on `f38894b8`; compact Android chat UI fix `3105b223` pending CI
+- v0.2 SSE: 🟩🟥 implementation complete; compact Android UI fix `3105b223` is followed by chat-flow reliability fixes `a0faaec` and transport polling fix `143078c`; fresh CI/physical verification required
 - 2.5 debugger/errors: 🟥🟥
 - 2.6 controlled context assembly: 🟥🟥
 - v0.2: 🟩🟥 partial
 - release: 🟥🟥
+
+## Latest mobile chat bugfix checkpoint
+- `a0faaec397de245bee13830e509ad483b15560f9`: user chat messages are retained after request errors/cancellation; empty completed responses are no longer reported as `Connected`; Send shows `Sending...` during the request.
+- `143078c87327195ee037df1c651ffd8097c5b119`: connection `poll()` errors now terminate the request with an explicit error instead of silently waiting for timeout.
+- Test Connection remains local key-save only; it must not generate an extra NIM request and trigger `429`.
+- Physical test target: Test Connection → `Привет` → visible user message → loading state → Nemotron response or explicit error.
 
 ## Next engineering order
 1. Keep non-stream chat baseline unchanged.
