@@ -249,13 +249,9 @@ void NIMEditorPanel::_test_connection() {
 	retry_button->set_disabled(true);
 
 	// The connection check is a real, visible validation transaction.
-	// Keep the test message in the same chat lifecycle as normal requests.
+	// Keep the test request outside the normal conversation history.
 	current_response = String();
-	AIMessage test_message;
-	test_message.role = AIMessageRole::USER;
-	test_message.content = message.content;
-	conversation.push_back(test_message);
-	output->append_text(vformat("\n\nYou: %s\nNemotron: ", test_message.content));
+	output->append_text(vformat("\n\nYou: %s\nNemotron: ", message.content));
 
 	active_is_chat = true;
 	active_is_test_connection = true;

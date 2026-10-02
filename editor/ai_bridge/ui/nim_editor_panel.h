@@ -52,25 +52,17 @@ class NIMEditorPanel : public VBoxContainer {
 	Button *close_button = nullptr;
 	Button *copy_button = nullptr;
 	Button *clear_button = nullptr;
-	Button *retry_button = nullptr;
-	Button *stop_button = nullptr;
 
 	Vector<AIMessage> conversation;
 	uint64_t active_request_id = 0;
 	bool active_is_chat = false;
 	String current_response;
-	String last_prompt;
-	bool retry_available = false;
-	bool active_is_test_connection = false;
 
 	void _test_connection();
 	void _close_panel();
 	void _send_chat();
 	void _copy_chat();
 	void _clear_chat();
-	void _retry_chat();
-	void _cancel_chat();
-	bool _start_chat_request(const String &p_prompt, bool p_append_user_message);
 	void _handle_event(uint64_t p_request_id, int p_type, const String &p_delta, const String &p_finish_reason, const String &p_error_code, const String &p_error_message);
 
 protected:
