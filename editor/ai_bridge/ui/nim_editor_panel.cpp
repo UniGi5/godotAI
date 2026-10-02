@@ -136,55 +136,13 @@ void NIMEditorPanel::_test_connection() {
 		return;
 	}
 
+	// Do not send a second paid/rate-limited NIM request just to validate the key.
+	// The next chat request is the real connection test and avoids triggering 429
+	// when the user presses Test Connection repeatedly.
 	runtime->get_secret_storage().set_secret("ai.providers.nvidia_nemotron.api_key", api_key);
-
-	AIRequest request;
-	request.model = "nvidia/nemotron-3-ultra-550b-a55b";
-	request.temperature = 0.0;
-	request.max_tokens = 16;
-	request.extra_parameters["stream"] = false;
-	Dictionary chat_template_kwargs;
-	chat_template_kwargs["enable_thinking"] = false;
-	chat_template_kwargs["force_nonempty_content"] = true;
-	request.extra_parameters["chat_template_kwargs"] = chat_template_kwargs;
-
-	AIMessage message;
-	message.role = AIMessageRole::USER;
-	message.content = "Hello. Reply with exactly: NIM_OK";
-	request.messages.push_back(message);
-
 	output->clear();
-	output->append_text(TTRC("Waiting for NVIDIA NIM..."));
-	status_label->set_text(TTRC("Connecting..."));
-	test_button->set_disabled(true);
-	send_button->set_disabled(true);
-
-	active_is_chat = false;
-	const ObjectID panel_id = get_instance_id();
-	active_request_id = runtime->get_orchestrator().submit(request, [panel_id](const AIStreamEvent &p_event) {
-		Object *object = ObjectDB::get_instance(panel_id);
-		NIMEditorPanel *panel = Object::cast_to<NIMEditorPanel>(object);
-		if (!panel) {
-			return;
-		}
-		panel->call_deferred(
-				"_handle_event",
-				(uint64_t)p_event.request_id,
-				(int)p_event.type,
-				p_event.delta,
-				p_event.finish_reason,
-				p_event.error_code,
-				p_event.error_message,
-				p_event.reasoning);
-	});
-
-	if (active_request_id == 0) {
-		test_button->set_disabled(false);
-		send_button->set_disabled(false);
-		status_label->set_text(TTRC("Request could not be started"));
-	}
+	status_label->set_text(TTRC("API key saved. Send a message to verify connection."));
 }
-
 void NIMEditorPanel::_send_chat() {
 	if (!runtime || active_request_id != 0) {
 		return;
