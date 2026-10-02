@@ -11,7 +11,7 @@
 - Android target: ARM64
 
 ## Current position
-**2.3 — Selected node context implementation ready; physical verification pending**
+**2.4 — Scene-root script context implementation ready; physical verification pending**
 
 Status:
 - 1.1 Provider transport: 🟩🟩
@@ -21,7 +21,7 @@ Status:
 - 1.5 Chat: 🟩🟥
 - 1.6 Runtime/UI event bridge: 🟩🟥
 - 1.7 Physical smoke test: 🟩🟩 verified on corrected Android build
-- 1.8 First milestone gate: 🟩🟥 partial — NIM chat/context baseline physically verified; streaming/error regression remains
+- 1.8 First milestone gate: 🟩🟥 partial — NIM chat/context baseline physically verified; current APK regression remains
 - v0.2: 🟩🟥 PARTIAL — stable NIM chat baseline verified; context expansion/streaming regression remain
 - Release: 🟥🟥 NOT READY
 
