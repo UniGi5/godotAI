@@ -142,6 +142,7 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	copy_button = memnew(Button);
 	copy_button->set_text(TTRC("Copy chat"));
 	copy_button->set_custom_minimum_size(Vector2(0, 38 * EDSCALE));
+	copy_button->set_disabled(true);
 	copy_button->connect(SceneStringName(pressed), Callable(this, "_copy_chat"));
 	chat_toolbar->add_child(copy_button);
 
@@ -291,10 +292,25 @@ void NIMEditorPanel::_test_connection() {
 }
 
 void NIMEditorPanel::_copy_chat() {
-	if (!output) {
-		return;
+	String text;
+	for (const AIMessage &message : conversation) {
+		String role;
+		switch (message.role) {
+			case AIMessageRole::USER:
+				role = TTRC("You");
+				break;
+			case AIMessageRole::ASSISTANT:
+				role = TTRC("Nemotron");
+				break;
+			default:
+				role = TTRC("Message");
+				break;
+		}
+		if (!text.is_empty()) {
+			text += "\n\n";
+		}
+		text += role + ": " + message.content;
 	}
-	const String text = output->get_text();
 	if (text.is_empty()) {
 		status_label->set_text(TTRC("Chat is empty"));
 		return;
@@ -327,6 +343,7 @@ void NIMEditorPanel::_clear_chat() {
 	retry_button->set_disabled(true);
 	stop_button->set_disabled(true);
 	copy_code_button->set_disabled(true);
+	copy_button->set_disabled(true);
 	output->clear();
 	status_label->set_text(TTRC("Idle"));
 }
@@ -364,6 +381,7 @@ bool NIMEditorPanel::_start_chat_request(const String &p_prompt, bool p_append_u
 		user_message.role = AIMessageRole::USER;
 		user_message.content = p_prompt;
 		conversation.push_back(user_message);
+		copy_button->set_disabled(false);
 	}
 
 	output->append_text(vformat("\n\nYou: %s\nNemotron: ", p_prompt));
@@ -451,6 +469,13 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 	if (p_type == (int)AIStreamEventType::DELTA) {
 		if (output->get_text().contains(TTRC("Waiting for NVIDIA NIM..."))) {
 			output->clear();
+		}
+		if (active_is_test_connection) {
+			// Any received response proves the request reached NIM. Restore the
+			// test control immediately instead of relying only on a terminal event.
+			test_button->set_disabled(false);
+			test_button->set_text(TTRC("Test Connection"));
+			status_label->set_text(TTRC("Connected"));
 		}
 		if (active_is_chat) {
 			current_response += p_delta;
