@@ -309,6 +309,7 @@ void NIMEditorPanel::_clear_chat() {
 	active_is_test_connection = false;
 	retry_button->set_disabled(true);
 	stop_button->set_disabled(true);
+	copy_code_button->set_disabled(true);
 	output->clear();
 	status_label->set_text(TTRC("Idle"));
 }
