@@ -53,7 +53,7 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 			context.messages.push_back(scene_message);
 		}
 
-		EditorSelection *editor_selection = EditorNode::get_editor_selection();
+		EditorSelection *editor_selection = EditorNode::get_singleton()->get_editor_selection();
 		if (editor_selection) {
 			List<Node *> selected_nodes = editor_selection->get_top_selected_node_list();
 			if (!selected_nodes.is_empty()) {
