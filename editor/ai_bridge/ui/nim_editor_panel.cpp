@@ -172,7 +172,8 @@ void NIMEditorPanel::_test_connection() {
 				p_event.delta,
 				p_event.finish_reason,
 				p_event.error_code,
-				p_event.error_message);
+				p_event.error_message,
+				p_event.reasoning);
 	});
 
 	if (active_request_id == 0) {
@@ -243,7 +244,8 @@ void NIMEditorPanel::_send_chat() {
 				p_event.delta,
 				p_event.finish_reason,
 				p_event.error_code,
-				p_event.error_message);
+				p_event.error_message,
+				p_event.reasoning);
 	});
 
 	if (active_request_id == 0) {
@@ -254,7 +256,7 @@ void NIMEditorPanel::_send_chat() {
 	}
 }
 
-void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const String &p_delta, const String &p_finish_reason, const String &p_error_code, const String &p_error_message) {
+void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const String &p_delta, const String &p_finish_reason, const String &p_error_code, const String &p_error_message, bool p_reasoning) {
 	if (p_request_id == 0 || p_request_id != active_request_id) {
 		return;
 	}
@@ -263,10 +265,14 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 		if (output->get_text().contains(TTRC("Waiting for NVIDIA NIM..."))) {
 			output->clear();
 		}
-		if (active_is_chat) {
+		if (active_is_chat && !p_reasoning) {
 			current_response += p_delta;
 		}
-		output->append_text(p_delta);
+		if (p_reasoning) {
+			output->append_text(vformat("\\n[Reasoning] %s", p_delta));
+		} else {
+			output->append_text(p_delta);
+		}
 		return;
 	}
 
