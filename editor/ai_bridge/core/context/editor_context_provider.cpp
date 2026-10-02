@@ -55,8 +55,7 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 
 		EditorSelection *editor_selection = EditorNode::get_editor_selection();
 		if (editor_selection) {
-			List<Node *> selected_nodes;
-			editor_selection->get_top_selected_node_list(&selected_nodes);
+			List<Node *> selected_nodes = editor_selection->get_top_selected_node_list();
 			if (!selected_nodes.is_empty()) {
 				Node *selected_node = selected_nodes.front()->get();
 				if (selected_node) {
