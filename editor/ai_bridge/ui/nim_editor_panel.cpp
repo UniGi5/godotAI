@@ -205,7 +205,16 @@ void NIMEditorPanel::_test_connection() {
 	test_button->set_disabled(true);
 	send_button->set_disabled(true);
 
-	active_is_chat = false;
+	// The connection check is a real, visible validation transaction.
+	// Keep the test message in the same chat lifecycle as normal requests.
+	current_response = String();
+	AIMessage test_message;
+	test_message.role = AIMessageRole::USER;
+	test_message.content = message.content;
+	conversation.push_back(test_message);
+	output->append_text(vformat("\n\nYou: %s\nNemotron: ", test_message.content));
+
+	active_is_chat = true;
 	const ObjectID panel_id = get_instance_id();
 	active_request_id = runtime->get_orchestrator().submit(request, [panel_id](const AIStreamEvent &p_event) {
 		Object *object = ObjectDB::get_instance(panel_id);
@@ -226,6 +235,7 @@ void NIMEditorPanel::_test_connection() {
 	if (active_request_id == 0) {
 		test_button->set_disabled(false);
 		send_button->set_disabled(false);
+		test_button->set_text(TTRC("Test Connection"));
 		status_label->set_text(TTRC("Request could not be started"));
 	}
 }
@@ -323,7 +333,12 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 
 	switch ((AIStreamEventType)p_type) {
 		case AIStreamEventType::COMPLETED:
-			status_label->set_text(active_is_chat ? TTRC("Connected") : TTRC("Connected"));
+			if (active_is_chat && current_response.is_empty()) {
+				status_label->set_text(TTRC("Error: empty_response"));
+				output->append_text(TTRC("\n\nNVIDIA NIM completed without a response. Please retry."));
+				break;
+			}
+			status_label->set_text(TTRC("Connected"));
 			if (active_is_chat) {
 				AIMessage assistant_message;
 				assistant_message.role = AIMessageRole::ASSISTANT;
@@ -335,17 +350,11 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 			break;
 		case AIStreamEventType::ERROR:
 			status_label->set_text(vformat(TTRC("Error: %s"), p_error_code));
-			output->clear();
-			output->append_text(vformat(TTRC("NVIDIA NIM request failed.\n%s"), p_error_message.is_empty() ? TTRC("No additional error details.") : p_error_message));
-			if (active_is_chat && !conversation.is_empty()) {
-				conversation.remove_at(conversation.size() - 1);
-			}
+			output->append_text(vformat(TTRC("\n\nNVIDIA NIM request failed.\n%s"), p_error_message.is_empty() ? TTRC("No additional error details.") : p_error_message));
 			break;
 		case AIStreamEventType::CANCELLED:
 			status_label->set_text(TTRC("Cancelled"));
-			if (active_is_chat && !conversation.is_empty()) {
-				conversation.remove_at(conversation.size() - 1);
-			}
+			output->append_text(TTRC("\n\nRequest cancelled."));
 			break;
 		default:
 			break;
