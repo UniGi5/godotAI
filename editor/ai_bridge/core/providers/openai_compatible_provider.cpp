@@ -255,6 +255,11 @@ void AIOpenAICompatibleProvider::_run_request() {
 		}
 
 		err = client->poll();
+		if (err != OK) {
+			_emit_error("connect_poll_failed", vformat("HTTP connection polling failed: %d.", err));
+			client->close();
+			return;
+		}
 		HTTPClient::Status status = client->get_status();
 		if (status == HTTPClient::STATUS_CONNECTED) {
 			break;
