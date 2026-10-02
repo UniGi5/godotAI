@@ -256,14 +256,19 @@ void NIMEditorPanel::_send_chat() {
 
 	output->append_text(vformat("\n\nYou: %s\nNemotron: ", prompt));
 	prompt_edit->clear();
-	status_label->set_text(TTRC("Connecting..."));
+	status_label->set_text(TTRC("Waiting for NVIDIA NIM..."));
 	test_button->set_disabled(true);
 	send_button->set_disabled(true);
 
 	AIRequest request;
 	request.model = "nvidia/nemotron-3-ultra-550b-a55b";
 	request.temperature = 0.7;
-	request.max_tokens = 512;
+	request.max_tokens = 256;
+	request.extra_parameters["stream"] = false;
+	Dictionary chat_template_kwargs;
+	chat_template_kwargs["enable_thinking"] = false;
+	chat_template_kwargs["force_nonempty_content"] = true;
+	request.extra_parameters["chat_template_kwargs"] = chat_template_kwargs;
 	AIContext project_context = runtime->get_context_provider().build_context("editor_context");
 	request.messages = project_context.messages;
 	for (const AIMessage &message : conversation) {
