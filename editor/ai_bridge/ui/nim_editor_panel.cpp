@@ -55,7 +55,7 @@ void NIMEditorPanel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_retry_chat"), &NIMEditorPanel::_retry_chat);
 	ClassDB::bind_method(D_METHOD("_cancel_chat"), &NIMEditorPanel::_cancel_chat);
 	ClassDB::bind_method(
-			D_METHOD("_handle_event", "request_id", "type", "delta", "finish_reason", "error_code", "error_message"),
+			D_METHOD("_handle_event", "request_id", "type", "delta", "finish_reason", "error_code", "error_message", "reasoning"),
 			&NIMEditorPanel::_handle_event);
 }
 
@@ -278,7 +278,8 @@ void NIMEditorPanel::_test_connection() {
 				p_event.delta,
 				p_event.finish_reason,
 				p_event.error_code,
-				p_event.error_message);
+				p_event.error_message,
+				p_event.reasoning);
 	});
 
 	if (active_request_id == 0) {
@@ -461,7 +462,7 @@ void NIMEditorPanel::_send_chat() {
 	_start_chat_request(prompt, true);
 }
 
-void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const String &p_delta, const String &p_finish_reason, const String &p_error_code, const String &p_error_message) {
+void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const String &p_delta, const String &p_finish_reason, const String &p_error_code, const String &p_error_message, bool p_reasoning) {
 	if (p_request_id == 0 || p_request_id != active_request_id) {
 		return;
 	}
@@ -477,10 +478,14 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 			test_button->set_text(TTRC("Test Connection"));
 			status_label->set_text(TTRC("Connected"));
 		}
-		if (active_is_chat) {
+		if (active_is_chat && !p_reasoning) {
 			current_response += p_delta;
 		}
-		output->append_text(p_delta);
+		if (p_reasoning) {
+			output->append_text(vformat("\n[Reasoning] %s", p_delta));
+		} else {
+			output->append_text(p_delta);
+		}
 		return;
 	}
 
