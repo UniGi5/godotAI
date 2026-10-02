@@ -21,7 +21,7 @@ void NIMEditorPanel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_close_panel"), &NIMEditorPanel::_close_panel);
 	ClassDB::bind_method(D_METHOD("_send_chat"), &NIMEditorPanel::_send_chat);
 	ClassDB::bind_method(
-			D_METHOD("_handle_event", "request_id", "type", "delta", "finish_reason", "error_code", "error_message"),
+			D_METHOD("_handle_event", "request_id", "type", "delta", "finish_reason", "error_code", "error_message", "reasoning"),
 			&NIMEditorPanel::_handle_event);
 }
 
