@@ -76,8 +76,8 @@
 Worker/provider events доставляются в UI через deferred main-thread обработку; request-id guard защищает от stale events; lifecycle Panel → Runtime исправлен.
 Остаётся подтверждение поведения на реальном Android Editor.
 
-### 1.7 First physical smoke test / corrected APK ready
-🟥🟥 PHYSICAL RETEST REQUIRED — previous silent early exit diagnosed
+### 1.7 First physical smoke test / corrected APK
+🟩🟩 VERIFIED on corrected Android build
 
 Тестовый пакет до диагностики:
 - Commit: 4f5028ef9f87447ab71f75bbef6f925f9e63d220
@@ -113,7 +113,7 @@ Worker/provider events доставляются в UI через deferred main-t
 Переход 1.7 → 1.8: только после исправления/подтверждения launch path на реальном устройстве.
 
 ### 1.8 First milestone gate
-🟥🟥
+🟩🟥 PARTIAL — launch + NIM chat + project/editor context verified; streaming/error regression remains
 
 Условие:
 BUILD + INSTALL + LAUNCH + NIM REQUEST + RESPONSE verified on physical Android device, плюс базовая проверка streaming/error paths.
@@ -123,16 +123,16 @@ BUILD + INSTALL + LAUNCH + NIM REQUEST + RESPONSE verified on physical Android d
 ## 2. PROJECT CONTEXT — v0.2
 
 ### 2.1 Project identity
-🟥🟥
+🟩🟩 Physically verified — Nemotron identified the project name.
 
 ### 2.2 Current scene
-🟥🟥
+🟩🟥 Implemented and included in editor context; physical field-level verification pending.
 
 ### 2.3 Selected node
-🟥🟥
+🟩🟥 Implemented; latest API/lifecycle fixes are in master; physical verification pending.
 
 ### 2.4 Current script
-🟥🟥
+🟥🟥 NEXT implementation block
 
 ### 2.5 Debugger/errors context
 🟥🟥
@@ -201,12 +201,12 @@ MCP, shell и автономные действия не добавляются 
 
 ## Current position
 
-1.7 — First physical smoke test / corrected APK ready
+2.3 — Selected node context implementation ready; physical verification pending
 
 Последний CI: #64 🟩.
 Корректный APK опубликован как prerelease asset.
 Следующий переход:
-1.7 → 1.8 → v0.2 после физического smoke test.
+2.3 → 2.4 → 2.5 → 2.6 → v0.2.
 
-Текущий physical-test requirement: 🟥🟥 REQUIRED — проверить исправленный APK на реальном ARM64 Android устройстве.
-Current v0.2 gate: 🟥🟥 NOT READY.
+Текущий physical-test requirement: 🟥🟥 REQUIRED только после новой APK-сборки с изменением поведения — проверить selected-node context и regression текущего NIM baseline.
+Current v0.2 gate: 🟩🟥 PARTIAL — не готов к упаковке v0.2 до завершения context + streaming/error regression.
