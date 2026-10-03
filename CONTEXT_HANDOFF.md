@@ -105,3 +105,14 @@ Before asking for a new physical test, provide:
 - clear readiness marker.
 
 Current checkpoint: **PHYSICAL ANDROID NIM CHAT BASELINE — GREEN / STABLE**.
+
+## Current development checkpoint — 2026-10-03
+
+- Current PR head: `9af5cce90023511874ba96d63c1cb154227a9a91`.
+- v0.2 context work now exposes project identity, current edited scene, selected node, and the selected node's script path/source to the AI context provider.
+- Script source is capped at 12,000 characters and explicitly marked when truncated.
+- The verified non-stream NIM chat path remains unchanged: `stream=false`, thinking disabled, forced non-empty content.
+- This context change is code-level verified only; CI for the new head is still pending/not reported by the available status endpoint.
+- Do not request physical Android testing yet. First require a successful Android CI build for `9af5cce9`. Then provide the resulting APK, direct link and SHA-256 for physical regression testing.
+- Physical regression target after CI: Test Connection → send `Привет` → visible user message → loading state → Nemotron response or explicit error → Retry/Copy Chat behavior.
+- v0.2 remains 🟩🟥 partial. Release remains 🟥🟥.
