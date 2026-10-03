@@ -99,9 +99,18 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 					context.messages.push_back(selected_message);
 
 					if (selected_script.is_valid()) {
+						String script_context = vformat("Current script:\nPath: %s", selected_script->get_path());
+						String source = selected_script->get_source_code();
+						if (!source.is_empty()) {
+							const int max_source_chars = 12000;
+							if (source.length() > max_source_chars) {
+								source = source.substr(0, max_source_chars) + "\n[Script source truncated]";
+							}
+							script_context += "\nSource:\n" + source;
+						}
 						AIMessage script_message;
 						script_message.role = AIMessageRole::SYSTEM;
-						script_message.content = vformat("Current script:\nPath: %s", selected_script->get_path());
+						script_message.content = script_context;
 						context.messages.push_back(script_message);
 					}
 				}
