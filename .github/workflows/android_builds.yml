@@ -1,5 +1,9 @@
 name: 🤖 Android Builds
 on:
+  push:
+    branches:
+      - development/controlled-baseline
+
   workflow_call:
     secrets:
       SERVICE_ACCOUNT_KEY:
