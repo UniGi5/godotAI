@@ -88,10 +88,10 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 					String selected_context = "Selected node:";
 					selected_context += vformat("\nName: %s", selected_node->get_name());
 					selected_context += vformat("\nType: %s", selected_node->get_class());
-						selected_context += vformat("\nPath: %s", selected_node->get_path());
+					selected_context += vformat("\nPath: %s", selected_node->get_path());
 					Ref<Script> selected_script = selected_node->get_script();
 					if (selected_script.is_valid()) {
-						selected_context += vformat("\nScript path: %s", selected_script->get_path());
+					selected_context += vformat("\nScript path: %s", selected_script->get_path());
 					}
 					AIMessage selected_message;
 					selected_message.role = AIMessageRole::SYSTEM;
