@@ -190,7 +190,7 @@ MCP, shell и автономные действия не добавляются 
 ### Verification gate
 
 - Current branch: `fix/p1-nim-mobile-chat-ui`
-- Current HEAD: `4bbb6917bd46a115a30c7d86d6481d7ec0f49279`
+- Current HEAD: `0bdbff301291f55efbdb9b9b24090c2d6d04d336`
 - Current HEAD CI: 🟥🟥 not confirmed by the available GitHub status/run endpoints.
 - Physical Android test for current HEAD: 🟥🟥 NOT REQUESTED.
 - Previous NIM/mobile baseline: 🟩🟩 physically confirmed at `0201ff8`.
