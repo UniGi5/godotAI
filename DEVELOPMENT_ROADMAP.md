@@ -114,7 +114,7 @@ NIM first-milestone baseline больше не блокирует дальней
 🟩🟩 code implemented — explicit `debugger_context` scope exposes active session, paused state, error count and warning count via Godot's native debugger API.
 
 ### 2.6 Controlled context assembly
-🟩🟥 Partial — `project_identity` now returns identity-only context; `editor_context` returns the full editor context. Further scope definitions can be added without changing the provider contract.
+🟩🟩 code implemented — explicit scopes now include `project_identity`, `scene_context`, `selection_context`, `script_context`, `debugger_context`, and the compatibility/full `editor_context`. Existing provider contract is unchanged.
 
 **Current blocker:** Android CI for the current context-code HEAD is not confirmed by the available GitHub status/run endpoints. Do not request physical testing until a successful APK for the current HEAD is available.
 
@@ -185,18 +185,18 @@ MCP, shell и автономные действия не добавляются 
 - Current script path/source: 🟩🟩
 - Script source limit/truncation: 🟩🟩
 - Debugger/errors context: 🟩🟩 code implemented
-- Controlled context assembly: 🟩🟥
+- Controlled context assembly: 🟩🟩
 
 ### Verification gate
 
 - Current branch: `fix/p1-nim-mobile-chat-ui`
-- Current HEAD: `42bd9b9c1aab1fa34df901129f93cde63ad16cf0`
+- Current HEAD: `7cc590d9b024260176737441370feef17d132657`
 - Current HEAD CI: 🟥🟥 not confirmed by the available GitHub status/run endpoints.
 - Physical Android test for current HEAD: 🟥🟥 NOT REQUESTED.
 - Previous NIM/mobile baseline: 🟩🟩 physically confirmed at `0201ff8`.
 - v0.2: 🟩🟥 partial.
 - Release: 🟥🟥 not ready.
 
-**Next engineering action:** obtain/confirm Android CI for the current HEAD. If a valid APK is available, run the focused physical regression for the new context/scoping code. After that, expand controlled context scopes and then prepare the v0.2 verification gate.
+**Next engineering action:** obtain/confirm Android CI for the current HEAD. If a valid APK is available, run the focused physical regression for the new context/scoping code. After that, prepare the v0.2 verification gate.
 
 **Do not label the current HEAD as release-ready merely because the older baseline is physically green.**
