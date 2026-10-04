@@ -201,12 +201,23 @@ MCP, shell и автономные действия не добавляются 
 
 ## Current position
 
-1.7 — First physical smoke test / corrected APK ready
+### v0.2 — Project Context / Current Script
 
-Последний CI: #64 🟩.
-Корректный APK опубликован как prerelease asset.
-Следующий переход:
-1.7 → 1.8 → v0.2 после физического smoke test.
+- Project identity: 🟩🟩
+- Current edited scene: 🟩🟩 code implemented
+- Selected node: 🟩🟩 code implemented
+- Current script path/source: 🟩🟩 code implemented
+- Script source limit: 12,000 characters with explicit truncation marker: 🟩🟩
+- Debugger/errors context: 🟥🟥
+- Controlled context assembly: 🟥🟥
 
-Текущий physical-test requirement: 🟥🟥 REQUIRED — проверить исправленный APK на реальном ARM64 Android устройстве.
-Current v0.2 gate: 🟥🟥 NOT READY.
+### Verification gate
+
+- Current branch: `fix/p1-nim-mobile-chat-ui`
+- Current HEAD: `ac19c9bbcaf519f67507116920f71f5ebe580682`
+- Android CI for this HEAD: 🟥🟥 not confirmed by the available GitHub status/run endpoints.
+- Physical Android test: 🟥🟥 NOT REQUESTED yet.
+- v0.2: 🟩🟥 partial.
+- Release: 🟥🟥 not ready.
+
+**Next action:** obtain a successful Android CI build for `ac19c9b`. Only then issue the physical-test package with direct APK + SHA-256. After physical confirmation, proceed to debugger/errors context and controlled context assembly.
