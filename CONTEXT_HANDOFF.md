@@ -6,7 +6,7 @@
 - Project: Godot 4.x Android Editor fork with integrated NVIDIA NIM / Nemotron support.
 - Development branch: `fix/p1-nim-mobile-chat-ui`
 - PR: #1 — `fix(ui): keep NIM chat visible on mobile editor`
-- Current PR head: `84587d909a46f609d602aafa58d2d6afac12b15b`
+- Current PR head: `3a0311be11d071312bc2c608163644702f6308e6`
 
 ## Confirmed physical Android baseline
 
@@ -59,13 +59,14 @@ Relevant commits:
 - `87b0722bbf8e051a5b081c9feb692016efc0a8cd` — selected node script path;
 - `9af5cce90023511874ba96d63c1cb154227a9a91` — selected script source;
 - `ac19c9bbcaf519f67507116920f71f5ebe580682` — indentation normalization;
-- `84587d909a46f609d602aafa58d2d6afac12b15b` — roadmap checkpoint.
+- `84587d909a46f609d602aafa58d2d6afac12b15b` — roadmap checkpoint;
+- `3a0311be11d071312bc2c608163644702f6308e6` — scoped context assembly.
 
 These changes are code-level state, not a new physical verification. The physically verified baseline remains `0201ff8`.
 
 ## CI status for current HEAD
 
-For `84587d909a46f609d602aafa58d2d6afac12b15b`:
+For `3a0311be11d071312bc2c608163644702f6308e6`:
 
 - combined status endpoint: no statuses reported;
 - available workflow-run endpoint: no runs reported.
@@ -91,7 +92,7 @@ Do not request physical testing for the current HEAD until a valid Android APK i
 | Current HEAD APK | 🟥🟥 not confirmed |
 | Physical verification of current HEAD | 🟥🟥 not requested |
 | Debugger/errors context | 🟥🟥 |
-| Controlled context assembly | 🟥🟥 |
+| Controlled context assembly | 🟩🟥 partial |
 | v0.2 readiness | 🟩🟥 partial |
 | Product/release readiness | 🟥🟥 not ready |
 
@@ -103,7 +104,7 @@ Do not request physical testing for the current HEAD until a valid Android APK i
 4. If physical regression passes, mark that checkpoint green.
 5. Continue with debugger/errors context.
 6. Then implement controlled context assembly.
-7. Only after the v0.2 gate is complete, prepare the v0.2/release package.
+7. Expand controlled context scopes and then prepare the v0.2/release package.
 
 ## Physical-test protocol
 
@@ -131,4 +132,4 @@ Do not couple Godot Core directly to NVIDIA APIs.
 
 Treat this document as a factual checkpoint. Do not repeat already-confirmed setup or ask the user to retest an older baseline without a concrete reason.
 
-**Current checkpoint: NIM Android baseline GREEN; v0.2 Project Context code GREEN; current HEAD CI/APK not confirmed; release NOT READY.**
+**Current checkpoint: NIM Android baseline GREEN; v0.2 Project Context + first scoped assembly GREEN/PARTIAL; current HEAD CI/APK not confirmed; release NOT READY.**
