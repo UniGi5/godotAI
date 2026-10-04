@@ -182,22 +182,31 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	output->set_custom_minimum_size(Vector2(0, 180 * EDSCALE));
 	add_child(output);
 
-	HBoxContainer *input_row = memnew(HBoxContainer);
-	input_row->set_h_size_flags(SIZE_EXPAND_FILL);
-	add_child(input_row);
+	VBoxContainer *input_panel = memnew(VBoxContainer);
+	input_panel->set_h_size_flags(SIZE_EXPAND_FILL);
+	input_panel->set_custom_minimum_size(Vector2(0, 116 * EDSCALE));
+	add_child(input_panel);
 
-	prompt_edit = memnew(LineEdit);
+	prompt_edit = memnew(TextEdit);
 	prompt_edit->set_placeholder(TTRC("Ask Nemotron..."));
-	prompt_edit->set_clear_button_enabled(true);
 	prompt_edit->set_h_size_flags(SIZE_EXPAND_FILL);
-	prompt_edit->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
-	input_row->add_child(prompt_edit);
+	prompt_edit->set_v_size_flags(SIZE_EXPAND_FILL);
+	prompt_edit->set_custom_minimum_size(Vector2(0, 72 * EDSCALE));
+	prompt_edit->set_line_wrapping_mode(TextEdit::LINE_WRAPPING_BOUNDARY);
+	input_panel->add_child(prompt_edit);
+
+	HBoxContainer *send_row = memnew(HBoxContainer);
+	send_row->set_h_size_flags(SIZE_EXPAND_FILL);
+	send_row->set_custom_minimum_size(Vector2(0, 44 * EDSCALE));
+	input_panel->add_child(send_row);
 
 	send_button = memnew(Button);
 	send_button->set_text(TTRC("Send"));
-	send_button->set_custom_minimum_size(Vector2(92 * EDSCALE, 42 * EDSCALE));
+	send_button->set_tooltip_text(TTRC("Send message"));
+	send_button->set_custom_minimum_size(Vector2(112 * EDSCALE, 44 * EDSCALE));
+	send_button->set_h_size_flags(SIZE_EXPAND_FILL);
 	send_button->connect(SceneStringName(pressed), Callable(this, "_send_chat"));
-	input_row->add_child(send_button);
+	send_row->add_child(send_button);
 }
 
 NIMEditorPanel::~NIMEditorPanel() {
