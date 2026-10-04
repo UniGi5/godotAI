@@ -43,6 +43,7 @@
 #include "scene/gui/line_edit.h"
 #include "scene/gui/rich_text_label.h"
 #include "scene/gui/scroll_container.h"
+#include "scene/gui/text_edit.h"
 #include "servers/display/display_server.h"
 
 void NIMEditorPanel::_bind_methods() {
