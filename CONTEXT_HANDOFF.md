@@ -9,8 +9,8 @@
 - Main PR: #1 — `fix(ui): keep NIM chat visible on mobile editor`
 - Product branch HEAD: `319e9f2be2e89c8dd9d332c25b1c6bf002471f09`
 - Current working UI branch: `ui/p1-chat-ux`
-- Current UI branch HEAD: `46cdeef1846990a96a5ec99a2fb0839c2d43076e`
-- UI branch is **5 commits ahead / 0 behind** the product branch.
+- Current UI branch HEAD: `838b899f634be2f714d5eae3de48349ac7a05880`
+- UI branch is **7 commits ahead / 0 behind** the product branch. The last 2 commits are documentation-only.
 - DEBUG control branch: `debug/versions`
 - Latest known DEBUG HEAD before the UI checkpoint: `8a0fa0ee56e6a18fd915c623b9c419d2fbe80c2d`
 
@@ -294,7 +294,13 @@ Current engineering branch:
 
 Current HEAD:
 
+`838b899f634be2f714d5eae3de48349ac7a05880`
+
+Runtime UI snapshot:
+
 `46cdeef1846990a96a5ec99a2fb0839c2d43076e`
+
+No runtime UI changes were added after the `46cdeef` snapshot; later commits are documentation-only.
 
 First safe UI prototype is complete at source level.
 
