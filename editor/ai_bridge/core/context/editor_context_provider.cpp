@@ -39,6 +39,7 @@
 AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 	AIContext context;
 	context.source = p_scope;
+	const bool identity_only = p_scope == "project_identity";
 
 	const ProjectSettings *settings = ProjectSettings::get_singleton();
 	if (!settings) {
@@ -60,6 +61,10 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 	message.role = AIMessageRole::SYSTEM;
 	message.content = identity;
 	context.messages.push_back(message);
+
+	if (identity_only) {
+		return context;
+	}
 
 	if (EditorNode::get_singleton()) {
 		Node *scene_root = EditorNode::get_editor_data().get_edited_scene_root();
