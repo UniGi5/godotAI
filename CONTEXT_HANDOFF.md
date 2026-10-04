@@ -6,7 +6,7 @@
 - Project: Godot 4.x Android Editor fork with integrated NVIDIA NIM / Nemotron support.
 - Development branch: `fix/p1-nim-mobile-chat-ui`
 - PR: #1 — `fix(ui): keep NIM chat visible on mobile editor`
-- Current PR head: `0bdbff301291f55efbdb9b9b24090c2d6d04d336`
+- Current PR head: `6c053080822dd42b2b2fdea08daca13e7510a6d7`
 
 ## Confirmed physical Android baseline
 
@@ -67,14 +67,18 @@ These changes are code-level state, not a new physical verification. The physica
 
 ## CI status for current HEAD
 
-For `0bdbff301291f55efbdb9b9b24090c2d6d04d336`:
+For `6c053080822dd42b2b2fdea08daca13e7510a6d7`:
 
-- combined status endpoint: no statuses reported;
-- available workflow-run endpoint: no runs reported.
+- Android build artifact is confirmed by GitHub Release `build-6c053080822d`.
+- Release target commit: `6c053080822dd42b2b2fdea08daca13e7510a6d7`.
+- APK: `godot-android-editor-arm64.apk`.
+- APK size: 192,454,271 bytes.
+- GitHub asset SHA-256 digest: `fae87f32468f61d15d12b4f17d96c91849c57d0f66c1b5fd5e9ab350840e29f4`.
+- Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-6c053080822d/godot-android-editor-arm64.apk
+- Release is published as a prerelease artifact.
+- The available workflow-run endpoint may not enumerate the push run, but the release artifact is evidence that the Android build/publish job completed for this commit.
 
-This does **not** prove that push CI did not run; the available workflow endpoint is limited. Therefore the correct state is **CI NOT CONFIRMED**, not CI FAILED.
-
-Do not request physical testing for the current HEAD until a valid Android APK is confirmed.
+This does **not** prove physical runtime behavior. The current HEAD is now ready for one focused physical Android regression test.
 
 ## Current readiness
 
@@ -89,21 +93,20 @@ Do not request physical testing for the current HEAD until a valid Android APK i
 | Copy Chat | 🟩🟩 verified on baseline |
 | Project/scene/selected-node context | 🟩🟩 code implemented |
 | Selected script path/source | 🟩🟩 code implemented |
-| Current HEAD CI | 🟥🟥 not confirmed |
-| Current HEAD APK | 🟥🟥 not confirmed |
-| Physical verification of current HEAD | 🟥🟥 not requested |
+| Current HEAD CI | 🟩🟩 confirmed by published APK |
+| Current HEAD APK | 🟩🟩 available |
+| Physical verification of current HEAD | 🟡🟡 REQUIRED NEXT |
 | Debugger/errors context | 🟩🟩 code implemented |
 | Controlled context assembly | 🟩🟩 code implemented |
-| v0.2 readiness | 🟩🟥 partial |
+| v0.2 readiness | 🟩🟥 partial — physical regression pending |
 | Product/release readiness | 🟥🟥 not ready |
 
 ## Next gate
 
-1. Confirm Android CI for current HEAD.
-2. If a valid APK exists, provide exact APK + direct link + SHA-256.
-3. Request one focused physical regression for the new context/scoping implementation.
-4. If physical regression passes, mark the current checkpoint green.
-5. Prepare the v0.2 verification gate, then the v0.2/release package.
+1. Run one focused physical Android regression on `6c053080822dd42b2b2fdea08daca13e7510a6d7`.
+2. Record actual results for context injection/scopes and preserve the confirmed Safe Core behaviors.
+3. If physical regression passes, mark the current checkpoint green.
+4. Prepare the v0.2 verification gate, then the v0.2/release package.
 
 ## Physical-test protocol
 
@@ -131,4 +134,4 @@ Do not couple Godot Core directly to NVIDIA APIs.
 
 Treat this document as a factual checkpoint. Do not repeat already-confirmed setup or ask the user to retest an older baseline without a concrete reason.
 
-**Current checkpoint: NIM Android baseline GREEN; v0.2 Project Context + debugger + granular context scopes GREEN; current HEAD `0bdbff3` CI/APK not confirmed; physical test not requested; release NOT READY.**
+**Current checkpoint: NIM Android baseline GREEN; v0.2 Project Context + debugger + granular context scopes GREEN; current HEAD `6c05308` has a published Android APK; focused physical regression is REQUIRED NEXT; release NOT READY.**
