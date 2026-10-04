@@ -1,18 +1,31 @@
 # CONTEXT_HANDOFF.md
 
-## Project
+## 1. Project identity
 
 - Repository: `UniGi5/godotAI`
-- Project: Godot 4.x Android Editor fork with integrated NVIDIA NIM / Nemotron support.
-- Development branch: `fix/p1-nim-mobile-chat-ui`
+- Product: official Godot Engine fork with integrated NVIDIA NIM / Nemotron support.
+- Base engine: Godot 4.7.2 stable. **Do not switch to Godot master.**
+- Main product branch: `fix/p1-nim-mobile-chat-ui`
 - PR: #1 — `fix(ui): keep NIM chat visible on mobile editor`
-- Current PR head: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
-- Physical-test candidate code commit: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75` (debugger context formatting fix; Android CI/APK pending)..
+- Current product HEAD before this handoff update: `c35fc592b3a2b85139be9bb24464ea3a5f023bad`
+- DEBUG control branch: `debug/versions`
+- DEBUG HEAD: `8a0fa0ee56e6a18fd915c623b9c419d2fbe80c2d`
 
-## Confirmed physical Android baseline
+Architecture invariant:
 
-The latest physically confirmed baseline is commit `0201ff8138d89a265176c1a79c1c6e8f918f05fd`.
+`Godot Core → AI Orchestrator → AIProvider → NvidiaProvider → NVIDIA NIM`
 
+Current model:
+`nvidia/nemotron-3-ultra-550b-a55b`
+
+Endpoint:
+`https://integrate.api.nvidia.com/v1/chat/completions`
+
+## 2. Stable physical Android baseline
+
+Confirmed physical baseline:
+
+- Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
 - CI Run: #156
 - Run ID: `37057401793`
 - Result: SUCCESS
@@ -20,116 +33,212 @@ The latest physically confirmed baseline is commit `0201ff8138d89a265176c1a79c1c
 - Release tag: `build-0201ff8138d`
 - SHA-256: `52e385775ff38585c1e80a556a0c885ef2e9eee4dfa62bca1247fecbcba5fda5`
 
-### Confirmed on physical Android
+Physically confirmed:
+- Android Editor launches.
+- NVIDIA NIM connection works.
+- API key persists after restart.
+- Nemotron responds.
+- Test Connection no longer hangs after success.
+- Copy Chat works.
+- Mobile NIM UI is usable.
+- Project identity/context reaches Nemotron.
 
-- Android Editor starts normally.
-- NVIDIA API key persists.
-- NVIDIA NIM connection test succeeds.
-- Nemotron request/response works.
-- Test Connection no longer remains stuck after success.
-- Copy Chat copies the conversation history.
-- Mobile UI remains usable.
+Do not regress these behaviors.
 
-This is the stable functional baseline. Do not regress to the old broken Test Connection or Copy Chat behavior.
+## 3. Current v0.2 candidate
 
-## Stable NIM transport baseline
+Code candidate:
 
-The verified non-stream path remains the safety baseline:
+- Commit: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
+- Change: debugger context fields now use real newline separators instead of literal \\n.
+- Scope: diagnostics/context formatting only. No NIM transport, TLS, secret storage, or core UI contract change.
+
+Documentation HEAD:
+- `c35fc592b3a2b85139be9bb24464ea3a5f023bad`
+
+The documentation commits after `d4bced3` do not change the candidate runtime code.
+
+## 4. Android CI / APK for current candidate
+
+Current candidate has a successful Android build represented by:
+
+- CI Run: #188
+- Run ID: `37225291853`
+- Android Editor ARM64 Release APK job: SUCCESS
+- APK tag: `build-c35fc592b3a2`
+- APK size: `192,454,271 bytes`
+- SHA-256: `d87c189794942cf84ea7aca1c3bcf83889c5b5e5691e7620143b2863effe84ce`
+
+Direct APK:
+`https://github.com/UniGi5/godotAI/releases/download/build-c35fc592b3a2/godot-android-editor-arm64.apk`
+
+**Important:** CI success is not physical verification. The APK above is the package that must be physically tested before v0.2 is locked.
+
+## 5. v0.2 context implemented
+
+Current code contains provider-independent editor context support for:
+
+- project identity/name;
+- project resource path;
+- current edited scene;
+- selected node name;
+- selected node type/path;
+- selected node script path;
+- selected script source;
+- 12,000-character source limit;
+- explicit `[Script source truncated]` marker;
+- debugger/error context;
+- granular context scopes;
+- context assembly through the AI bridge rather than direct NVIDIA coupling.
+
+Relevant implementation history includes:
+- `87b0722` — selected node script path;
+- `9af5cce` — selected script source;
+- `ac19c9b` — indentation normalization;
+- `84587d9` — roadmap checkpoint;
+- `3a0311b` — scoped context assembly;
+- `42bd9b9` — debugger/error summary scope;
+- `d4bced3` — debugger fields use real newlines.
+
+## 6. Stable NIM transport baseline
+
+Keep the deterministic non-stream path as the Safe Core baseline:
 
 - `stream=false`
 - `max_tokens=256`
 - `chat_template_kwargs.enable_thinking=false`
 - `chat_template_kwargs.force_nonempty_content=true`
 
-Do not replace this baseline with streaming without a separate implementation and verification gate.
+Do not replace this with streaming as part of the v0.2 lock. Streaming is a separate experimental/development gate.
 
-## v0.2 context implementation
+## 7. Development zones
 
-Current HEAD contains code-level context support for:
+### SAFE CORE
+Protected production zone:
+- Godot base;
+- provider architecture;
+- HTTPS/TLS;
+- API key persistence;
+- stable NIM request path;
+- Test Connection;
+- Copy Chat;
+- Android packaging.
 
-- project identity;
-- project resource path;
-- current edited scene;
-- selected node name/type/path;
-- selected node script path;
-- selected script source;
-- 12,000-character source limit;
-- explicit `[Script source truncated]` marker.
+Any Safe Core modification requires minimal patch + CI + regression + physical Android validation.
 
-Relevant commits:
-- `87b0722bbf8e051a5b081c9feb692016efc0a8cd` — selected node script path;
-- `9af5cce90023511874ba96d63c1cb154227a9a91` — selected script source;
-- `ac19c9bbcaf519f67507116920f71f5ebe580682` — indentation normalization;
-- `84587d909a46f609d602aafa58d2d6afac12b15b` — roadmap checkpoint;
-- `3a0311be11d071312bc2c608163644702f6308e6` — scoped context assembly;
-- `42bd9b9c1aab1fa34df901129f93cde63ad16cf0` — debugger/error summary scope.
+### UI TRACK
+Recommended branch: `ui/p1-chat-ux`
 
-These changes are code-level state, not a new physical verification. The physically verified baseline remains `0201ff8`.
+Allowed:
+- mobile layout;
+- word wrapping;
+- code readability;
+- scrolling;
+- connection indicators.
 
-## CI status for current HEAD
+Must not alter the NIM API contract.
 
-For `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`:
+### DEVELOPMENT TRACK
+Recommended branch: `dev/p1-context-diagnostics`
 
-- Code change: debugger context now emits real newline separators.
-- Android workflow result is not yet available through the GitHub workflow-run endpoint.
-- No new APK is claimed for this commit.
-- The previous APK `build-6c053080822d` remains valid only for the previous code candidate `6c05308`.
+Next logical development after v0.2 lock:
+- Diagnostic Report based on Context v0.2;
+- distinguish collected facts from model inference.
 
-This does **not** prove physical runtime behavior. Physical regression must wait for an APK built from the current code candidate.
+### EXPERIMENTAL
+Use `exp/*`.
 
-## Current readiness
+MCP Bridge, streaming replacement, Agent mode and Safe Editing remain **FROZEN until v0.2 release lock**.
 
-| Area | State |
+### DEBUG VERSIONS
+Branch: `debug/versions`
+
+Purpose:
+`change → DEBUG checkpoint → CI/physical verification → record result → next major change`
+
+Current DEBUG checkpoint:
+`DEBUG-v0.2-CANDIDATE`
+
+It must record exact commit, CI, APK, checksum, physical test result and PASS/HOLD/REWORK.
+
+## 8. Current readiness
+
+| Area | Status |
 |---|---|
-| Android Editor startup | 🟩🟩 verified on baseline |
-| NIM authentication / TLS | 🟩🟩 verified |
-| API key persistence | 🟩🟩 verified |
-| Mobile NIM UI | 🟩🟩 verified on baseline |
-| Nemotron chat | 🟩🟩 verified on baseline |
-| Test Connection lifecycle | 🟩🟩 verified on baseline |
-| Copy Chat | 🟩🟩 verified on baseline |
-| Project/scene/selected-node context | 🟩🟩 code implemented |
-| Selected script path/source | 🟩🟩 code implemented |
-| Current HEAD CI | 🟡🟡 pending |
-| Current HEAD APK | 🔴🔴 not available yet |
-| Physical verification of current HEAD | 🟡🟡 blocked by CI |
-| Debugger/errors context | 🟩🟩 code implemented |
-| Controlled context assembly | 🟩🟩 code implemented |
-| v0.2 readiness | 🟩🟥 code gate advanced; CI/physical regression pending |
-| Product/release readiness | 🟥🟥 not ready |
+| SAFE CORE | 🟢 |
+| UI TRACK | 🟢 baseline verified; further UX changes separate |
+| DEVELOPMENT TRACK | 🟡 v0.2 context implemented; diagnostic report next |
+| EXPERIMENTAL | 🟡 frozen until v0.2 lock |
+| DEBUG VERSIONS | 🟢 active |
+| CI | 🟢 Run #188 successful |
+| APK | 🟢 current candidate available |
+| ANDROID TEST | 🟡 physical test pending for Run #188 APK |
+| v0.2 | 🟡 candidate / not locked |
+| RELEASE | 🟡 not ready |
 
-## Next gate
+## 9. Required physical test before v0.2 lock
 
-1. Confirm Android CI and obtain an APK for the current code candidate `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`.
-2. Run one focused physical Android regression on that APK.
-3. Record actual results for context injection/scopes and preserve the confirmed Safe Core behaviors.
-4. If physical regression passes, mark the current checkpoint green.
-5. Prepare the v0.2 verification gate, then the v0.2/release package.
+Use exactly the Run #188 APK above.
 
-## Physical-test protocol
+Check:
+1. Editor launches without crash.
+2. API key persists after restart.
+3. Test Connection succeeds and does not hang.
+4. Nemotron chat responds promptly.
+5. Project name/context is visible to Nemotron.
+6. Current scene / selected node / type / path context is sensible.
+7. Selected script path/source context is sensible.
+8. Debugger/error context is rendered as real separate lines, not literal `\\n`.
+9. Markdown/code blocks remain readable.
+10. Copy Chat works.
+11. No regression of the stable baseline.
 
-When a new physical test is actually required, provide:
+**Readiness rule:** do not mark v0.2 PASS from CI alone. Physical Android confirmation is required.
 
-- exact commit;
-- exact CI run;
-- direct APK link;
-- SHA-256;
-- minimal test steps;
-- expected result;
-- clear readiness marker.
+## 10. After physical PASS
 
-Never mark a code-only checkpoint as physically verified.
+If the Run #188 APK passes:
+1. Record the physical result in `DEBUG_VERSIONS.md`.
+2. Promote checkpoint to `DEBUG-v0.2-RELEASE-CANDIDATE`.
+3. Update roadmap/handoff with the exact tested commit/package.
+4. Prepare v0.2 lock.
+5. Carefully resolve PR/master divergence; do not blindly merge/rebase because PR #1 is currently dirty and behind master.
+6. Prepare release package only after the v0.2 lock.
+7. Only after v0.2 release lock begin MCP/Agent/Safe Editing work.
 
-## Architecture invariant
+If physical testing finds a regression:
+- mark DEBUG checkpoint REWORK;
+- keep Safe Core protected;
+- create the smallest targeted fix;
+- rebuild CI;
+- require a new physical APK test.
 
-Keep provider-independent architecture:
+## 11. Gemini operating rules
 
-`Godot Core → AI Orchestrator → AIProvider → NvidiaProvider → NVIDIA NIM`
+- Treat this document as a factual checkpoint, not as permission to invent verification.
+- Do not retest old APKs unless a concrete regression requires it.
+- Do not claim physical verification from CI.
+- Do not switch Godot version.
+- Do not merge/rebase master blindly.
+- Do not start MCP/Agent/Safe Editing before v0.2 lock.
+- Keep UI, Development and Experimental changes isolated from Safe Core.
+- Every major transition must be recorded in DEBUG Versions.
+- When a new Android physical test is required, report: exact commit, CI run, direct APK, SHA-256, minimal test list and readiness state.
 
-Do not couple Godot Core directly to NVIDIA APIs.
+## 12. Immediate next action
 
-## Handoff rule
+**PHYSICAL ANDROID TEST REQUIRED**
 
-Treat this document as a factual checkpoint. Do not repeat already-confirmed setup or ask the user to retest an older baseline without a concrete reason.
+Test:
+`build-c35fc592b3a2`
 
-**Current checkpoint: NIM Android baseline GREEN; v0.2 Project Context + debugger + granular context scopes code-implemented; debugger formatting fix is at `d4bced3`; CI/APK for this candidate is pending; physical regression is blocked until that APK exists; release NOT READY.**
+APK:
+`https://github.com/UniGi5/godotAI/releases/download/build-c35fc592b3a2/godot-android-editor-arm64.apk`
+
+SHA-256:
+`d87c189794942cf84ea7aca1c3bcf83889c5b5e5691e7620143b2863effe84ce`
+
+Until this physical test is reported, the correct state is:
+
+**v0.2 = HOLD — candidate ready, physical verification pending.**
+**RELEASE = NOT READY.**
