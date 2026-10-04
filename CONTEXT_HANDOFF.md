@@ -213,9 +213,9 @@ Required state:
 - DEVELOPMENT TRACK: 🟡
 - EXPERIMENTAL: 🟡 frozen
 - DEBUG VERSIONS: 🟢
-- CI: 🟡 UI branch build/status not confirmed through the current connector
-- APK: 🔴 no confirmed APK for UI HEAD
-- ANDROID TEST: 🟡 v0.2 candidate pending; UI prototype also untested
+- CI: 🟢 UI HEAD build confirmed — Run #203 / Run ID `37230521319`
+- APK: 🟢 UI HEAD APK confirmed — `build-293cb6606d96`
+- ANDROID TEST: 🟡 v0.2 candidate pending; UI APK is READY FOR PHYSICAL TEST
 - v0.2: 🟡 HOLD
 - RELEASE: 🔴 NOT READY
 
@@ -246,7 +246,14 @@ For the current v0.2 candidate, use:
 - direct APK above;
 - SHA-256 above.
 
-For the UI prototype, no APK is currently declared ready.
+For the UI prototype, APK is now declared READY FOR PHYSICAL TEST:
+
+- Commit: `293cb6606d96bdc4ec860093400c1b24a3b22325`
+- CI Run: #203 / Run ID `37230521319`
+- Release tag: `build-293cb6606d96`
+- APK size: `192,454,271 bytes`
+- SHA-256: `203e9951359aea46af86558235fcc31a4659f36057de7cb1fc48dfc688722c22`
+- Direct APK: `https://github.com/UniGi5/godotAI/releases/download/build-293cb6606d96/godot-android-editor-arm64.apk`
 
 ---
 
@@ -307,7 +314,7 @@ First safe UI prototype is complete at source level.
 
 Next safe step:
 
-**obtain/confirm Android CI for the UI HEAD, then physically test the UI only if that APK is confirmed.**
+**PHYSICAL TEST READY:** install the confirmed UI APK below and execute the UI smoke checklist.
 
 Physical UI observations to capture:
 
@@ -320,8 +327,8 @@ Physical UI observations to capture:
 7. Send remains touch-friendly.
 8. Existing connection, chat, copy and context behavior does not regress.
 
-Until the UI package is built and physically verified:
+Until the UI package is physically verified:
 
-**UI TRACK = HOLD / prototype**
+**UI TRACK = READY FOR PHYSICAL TEST**
 **v0.2 = HOLD**
 **RELEASE = NOT READY**
