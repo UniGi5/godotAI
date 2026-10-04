@@ -1,75 +1,123 @@
 # CONTEXT_HANDOFF.md
 
 ## Project
+
 - Repository: `UniGi5/godotAI`
 - Project: Godot 4.x Android Editor fork with integrated NVIDIA NIM / Nemotron support.
-- Current development branch: `fix/p1-nim-mobile-chat-ui`
+- Development branch: `fix/p1-nim-mobile-chat-ui`
 - PR: #1 — `fix(ui): keep NIM chat visible on mobile editor`
-- PR head verified: `5fb6a891b7e47a9c55c36f909d138ddac8ac95ba`
+- Current PR head: `84587d909a46f609d602aafa58d2d6afac12b15b`
 
-## Verified physical Android checkpoint — 2026-10-02
+## Confirmed physical Android baseline
 
-The latest Android ARM64 release build was installed and tested on physical Android hardware.
+The latest physically confirmed baseline is commit `0201ff8138d89a265176c1a79c1c6e8f918f05fd`.
 
-### Confirmed
+- CI Run: #156
+- Run ID: `37057401793`
+- Result: SUCCESS
+- APK: `godot-android-editor-arm64.apk`
+- Release tag: `build-0201ff8138d`
+- SHA-256: `52e385775ff38585c1e80a556a0c885ef2e9eee4dfa62bca1247fecbcba5fda5`
+
+### Confirmed on physical Android
+
 - Android Editor starts normally.
-- NVIDIA API key persists across app/project restart.
-- A newly created project can use the stored NVIDIA API key.
+- NVIDIA API key persists.
 - NVIDIA NIM connection test succeeds.
-- Hosted model: `nvidia/nemotron-3-ultra-550b-a55b`.
-- Chat request completes immediately.
-- Nemotron receives editor/project context.
-- Nemotron identified the project name and offered help based on the context.
-- The previous apparent timeout/silent-response problem is resolved by the deterministic non-stream request path.
+- Nemotron request/response works.
+- Test Connection no longer remains stuck after success.
+- Copy Chat copies the conversation history.
+- Mobile UI remains usable.
 
-### Important implementation state
-The stable chat diagnostic path currently uses:
+This is the stable functional baseline. Do not regress to the old broken Test Connection or Copy Chat behavior.
+
+## Stable NIM transport baseline
+
+The verified non-stream path remains the safety baseline:
+
 - `stream=false`
 - `max_tokens=256`
 - `chat_template_kwargs.enable_thinking=false`
 - `chat_template_kwargs.force_nonempty_content=true`
 
-This is now the physically verified baseline. Do not remove or replace it with streaming until the streaming path is implemented and tested separately.
+Do not replace this baseline with streaming without a separate implementation and verification gate.
 
-## CI checkpoint
-- Latest verified Android CI run: #63
-- Run ID: `36959838023`
-- Result: success.
-- Android ARM64 release APK validation, build, payload audit and SHA-256 generation passed.
-- Latest physical-test APK SHA-256:
-  `ac953cf5256f4a344a6c1ee047b8d1931378db4b756dfac8c5aa8cb632ce38f2`
-- Release tag used for that APK: `build-fc9398d43b98`
+## v0.2 context implementation
 
-## Readiness state
+Current HEAD contains code-level context support for:
+
+- project identity;
+- project resource path;
+- current edited scene;
+- selected node name/type/path;
+- selected node script path;
+- selected script source;
+- 12,000-character source limit;
+- explicit `[Script source truncated]` marker.
+
+Relevant commits:
+- `87b0722bbf8e051a5b081c9feb692016efc0a8cd` — selected node script path;
+- `9af5cce90023511874ba96d63c1cb154227a9a91` — selected script source;
+- `ac19c9bbcaf519f67507116920f71f5ebe580682` — indentation normalization;
+- `84587d909a46f609d602aafa58d2d6afac12b15b` — roadmap checkpoint.
+
+These changes are code-level state, not a new physical verification. The physically verified baseline remains `0201ff8`.
+
+## CI status for current HEAD
+
+For `84587d909a46f609d602aafa58d2d6afac12b15b`:
+
+- combined status endpoint: no statuses reported;
+- available workflow-run endpoint: no runs reported.
+
+This does **not** prove that push CI did not run; the available workflow endpoint is limited. Therefore the correct state is **CI NOT CONFIRMED**, not CI FAILED.
+
+Do not request physical testing for the current HEAD until a valid Android APK is confirmed.
+
+## Current readiness
 
 | Area | State |
 |---|---|
-| Android Editor startup | 🟩🟩 verified |
+| Android Editor startup | 🟩🟩 verified on baseline |
 | NIM authentication / TLS | 🟩🟩 verified |
 | API key persistence | 🟩🟩 verified |
-| New-project key availability | 🟩🟩 verified |
-| Mobile NIM panel layout | 🟩🟩 verified |
-| Nemotron chat generation | 🟩🟩 verified |
-| Editor/project context injection | 🟩🟩 physically verified |
-| Deterministic non-stream path | 🟩🟩 verified |
-| Streaming response path | 🟥 not yet physically verified |
-| Full agent/tool actions in editor | 🟥 not yet complete |
+| Mobile NIM UI | 🟩🟩 verified on baseline |
+| Nemotron chat | 🟩🟩 verified on baseline |
+| Test Connection lifecycle | 🟩🟩 verified on baseline |
+| Copy Chat | 🟩🟩 verified on baseline |
+| Project/scene/selected-node context | 🟩🟩 code implemented |
+| Selected script path/source | 🟩🟩 code implemented |
+| Current HEAD CI | 🟥🟥 not confirmed |
+| Current HEAD APK | 🟥🟥 not confirmed |
+| Physical verification of current HEAD | 🟥🟥 not requested |
+| Debugger/errors context | 🟥🟥 |
+| Controlled context assembly | 🟥🟥 |
 | v0.2 readiness | 🟩🟥 partial |
-| Product/release readiness | 🟥 not yet |
+| Product/release readiness | 🟥🟥 not ready |
 
-## Next development gate
+## Next gate
 
-Continue development without requesting another physical test until a new test-dependent milestone is reached.
+1. Confirm Android CI for current HEAD.
+2. If a valid APK exists, provide exact APK + direct link + SHA-256.
+3. Request one focused physical regression for the new context implementation.
+4. If physical regression passes, mark that checkpoint green.
+5. Continue with debugger/errors context.
+6. Then implement controlled context assembly.
+7. Only after the v0.2 gate is complete, prepare the v0.2/release package.
 
-Priority order:
-1. Preserve the working non-stream path as the stable fallback.
-2. Implement robust streaming/SSE handling as a separate path.
-3. Parse both normal content and reasoning content where supplied by Nemotron.
-4. Make streaming explicitly selectable or safely fall back to non-stream.
-5. Keep the UI status lifecycle observable: request started → HTTP response → first content → completed/error.
-6. Build Android CI.
-7. Only then request a physical Android streaming test with APK + direct link + SHA-256.
-8. After streaming is physically verified, continue toward v0.2 packaging.
+## Physical-test protocol
+
+When a new physical test is actually required, provide:
+
+- exact commit;
+- exact CI run;
+- direct APK link;
+- SHA-256;
+- minimal test steps;
+- expected result;
+- clear readiness marker.
+
+Never mark a code-only checkpoint as physically verified.
 
 ## Architecture invariant
 
@@ -79,40 +127,8 @@ Keep provider-independent architecture:
 
 Do not couple Godot Core directly to NVIDIA APIs.
 
-## Handoff rule for Gemini / future agents
+## Handoff rule
 
-Treat this document as a factual checkpoint, not as a speculative plan.
+Treat this document as a factual checkpoint. Do not repeat already-confirmed setup or ask the user to retest an older baseline without a concrete reason.
 
-The most important fact is:
-
-**NVIDIA NIM + Nemotron 3 Ultra 550B chat is physically working on Android, including editor/project context.**
-
-The previous timeout/silence issue must not be reintroduced by replacing the verified non-stream path prematurely.
-
-Streaming is the next engineering task, not a prerequisite for the current verified baseline.
-
-## Context transition
-
-This file is intended to allow a new chat/agent to continue from the verified state without repeating the physical setup or asking the user to re-test already confirmed functionality.
-
-Before asking for a new physical test, provide:
-- exact reason for the test;
-- exact APK;
-- direct download link;
-- SHA-256;
-- minimal test steps;
-- expected result;
-- clear readiness marker.
-
-Current checkpoint: **PHYSICAL ANDROID NIM CHAT BASELINE — GREEN / STABLE**.
-
-## Current development checkpoint — 2026-10-03
-
-- Current PR head: `9af5cce90023511874ba96d63c1cb154227a9a91`.
-- v0.2 context work now exposes project identity, current edited scene, selected node, and the selected node's script path/source to the AI context provider.
-- Script source is capped at 12,000 characters and explicitly marked when truncated.
-- The verified non-stream NIM chat path remains unchanged: `stream=false`, thinking disabled, forced non-empty content.
-- This context change is code-level verified only; CI for the new head is still pending/not reported by the available status endpoint.
-- Do not request physical Android testing yet. First require a successful Android CI build for `9af5cce9`. Then provide the resulting APK, direct link and SHA-256 for physical regression testing.
-- Physical regression target after CI: Test Connection → send `Привет` → visible user message → loading state → Nemotron response or explicit error → Retry/Copy Chat behavior.
-- v0.2 remains 🟩🟥 partial. Release remains 🟥🟥.
+**Current checkpoint: NIM Android baseline GREEN; v0.2 Project Context code GREEN; current HEAD CI/APK not confirmed; release NOT READY.**
