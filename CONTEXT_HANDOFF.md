@@ -85,7 +85,9 @@ This historical package is **not** the new 4.7.2 controlled-baseline candidate.
 ## BACKLOG STATE
 
 - Step 0 — clean 4.7.2 Stable baseline: 🟩🟩 COMPLETE
-- Step 1 — targeted Safe Core/context transplant: 🟨🟨 NEXT
+- Step 1-A — dependency audit: 🟩🟩 COMPLETE
+- Step 1-B — AI Bridge foundation port: 🟨🟨 NEXT
+- Step 1-C — approved context transplant: 🟥🟥 QUEUED
 - Step 2 — mobile chat UI transplant: 🟥🟥 QUEUED
 - Step 3 — Android CI + APK + SHA-256: 🟥🟥 QUEUED
 - Step 4 — real-device Android validation: 🟥🟥 QUEUED
@@ -100,9 +102,20 @@ A physical test is not requested for this baseline/documentation operation. It b
 
 Do not infer physical verification from CI.
 
+## EXACT STEP 1 EVIDENCE
+
+- First requested context commit: `6b7c7e558e4809ec1532013174d5b16bdd445447`
+- Direct parent: `1e65ff3f7d4246e9258874dac84fb033d3b4c103`
+- Parent chain includes:
+  - `c37a1e52471696085fd03e7fc4386964275c2643` — provider-neutral AI Bridge contracts
+  - `383e035d9e442f2e2348ab55a04653c2599fc30c` — AI Bridge build integration on the old development line
+- Clean 4.7.2 baseline contains no `editor/ai_bridge/` tree.
+
 ## NEXT IMMEDIATE STEP
 
-Perform exactly one dependency-safe Step 1 action: audit the parent/dependency chain of the first context candidate `6b7c7e558e4809ec1532013174d5b16bdd445447` against the clean 4.7.2 baseline before attempting any cherry-pick.
+Port the minimum AI Bridge/NIM foundation required by `6b7c7e5…`, starting from the provider-neutral contract layer, while keeping the 4.7.2 Stable root intact.
+
+Do not blindly cherry-pick the old 4.8-dev ancestry.
 
 ## Handoff Rules
 - Never switch to Godot master / 4.8-dev.
