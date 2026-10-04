@@ -78,10 +78,10 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 			ScriptEditorDebugger *debugger = debugger_node->get_current_debugger();
 			if (debugger) {
 				String debugger_context = "Debugger context:";
-				debugger_context += vformat("\\nSession active: %s", debugger->is_session_active() ? "true" : "false");
-				debugger_context += vformat("\\nPaused: %s", debugger->is_breaked() ? "true" : "false");
-				debugger_context += vformat("\\nErrors: %d", debugger->get_error_count());
-				debugger_context += vformat("\\nWarnings: %d", debugger->get_warning_count());
+				debugger_context += vformat("\nSession active: %s", debugger->is_session_active() ? "true" : "false");
+				debugger_context += vformat("\nPaused: %s", debugger->is_breaked() ? "true" : "false");
+				debugger_context += vformat("\nErrors: %d", debugger->get_error_count());
+				debugger_context += vformat("\nWarnings: %d", debugger->get_warning_count());
 				AIMessage debugger_message;
 				debugger_message.role = AIMessageRole::SYSTEM;
 				debugger_message.content = debugger_context;
