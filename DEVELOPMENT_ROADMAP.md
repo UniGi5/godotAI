@@ -116,7 +116,7 @@ NIM first-milestone baseline больше не блокирует дальней
 ### 2.6 Controlled context assembly
 🟩🟩 code implemented — explicit scopes now include `project_identity`, `scene_context`, `selection_context`, `script_context`, `debugger_context`, and the compatibility/full `editor_context`. Existing provider contract is unchanged.
 
-**Current blocker:** Android CI for the current context-code HEAD is not confirmed by the available GitHub status/run endpoints. Do not request physical testing until a successful APK for the current HEAD is available.
+**Current blocker:** none for CI/package availability. A valid APK exists for code candidate `6c05308`; physical Android regression is the next gate.
 
 ---
 
@@ -190,13 +190,14 @@ MCP, shell и автономные действия не добавляются 
 ### Verification gate
 
 - Current branch: `fix/p1-nim-mobile-chat-ui`
-- Current HEAD: `6c053080822dd42b2b2fdea08daca13e7510a6d7`
+- Current branch HEAD: `1bed5dfe8ecc7a8dc860d0e1ec291eddcb591c79`
+- Code candidate for physical test: `6c053080822dd42b2b2fdea08daca13e7510a6d7` (documentation-only commits follow it)
 - Current HEAD CI: 🟩🟩 Android APK published as `build-6c053080822d`.
 - Physical Android test for current HEAD: 🟡🟡 REQUIRED NEXT.
 - Previous NIM/mobile baseline: 🟩🟩 physically confirmed at `0201ff8`.
 - v0.2: 🟩🟥 partial — physical regression pending.
 - Release: 🟥🟥 not ready.
 
-**Next engineering action:** run the focused physical regression using the published APK for the current HEAD, then prepare the v0.2 verification gate.
+**Next engineering action:** run the focused physical regression using the published APK for code candidate `6c05308`, then prepare the v0.2 verification gate.
 
 **Do not label the current HEAD as release-ready merely because the older baseline is physically green.**
