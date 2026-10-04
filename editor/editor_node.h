@@ -103,6 +103,8 @@ class ProjectExportDialog;
 class ProjectSettingsEditor;
 class SceneImportSettingsDialog;
 class ProjectUpgradeTool;
+class AIBridgeRuntime;
+class NIMEditorPanel;
 
 #ifdef ANDROID_ENABLED
 class TouchActionsPanel;
@@ -258,6 +260,8 @@ private:
 	static EditorNode *singleton;
 
 	EditorData editor_data;
+	AIBridgeRuntime *ai_bridge_runtime = nullptr;
+	NIMEditorPanel *nim_editor_panel = nullptr;
 	EditorFolding editor_folding;
 	EditorSelectionHistory editor_history;
 
@@ -748,6 +752,7 @@ public:
 
 	static EditorLog *get_log() { return singleton->log; }
 	static EditorData &get_editor_data() { return singleton->editor_data; }
+	static AIBridgeRuntime *get_ai_bridge_runtime() { return singleton->ai_bridge_runtime; }
 	static EditorFolding &get_editor_folding() { return singleton->editor_folding; }
 
 	static EditorTitleBar *get_title_bar() { return singleton->title_bar; }
