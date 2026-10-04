@@ -32,6 +32,8 @@
 
 #include "core/config/project_settings.h"
 #include "core/string/ustring.h"
+#include "editor/debugger/editor_debugger_node.h"
+#include "editor/debugger/script_editor_debugger.h"
 #include "editor/editor_data.h"
 #include "editor/editor_node.h"
 #include "scene/main/node.h"
@@ -40,6 +42,7 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 	AIContext context;
 	context.source = p_scope;
 	const bool identity_only = p_scope == "project_identity";
+	const bool debugger_only = p_scope == "debugger_context";
 
 	const ProjectSettings *settings = ProjectSettings::get_singleton();
 	if (!settings) {
@@ -63,6 +66,25 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 	context.messages.push_back(message);
 
 	if (identity_only) {
+		return context;
+	}
+
+	if (debugger_only) {
+		EditorDebuggerNode *debugger_node = EditorDebuggerNode::get_singleton();
+		if (debugger_node) {
+			ScriptEditorDebugger *debugger = debugger_node->get_current_debugger();
+			if (debugger) {
+				String debugger_context = "Debugger context:";
+				debugger_context += vformat("\\nSession active: %s", debugger->is_session_active() ? "true" : "false");
+				debugger_context += vformat("\\nPaused: %s", debugger->is_breaked() ? "true" : "false");
+				debugger_context += vformat("\\nErrors: %d", debugger->get_error_count());
+				debugger_context += vformat("\\nWarnings: %d", debugger->get_warning_count());
+				AIMessage debugger_message;
+				debugger_message.role = AIMessageRole::SYSTEM;
+				debugger_message.content = debugger_context;
+				context.messages.push_back(debugger_message);
+			}
+		}
 		return context;
 	}
 
