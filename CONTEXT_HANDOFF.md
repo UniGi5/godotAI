@@ -12,8 +12,8 @@ Factual checkpoint for continuation. Update after baseline repairs, important im
 - Upstream tag: `4.7.2-stable`
 - Exact stable commit: `ed1daf0bf001b61586d9930840f2f1394092c079`
 - `development/controlled-baseline` was reset directly to the exact stable commit.
-- Current branch HEAD: `cddc925026c77554dbcf84ce5e27ab8206e75b0d`
-- Current HEAD is a governance/documentation commit whose parent is `387c546d315088cb54d84bb41883a64b41835879`, whose parent is the exact stable commit.
+- Current branch HEAD: `35e32d482beb77e3fa9cf46c87124902a499e327`
+- Current HEAD is a governance/documentation commit whose ancestry reaches the exact stable commit.
 - `version.py` on the controlled branch is naturally:
   `4.7.2 / stable / docs 4.7`.
 - The previous incorrect 4.8-dev controlled branch state was preserved as:
