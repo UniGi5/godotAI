@@ -190,13 +190,13 @@ MCP, shell и автономные действия не добавляются 
 ### Verification gate
 
 - Current branch: `fix/p1-nim-mobile-chat-ui`
-- Current HEAD: `0bdbff301291f55efbdb9b9b24090c2d6d04d336`
-- Current HEAD CI: 🟥🟥 not confirmed by the available GitHub status/run endpoints.
-- Physical Android test for current HEAD: 🟥🟥 NOT REQUESTED.
+- Current HEAD: `6c053080822dd42b2b2fdea08daca13e7510a6d7`
+- Current HEAD CI: 🟩🟩 Android APK published as `build-6c053080822d`.
+- Physical Android test for current HEAD: 🟡🟡 REQUIRED NEXT.
 - Previous NIM/mobile baseline: 🟩🟩 physically confirmed at `0201ff8`.
-- v0.2: 🟩🟥 partial.
+- v0.2: 🟩🟥 partial — physical regression pending.
 - Release: 🟥🟥 not ready.
 
-**Next engineering action:** obtain/confirm Android CI for the current HEAD. If a valid APK is available, run the focused physical regression for the new context/scoping code. After that, prepare the v0.2 verification gate.
+**Next engineering action:** run the focused physical regression using the published APK for the current HEAD, then prepare the v0.2 verification gate.
 
 **Do not label the current HEAD as release-ready merely because the older baseline is physically green.**
