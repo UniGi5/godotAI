@@ -258,7 +258,7 @@ Never:
 
 ## 9. CURRENT POSITION
 
-**Step 0 COMPLETE → Step 1-A COMPLETE → Step 1-B NEXT**
+**Step 0 COMPLETE → Step 1-A COMPLETE → Step 1-B PORTED / VALIDATION NEXT**
 
 ### Final status
 - ENGINE BASELINE: 🟩🟩 4.7.2 Stable verified
@@ -270,4 +270,4 @@ Never:
 - RELEASE: 🟥🟥 not ready
 
 ### NEXT IMMEDIATE STEP
-Audit and port the minimum AI Bridge/NIM foundation required by `6b7c7e5…`, starting from the provider-neutral contract layer, without importing the 4.8-dev ancestry.
+Validate the ported AI Bridge contract layer on the 4.7.2 baseline (CI/build path); only after a successful build proceed to the first approved context commit.
