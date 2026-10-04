@@ -6,7 +6,8 @@
 - Project: Godot 4.x Android Editor fork with integrated NVIDIA NIM / Nemotron support.
 - Development branch: `fix/p1-nim-mobile-chat-ui`
 - PR: #1 — `fix(ui): keep NIM chat visible on mobile editor`
-- Current PR head: `6c053080822dd42b2b2fdea08daca13e7510a6d7`
+- Current PR head: `1bed5dfe8ecc7a8dc860d0e1ec291eddcb591c79`
+- Physical-test candidate code commit: `6c053080822dd42b2b2fdea08daca13e7510a6d7` (the two commits after it change documentation only).
 
 ## Confirmed physical Android baseline
 
@@ -134,4 +135,4 @@ Do not couple Godot Core directly to NVIDIA APIs.
 
 Treat this document as a factual checkpoint. Do not repeat already-confirmed setup or ask the user to retest an older baseline without a concrete reason.
 
-**Current checkpoint: NIM Android baseline GREEN; v0.2 Project Context + debugger + granular context scopes GREEN; current HEAD `6c05308` has a published Android APK; focused physical regression is REQUIRED NEXT; release NOT READY.**
+**Current checkpoint: NIM Android baseline GREEN; v0.2 Project Context + debugger + granular context scopes GREEN; code candidate `6c05308` has a published Android APK; branch HEAD `1bed5df` contains documentation-only updates; focused physical regression is REQUIRED NEXT; release NOT READY.**
