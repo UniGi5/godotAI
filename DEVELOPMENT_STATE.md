@@ -110,8 +110,36 @@ Evidence:
 - `version.py` verified as 4.7.2 stable
 - former 4.8-dev branch preserved as archive
 
-### Step 1 — Cherry-pick Safe Core AI/context commits
+### Step 1-A — Dependency audit for Safe Core/context transplant
+🟩🟩 COMPLETE
+
+Finding:
+- The clean 4.7.2 baseline does not contain `editor/ai_bridge/`.
+- The first requested context commit `6b7c7e558e4809ec1532013174d5b16bdd445447` modifies existing AI Bridge files and therefore cannot be cherry-picked independently.
+- Its direct parent chain reaches the AI Bridge foundation beginning at `c37a1e52471696085fd03e7fc4386964275c2643`, whose parent is `383e035d9e442f2e2348ab55a04653c2599fc30c` on the old development line.
+- The old development line itself diverges from 4.7.2 Stable, so blindly importing that ancestry would reintroduce the baseline problem.
+
+### Step 1-B — Controlled AI Bridge foundation port
 🟨🟨 NEXT
+
+Goal:
+- Port only the required project-specific AI Bridge/NIM foundation onto the verified 4.7.2 root.
+- Do not merge/rebase the old 4.8-dev line.
+- Establish the minimum foundation needed for the six approved context commits.
+- Validate source compatibility before adding context behavior.
+
+Foundation evidence:
+- `c37a1e52471696085fd03e7fc4386964275c2643` — provider-neutral AI Bridge contracts.
+- The AI Bridge path currently contains 34 project files at the reference implementation.
+- NIM integration also requires selected editor lifecycle/build integration commits; these must be ported deliberately rather than inherited from the 4.8-dev ancestry.
+
+Promotion rule:
+- foundation port is a controlled port, not a blind range cherry-pick;
+- CI is required after the foundation compiles;
+- physical Android testing is not required until a behavior-changing Android candidate is produced.
+
+### Step 1-C — Approved AI/context commits
+🟥🟥 QUEUED
 
 Approved context commits, each verified to exist in the repository:
 - `6b7c7e558e4809ec1532013174d5b16bdd445447` — project identity
@@ -230,16 +258,16 @@ Never:
 
 ## 9. CURRENT POSITION
 
-**Step 0 COMPLETE → Step 1 NEXT**
+**Step 0 COMPLETE → Step 1-A COMPLETE → Step 1-B NEXT**
 
 ### Final status
 - ENGINE BASELINE: 🟩🟩 4.7.2 Stable verified
 - DEVELOPMENT BASE: 🟩🟩 corrected and isolated
-- SAFE CORE: 🟩🟩 protected
+- SAFE CORE: 🟨🟨 foundation port required before context transplant
 - UI TRACK: 🟡🟡 isolated, not yet transplanted
 - PHYSICAL TEST: 🟥🟥 not requested yet
 - v0.2: 🟡🟡 hold
 - RELEASE: 🟥🟥 not ready
 
 ### NEXT IMMEDIATE STEP
-Take exactly one atomic Step 1 subset: transplant the first Safe Core/context commit group onto the verified 4.7.2 baseline, then run the required source/compile review before adding the next group.
+Audit and port the minimum AI Bridge/NIM foundation required by `6b7c7e5…`, starting from the provider-neutral contract layer, without importing the 4.8-dev ancestry.
