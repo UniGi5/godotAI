@@ -6,7 +6,7 @@
 - Project: Godot 4.x Android Editor fork with integrated NVIDIA NIM / Nemotron support.
 - Development branch: `fix/p1-nim-mobile-chat-ui`
 - PR: #1 — `fix(ui): keep NIM chat visible on mobile editor`
-- Current PR head: `42bd9b9c1aab1fa34df901129f93cde63ad16cf0`
+- Current PR head: `96d195a072d3678119035c7a768ba35b3c9d52b7`
 
 ## Confirmed physical Android baseline
 
@@ -67,7 +67,7 @@ These changes are code-level state, not a new physical verification. The physica
 
 ## CI status for current HEAD
 
-For `42bd9b9c1aab1fa34df901129f93cde63ad16cf0`:
+For `96d195a072d3678119035c7a768ba35b3c9d52b7`:
 
 - combined status endpoint: no statuses reported;
 - available workflow-run endpoint: no runs reported.
@@ -93,7 +93,7 @@ Do not request physical testing for the current HEAD until a valid Android APK i
 | Current HEAD APK | 🟥🟥 not confirmed |
 | Physical verification of current HEAD | 🟥🟥 not requested |
 | Debugger/errors context | 🟩🟩 code implemented |
-| Controlled context assembly | 🟩🟥 partial |
+| Controlled context assembly | 🟩🟩 code implemented |
 | v0.2 readiness | 🟩🟥 partial |
 | Product/release readiness | 🟥🟥 not ready |
 
@@ -101,11 +101,9 @@ Do not request physical testing for the current HEAD until a valid Android APK i
 
 1. Confirm Android CI for current HEAD.
 2. If a valid APK exists, provide exact APK + direct link + SHA-256.
-3. Request one focused physical regression for the new context implementation.
-4. If physical regression passes, mark that checkpoint green.
-5. Continue with debugger/errors context.
-6. Expand controlled context scopes.
-7. Prepare the v0.2 verification gate and then the v0.2/release package.
+3. Request one focused physical regression for the new context/scoping implementation.
+4. If physical regression passes, mark the current checkpoint green.
+5. Prepare the v0.2 verification gate, then the v0.2/release package.
 
 ## Physical-test protocol
 
@@ -133,4 +131,4 @@ Do not couple Godot Core directly to NVIDIA APIs.
 
 Treat this document as a factual checkpoint. Do not repeat already-confirmed setup or ask the user to retest an older baseline without a concrete reason.
 
-**Current checkpoint: NIM Android baseline GREEN; v0.2 Project Context + debugger scope + first scoped assembly GREEN/PARTIAL; current HEAD CI/APK not confirmed; release NOT READY.**
+**Current checkpoint: NIM Android baseline GREEN; v0.2 Project Context + debugger + granular context scopes GREEN; current HEAD CI/APK not confirmed; physical test not requested; release NOT READY.**
