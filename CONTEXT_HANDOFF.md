@@ -1,100 +1,132 @@
-# CONTEXT_HANDOFF.md
+# CONTEXT_HANDOFF.md — Gemini / Superpowers
+
+## Purpose
+Factual checkpoint for Gemini. Update after important implementation changes, CI/package milestones, physical Android tests, discovered blockers, branch promotions, or v0.2/release gate decisions. Do not rewrite for every ordinary commit.
 
 ## Project
 - Repository: `UniGi5/godotAI`
-- Product: native Android Godot Editor fork with built-in NVIDIA NIM / Nemotron.
-- Godot target: 4.7.2 stable.
-- Provider: NVIDIA NIM / Nemotron 3 Ultra 550B.
-- Model: `nvidia/nemotron-3-ultra-550b-a55b`.
-- Architecture invariant: `Godot Core → AI Orchestrator → AIProvider → NvidiaProvider → NVIDIA NIM`.
+- Product: official Godot Engine fork with integrated NVIDIA NIM / Nemotron.
+- Target engine baseline: **Godot 4.7.2 Stable**
+- Controlled development branch: `development/controlled-baseline`
+- Architecture: `Godot Core → AI Orchestrator → AIProvider → NvidiaProvider → NVIDIA NIM`
+- Model: `nvidia/nemotron-3-ultra-550b-a55b`
+- Endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`
+- Android target: ARM64
 
-## Verified physical checkpoint — 2026-10-02
-The current development line has a physically verified NIM chat baseline:
-- Android Editor starts normally.
-- NVIDIA API key persists across app/project restart.
-- A newly created project can use the stored NVIDIA API key.
-- NIM connection succeeds.
-- Chat request returns an immediate Nemotron response.
-- Nemotron receives editor/project context and identified the project name.
-- The verified reliable request shape is non-streaming with thinking disabled.
-- Streaming is now implemented as a separate SSE path and must not replace the verified fallback.
+## CRITICAL ENGINE BASELINE FINDING
+Repository audit shows `version.py` currently contains:
+`major=4, minor=8, patch=0, status="dev"`.
 
-## Important implementation rule
-Keep the verified chat path stable:
+The same 4.8-dev metadata is present on the inspected product/UI branches.
+
+Therefore the current source tree is **Godot 4.8 development**, not a verified 4.7.2 Stable source tree.
+
+Upstream Godot 4.7.2 Stable:
+- tag: `4.7.2-stable`
+- commit: `ed1daf0bf001b61586d9930840f2f1394092c079`
+
+This is a **BASELINE MISMATCH**, not a cosmetic label issue.
+
+**Do not change only `version.py` to make the app display 4.7.2.**
+**Do not declare the engine baseline verified until source ancestry is established.**
+
+## DEVELOPMENT ZONES
+
+### ENGINE BASELINE
+Target: **Godot 4.7.2 Stable**
+
+### DEVELOPMENT BASE
+Branch: `development/controlled-baseline`
+Purpose: establish the verified engine base and organize development without contaminating the release candidate.
+
+### SAFE CORE
+Protected:
+- API key persistence
+- TLS/HTTPS
+- NIM transport
+- NvidiaProvider
+- AI Orchestrator
+- verified non-stream chat
+- Android packaging
+
+### RELEASE BASE
+Target: **v0.2 candidate**
+
+### UI TRACK
+Branch: `ui/p1-chat-ux`
+Mobile UI changes stay isolated until physical verification.
+
+### EXPERIMENTAL
+Use `exp/*` for MCP / Agent / Safe Editing / future autonomous capabilities. Frozen until v0.2 lock.
+
+## KNOWN GOOD PHYSICAL ANDROID BASELINE
+- Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
+- CI Run: #156 / Run ID `37057401793`
+- Release: `build-0201ff8138d`
+- SHA-256: `52e385775ff38585c1e80a556a0c885ef2e9eee4dfa62bca1247fecbcba5fda5`
+
+Physically verified:
+- Editor launches
+- API key persists
+- NIM connection succeeds
+- Nemotron responds
+- Test Connection works
+- Copy Chat works
+- mobile NIM UI is usable
+- project identity/context reaches Nemotron
+
+Protect this baseline.
+
+## SAFE NIM TRANSPORT CONTRACT
+Keep:
 - `stream=false`
+- `max_tokens=256`
 - `chat_template_kwargs.enable_thinking=false`
 - `chat_template_kwargs.force_nonempty_content=true`
 
-Commit `cd8b31cc0e6191967282e4dd0e790a41dbedee19` explicitly applies this baseline to normal chat Send requests.
+SSE/streaming must remain independently verifiable and must not replace the known-good path without a gate.
 
-Do not replace the stable non-stream path with SSE until streaming is implemented and regression-tested separately.
+## PROMOTION PIPELINE
+`DEVELOPMENT → source verification → CI → physical Android test → review → v0.2 candidate → release`
 
-## Current context implementation
-- Project identity: implemented and physically verified.
-- Current edited scene context: implemented.
-- Selected node context: implemented.
-- Latest selected-node API/lifecycle fixes are on master, including `EditorNode::get_singleton()->get_editor_selection()`.
-- Selected-node context still requires physical verification on the APK containing the latest code.
+Never promote directly from development to release.
 
-## v0.2 SSE checkpoint
-- SSE parser keeps incomplete network data buffered until an SSE event boundary.
-- Multiple `data:` lines are accumulated per event.
-- `[DONE]` produces `COMPLETED`.
-- `finish_reason` also produces `COMPLETED`, preventing UI from remaining in a waiting state.
-- `reasoning_content` is emitted with `AIStreamEvent.reasoning=true`; final `content` remains separate.
-- Provider work runs on the request thread, not the Android UI thread.
-- Malformed completed SSE JSON now emits `ERROR` immediately instead of waiting for timeout.
-- Android compact-layout regression found: chat input/Send were below the expandable transcript; controls were moved before the transcript and transcript minimum height reduced to keep chat reachable.
-- Missing API key now emits `ERROR` through the callback before `start_chat()` returns false.
-- Normal chat remains explicitly `stream=false` with `enable_thinking=false` and `force_nonempty_content=true`.
+For every physical-test package record:
+1. exact commit;
+2. CI run;
+3. direct APK;
+4. SHA-256;
+5. short checklist;
+6. expected result;
+7. **READY FOR PHYSICAL TEST** marker.
 
-## Current position
-**v0.2 — NIM mobile chat reliability — physical regression fix pending CI/test**
+CI success alone is never physical verification.
 
-Status:
-- 1.7 physical Android launch/NIM baseline: 🟩🟩
-- 1.8 first milestone: 🟩🟥 partial
-- 2.1 project identity: 🟩🟩
-- 2.2 current scene: 🟩🟥
-- 2.3 selected node: 🟩🟥
-- 2.4 current script: 🟩🟥 implemented
-- v0.2 SSE: 🟩🟥 implementation complete; compact Android UI fix `3105b223` is followed by chat-flow reliability fixes `a0faaec` and transport polling fix `143078c`; fresh CI/physical verification required
-- 2.5 debugger/errors: 🟥🟥
-- 2.6 controlled context assembly: 🟥🟥
-- v0.2: 🟩🟥 partial
-- release: 🟥🟥
+## CURRENT STATUS
+- ENGINE BASELINE: 🔴 **MISMATCH — 4.8-dev source detected**
+- DEVELOPMENT BASE: 🟢 **ACTIVE**
+- SAFE CORE: 🟢 **PROTECTED**
+- UI TRACK: 🟡 **ISOLATED**
+- v0.2: 🟡 **HOLD**
+- RELEASE: 🔴 **NOT READY**
+- PHYSICAL TEST: 🟢 **NOT REQUESTED by this documentation/baseline change**
 
-## Latest mobile chat bugfix checkpoint
-- `a0faaec397de245bee13830e509ad483b15560f9`: user chat messages are retained after request errors/cancellation; empty completed responses are no longer reported as `Connected`; Send shows `Sending...` during the request.
-- `143078c87327195ee037df1c651ffd8097c5b119`: connection `poll()` errors now terminate the request with an explicit error instead of silently waiting for timeout.
-- Test Connection remains local key-save only; it must not generate an extra NIM request and trigger `429`.
-- Physical test target: Test Connection → `Привет` → visible user message → loading state → Nemotron response or explicit error.
+## IMMEDIATE NEXT STEP
+1. Establish the real Godot 4.7.2 Stable source base.
+2. Identify the exact AI/NIM commits that must survive.
+3. Reconcile those changes onto the verified 4.7.2 base in small steps.
+4. Run Android CI.
+5. Request one focused physical regression for the resulting behavior-changing APK.
+6. Record the actual result here.
+7. Only then advance toward v0.2 candidate locking.
 
-## Next engineering order
-1. Keep non-stream chat baseline unchanged.
-2. Complete current-script context.
-3. Add debugger/error context.
-4. Consolidate context assembly and scope control.
-5. Build Android CI.
-6. Request physical test only for the resulting behavior-changing APK:
-   - launch;
-   - NIM connection;
-   - normal chat response;
-   - project/scene context;
-   - selected-node context;
-   - invalid-key/network error regression.
-7. Verify the current Android CI build.
-8. Physically test streaming on the resulting APK.
-9. Then move toward v0.2 packaging.
+Do not blindly merge/rebase existing branches.
 
-## Physical-test rule
-Do not ask the user to repeat already verified launch/API-key/NIM-chat setup without a new behavior change. When a new physical test is required, provide:
-- exact APK;
-- direct download link;
-- SHA-256;
-- minimal steps;
-- expected result;
-- readiness marker.
-
-## Release rule
-v0.2 and release are not declared ready from CI alone. Release packaging waits for physical functional verification and regression evidence.
+## GEMINI RULES
+- Read this handoff plus `DEVELOPMENT_BASELINE.md`, `DEVELOPMENT_STATE.md`, and `DEVELOPMENT_ROADMAP.md` before release decisions.
+- Never invent physical verification.
+- Never infer release readiness from CI alone.
+- Do not change engine version casually.
+- Keep Safe Core isolated from UI/baseline work.
+- Keep MCP/Agent/Safe Editing frozen until v0.2 lock.
+- Update this handoff after important changes or tests with exact commit/package evidence.
