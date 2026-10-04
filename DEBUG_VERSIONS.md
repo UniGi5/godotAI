@@ -1,0 +1,56 @@
+# DEBUG_VERSIONS.md — Verification Ledger
+
+## DEBUG-v0.2-CANDIDATE-188
+
+- Date: 2026-10-04
+- Branch: `fix/p1-nim-mobile-chat-ui`
+- Runtime candidate: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
+- CI Run: #188
+- Run ID: `37225291853`
+- Result: **SUCCESS**
+- APK tag: `build-c35fc592b3a2`
+- APK: `godot-android-editor-arm64.apk`
+- Size: 192,454,271 bytes
+- SHA-256: `d87c189794942cf84ea7aca1c3bcf83889c5b5e5691e7620143b2863effe84ce`
+- Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-c35fc592b3a2/godot-android-editor-arm64.apk
+
+### Source scope
+Debugger/context formatting only. Debugger fields use real newline separators. No NIM transport, TLS, secret-storage or provider-contract changes.
+
+### CI evidence
+- Android native editor build: PASS
+- Release APK build: PASS
+- Runtime payload audit: PASS
+- APK validation/signing: PASS
+- SHA-256: PASS
+- Direct APK publication: PASS
+
+### Physical status
+**PENDING — READY FOR PHYSICAL TEST**
+
+CI does not count as physical verification.
+
+### Required device result
+- [ ] Install
+- [ ] Launch
+- [ ] NIM panel
+- [ ] API-key persistence
+- [ ] Test Connection
+- [ ] Context-aware request
+- [ ] Project/scene/selection/script/debugger context
+- [ ] Test Connection regression check
+- [ ] Copy Chat regression check
+- [ ] Mobile UI regression check
+- [ ] Restart/persistence check
+
+### Gate
+- v0.2: 🟡 HOLD until physical PASS
+- Release: 🟥 NOT READY
+- Experimental MCP / Agent / Safe Editing: FROZEN
+
+## Next checkpoint
+If physical PASS:
+`DEBUG-v0.2-RELEASE-CANDIDATE` → lock v0.2 → release engineering.
+
+If regression:
+`REWORK` → smallest targeted fix → new CI APK → new physical test.
