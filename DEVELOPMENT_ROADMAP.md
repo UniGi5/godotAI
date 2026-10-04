@@ -111,7 +111,7 @@ NIM first-milestone baseline больше не блокирует дальней
 - explicit truncation marker.
 
 ### 2.5 Debugger/errors context
-🟥🟥 Not implemented.
+🟩🟩 code implemented — explicit `debugger_context` scope exposes active session, paused state, error count and warning count via Godot's native debugger API.
 
 ### 2.6 Controlled context assembly
 🟩🟥 Partial — `project_identity` now returns identity-only context; `editor_context` returns the full editor context. Further scope definitions can be added without changing the provider contract.
@@ -184,19 +184,19 @@ MCP, shell и автономные действия не добавляются 
 - Selected node: 🟩🟩
 - Current script path/source: 🟩🟩
 - Script source limit/truncation: 🟩🟩
-- Debugger/errors context: 🟥🟥
+- Debugger/errors context: 🟩🟩 code implemented
 - Controlled context assembly: 🟩🟥
 
 ### Verification gate
 
 - Current branch: `fix/p1-nim-mobile-chat-ui`
-- Current HEAD: `3a0311be11d071312bc2c608163644702f6308e6`
+- Current HEAD: `42bd9b9c1aab1fa34df901129f93cde63ad16cf0`
 - Current HEAD CI: 🟥🟥 not confirmed by the available GitHub status/run endpoints.
 - Physical Android test for current HEAD: 🟥🟥 NOT REQUESTED.
 - Previous NIM/mobile baseline: 🟩🟩 physically confirmed at `0201ff8`.
 - v0.2: 🟩🟥 partial.
 - Release: 🟥🟥 not ready.
 
-**Next engineering action:** obtain/confirm Android CI for the current HEAD. If a valid APK is available, run the focused physical regression for the new context/scoping code. After that, continue with debugger/errors context and expand controlled context scopes.
+**Next engineering action:** obtain/confirm Android CI for the current HEAD. If a valid APK is available, run the focused physical regression for the new context/scoping code. After that, expand controlled context scopes and then prepare the v0.2 verification gate.
 
 **Do not label the current HEAD as release-ready merely because the older baseline is physically green.**
