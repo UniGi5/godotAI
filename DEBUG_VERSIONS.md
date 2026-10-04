@@ -128,9 +128,10 @@ UI checkpoint:
   - `editor/ai_bridge/ui/nim_editor_panel.h`
 - commits ahead of product branch: 5
 - Safe Core transport/API contract: unchanged
-- CI for this HEAD: not confirmed through current connector
-- APK for this HEAD: not confirmed
-- physical Android test: NOT STARTED
+- CI: 🟢 Run #203 / Run ID `37230521319` SUCCESS
+- APK: 🟢 `build-293cb6606d96`
+- SHA-256: `203e9951359aea46af86558235fcc31a4659f36057de7cb1fc48dfc688722c22`
+- physical Android test: 🟡 READY / NOT STARTED
 
 Expected physical result:
 
@@ -140,7 +141,7 @@ Expected physical result:
 - wrapping and scrolling are usable;
 - no regression of connection, chat, Copy Chat, API-key persistence or context behavior.
 
-Status: **🟡 HOLD**
+Status: **🟡 READY FOR PHYSICAL TEST**
 
 This checkpoint must not be used to mark v0.2 or release readiness.
 
