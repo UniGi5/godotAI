@@ -177,6 +177,16 @@ MCP, shell и автономные действия не добавляются 
 
 ## Current position
 
+### UI Track — Mobile Chat UX Prototype
+
+- Branch: `ui/p1-chat-ux`
+- HEAD: `46cdeef1846990a96a5ec99a2fb0839c2d43076e`
+- Scope: multiline composer, larger input/send area, larger response viewport
+- Safe Core / NIM transport: unchanged
+- CI for UI HEAD: 🟡 unconfirmed
+- Physical UI test: 🟡 pending APK
+- UI checkpoint: `DEBUG-UI-P1-CHAT-UX-PROTOTYPE`
+
 ### v0.2 — Project Context
 
 - Project identity: 🟩🟩
@@ -189,11 +199,11 @@ MCP, shell и автономные действия не добавляются 
 
 ### Verification gate
 
-- Current branch: `fix/p1-nim-mobile-chat-ui`
-- Current branch HEAD: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
+- Product branch: `fix/p1-nim-mobile-chat-ui`
+- Product branch HEAD: `319e9f2be2e89c8dd9d332c25b1c6bf002471f09`
 - Code candidate for physical test: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
-- Current HEAD CI: 🟡🟡 pending; no new APK claimed.
-- Physical Android test for current HEAD: 🟡🟡 blocked until current candidate APK exists.
+- Current v0.2 candidate CI: 🟢 Run #188 successful; physical Android test still pending.
+- UI branch is a separate track and must have its own CI/package verification before physical UI testing.
 - Previous NIM/mobile baseline: 🟩🟩 physically confirmed at `0201ff8`.
 - v0.2: 🟩🟥 partial — physical regression pending.
 - Release: 🟥🟥 not ready.
