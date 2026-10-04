@@ -111,9 +111,20 @@ Do not infer physical verification from CI.
   - `383e035d9e442f2e2348ab55a04653c2599fc30c` — AI Bridge build integration on the old development line
 - Clean 4.7.2 baseline contains no `editor/ai_bridge/` tree.
 
+## FOUNDATION PORT EVIDENCE
+
+Ported files:
+- `editor/ai_bridge/SCsub`
+- `editor/ai_bridge/core/interfaces/ai_types.h`
+- `editor/ai_bridge/core/interfaces/ai_provider.h`
+- `editor/ai_bridge/core/interfaces/ai_provider.cpp`
+- `editor/SCsub` registration
+
+Current branch has no workflow run associated with the latest foundation commit, so compilation is not yet verified.
+
 ## NEXT IMMEDIATE STEP
 
-Port the minimum AI Bridge/NIM foundation required by `6b7c7e5…`, starting from the provider-neutral contract layer, while keeping the 4.7.2 Stable root intact.
+Validate the ported AI Bridge contract layer on the clean 4.7.2 baseline through the Android/engine build path. Do not apply `6b7c7e5…` until that validation passes.
 
 Do not blindly cherry-pick the old 4.8-dev ancestry.
 
