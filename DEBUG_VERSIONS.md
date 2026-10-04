@@ -115,9 +115,42 @@
 - 🔴 REWORK — обнаружена проблема
 - ⚪ N/A — не относится к checkpoint
 
+## DEBUG-UI-P1-CHAT-UX-PROTOTYPE
+
+UI checkpoint:
+
+- branch: `ui/p1-chat-ux`
+- HEAD at checkpoint start: `46cdeef1846990a96a5ec99a2fb0839c2d43076e`
+- base: product branch `319e9f2be2e89c8dd9d332c25b1c6bf002471f09`
+- scope: mobile NIM composer / chat viewport only
+- changed runtime files:
+  - `editor/ai_bridge/ui/nim_editor_panel.cpp`
+  - `editor/ai_bridge/ui/nim_editor_panel.h`
+- commits ahead of product branch: 5
+- Safe Core transport/API contract: unchanged
+- CI for this HEAD: not confirmed through current connector
+- APK for this HEAD: not confirmed
+- physical Android test: NOT STARTED
+
+Expected physical result:
+
+- multiline composer is usable;
+- Send row stays visible above keyboard;
+- response viewport exposes multiple lines;
+- wrapping and scrolling are usable;
+- no regression of connection, chat, Copy Chat, API-key persistence or context behavior.
+
+Status: **🟡 HOLD**
+
+This checkpoint must not be used to mark v0.2 or release readiness.
+
 ## Текущий DEBUG checkpoint
+
+**DEBUG-UI-P1-CHAT-UX-PROTOTYPE**
+
+Parallel release gate remains:
 
 **DEBUG-v0.2-CANDIDATE**
 
-Главная задача: получить физическую Android-проверку APK Run #188, затем зафиксировать результат перед v0.2 lock.
+Main v0.2 task remains the physical Android verification of Run #188 before v0.2 lock.
 
