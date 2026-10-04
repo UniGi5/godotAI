@@ -1,117 +1,114 @@
 # DEVELOPMENT_STATE.md
 
-## Project
-- Repository: UniGi5/godotAI
-- Branch: master
-- Product: native Android Godot Editor fork with built-in NVIDIA NIM
-- Godot target: 4.7.2 stable
-- Provider: NVIDIA NIM / Nemotron 3 Ultra 550B
-- Model: nvidia/nemotron-3-ultra-550b-a55b
-- Base URL: https://integrate.api.nvidia.com/v1
-- Android target: ARM64
+## Project Identity
+- Repository: `UniGi5/godotAI`
+- Active product branch: `fix/p1-nim-mobile-chat-ui`
+- Godot baseline: **4.7.2 Stable**
+- Product: native Godot Android Editor fork with integrated NVIDIA NIM / Nemotron
+- Target: Android ARM64 + Desktop
+- Model: `nvidia/nemotron-3-ultra-550b-a55b`
+- Endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`
 
-## Current position
-**1.7 — First physical smoke test / corrected APK ready**
+## Current Position
+**v0.2 — Physical verification gate**
 
-Status:
-- 1.1 Provider transport: 🟩🟩
-- 1.2 NVIDIA configuration: 🟩🟩
-- 1.3 NIM Editor UI: 🟩🟥
-- 1.4 Secret storage: 🟩🟥
-- 1.5 Chat: 🟩🟥
-- 1.6 Runtime/UI event bridge: 🟩🟥
-- 1.7 Physical smoke test: 🟥🟥 BLOCKED — previous APK failure diagnosed; corrected APK ready for physical retest
-- 1.8 First milestone gate: 🟥🟥
-- v0.2: 🟥🟥 NOT READY
-- Release: 🟥🟥 NOT READY
+### Safe Core
+- Provider transport: 🟩🟩
+- NVIDIA configuration: 🟩🟩
+- NIM mobile UI baseline: 🟩🟩
+- API-key persistence: 🟩🟩
+- Chat: 🟩🟩
+- Runtime/UI bridge: 🟩🟩
+- Android packaging pipeline: 🟩🟩
 
-## Last verified CI
-- Latest successful CI: #64 🟩 success
-- Diagnostic code commit: 025846eaa556f187035f2f0f56df6171464c0ffc
-- Commit: 11e68e28cfc80d7d705e0cccb0a29b96cb8d9cb6
-- Build: Android ARM64 release APK
-- APK SHA-256: 33332749c987ad64707022008bb898bc641b71d0c92e6629597a7fca2353dbe4
-- APK size: 192,421,503 bytes
-- Direct release tag: build-11e68e28cfc8
-- Direct APK:
-  https://github.com/UniGi5/godotAI/releases/download/build-11e68e28cfc8/godot-android-editor-arm64.apk
+### v0.2 Context
+- Project identity: 🟩🟩
+- Current scene: 🟩🟩
+- Selected node: 🟩🟩
+- Selected script path/source: 🟩🟩
+- Script source limit + truncation marker: 🟩🟩
+- Debugger/error context: 🟩🟩
+- Controlled context scopes: 🟩🟩
 
-## Important recent fixes
-- Native NIM panel with API key, Test Connection, Send and streaming chat.
-- Chat response buffer reset per turn.
-- Secret storage compile issues fixed.
-- Deferred provider events delivered to the editor/UI thread.
-- UI ignores stale events whose request_id does not match the active request.
-- EditorNode destroys NIMEditorPanel before AIBridgeRuntime.
-- Cross-window handoff state is stored in this file.
+### Verification
+- Previous physical baseline: 🟩🟩 confirmed at `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
+- v0.2 candidate CI: 🟩🟩 confirmed
+- Current v0.2 physical regression: 🟡🟡 pending user/device test
+- v0.2 release lock: 🟡🟡 pending physical PASS
+- Release: 🟥🟥 not ready
 
-## Physical test result — 1.7
+## Confirmed Physical Baseline
+- Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
+- CI Run: #156
+- Run ID: `37057401793`
+- APK: `godot-android-editor-arm64.apk`
+- SHA-256: `52e385775ff38585c1e80a556a0c885ef2e9eee4dfa62bca1247fecbcba5fda5`
+- Confirmed: launch, API-key persistence, NIM connection, Nemotron response, Test Connection recovery, Copy Chat, mobile UI.
 
-Observed on the user's real Android device:
-- APK installed successfully.
-- APK size was approximately 22 MB.
-- Tapping the launcher icon caused the application to immediately close/minimize.
-- No visible crash dialog or on-screen error appeared.
-- This is classified as **silent/clean early exit — diagnostic required**; it is not treated as a proven crash.
+## Current v0.2 Candidate
+- Runtime candidate: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
+- Scope: debugger/context formatting; real newline separators.
+- CI Run: #188
+- Run ID: `37225291853`
+- Result: **SUCCESS**
+- APK tag: `build-c35fc592b3a2`
+- APK size: **192,454,271 bytes**
+- SHA-256: `d87c189794942cf84ea7aca1c3bcf83889c5b5e5691e7620143b2863effe84ce`
+- Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-c35fc592b3a2/godot-android-editor-arm64.apk
 
-## Physical test gate — 1.7
-Use the new diagnostic APK produced from commit `025846eaa556f187035f2f0f56df6171464c0ffc` or its later documentation-only descendant. Do not reuse the old #58 APK for diagnosis.
+CI job verified:
+- Build native Android editor libraries: success
+- Build release APK: success
+- Runtime payload audit: success
+- APK validation: success
+- SHA-256 generation: success
+- Direct APK publication: success
 
-Required verification:
-1. Install APK on a real ARM64 Android device.
+## Safe Transport Contract
+Do not change during v0.2 lock:
+- `stream=false`
+- `max_tokens=256`
+- `chat_template_kwargs.enable_thinking=false`
+- `chat_template_kwargs.force_nonempty_content=true`
+
+## Development Zones
+### SAFE CORE
+Protected. Changes require minimal patch, CI, regression review and physical Android validation when the package changes.
+
+### UI TRACK
+Experimental mobile UI improvements remain isolated from Safe Core until physically verified. Do not add Android keyboard hacks without observing real device behavior first.
+
+### DEVELOPMENT TRACK
+Current focus: v0.2 context verification and diagnostic-quality reporting.
+
+### EXPERIMENTAL
+MCP / Agent / Safe Editing remain **FROZEN** until v0.2 Release Lock.
+
+## Physical Test Gate
+The next physical test is specifically for **Run #188 / build-c35fc592b3a2**.
+
+Minimum checklist:
+1. Install APK.
 2. Launch Godot Editor.
-3. Confirm the editor reaches the main UI without startup crash.
-4. Open the NVIDIA NIM panel.
-5. Enter and save an NVIDIA API key.
-6. Press Test Connection.
-7. Verify the response is exactly NIM_OK.
-8. Send a second coding request.
-9. Verify streamed response arrives progressively.
-10. Verify a deliberately invalid API key produces a clear error without crashing.
-11. Verify network failure/disconnection produces a clear error without crashing.
-12. Close/reopen the editor and verify the stored key remains available through the current local storage implementation.
+3. Open NIM panel.
+4. Confirm API key persistence.
+5. Test NIM connection.
+6. Send a context-aware request.
+7. Verify project/scene/selection/script/debugger context is represented correctly.
+8. Confirm no regression in Test Connection, Copy Chat and mobile UI.
+9. Restart editor and confirm persistence.
 
-Record the actual result for each item before marking 1.7 complete.
+**CI success is not physical verification. Do not mark this gate PASS until the user reports the device result.**
 
-## v0.2 gate
-Only after:
-BUILD + INSTALL + LAUNCH + NIM REQUEST + RESPONSE on physical Android device.
+## v0.2 / Release Rules
+- Physical PASS on the current candidate → create a DEBUG checkpoint, update handoff, then lock v0.2.
+- Physical regression → keep Safe Core protected, apply smallest targeted fix, rebuild, retest.
+- Release packaging starts only after v0.2 lock.
+- MCP / Agent / Safe Editing work starts only after v0.2 release lock.
 
-Additional first-milestone evidence should include:
-- streaming works;
-- invalid-key handling works;
-- network-error handling works;
-- no startup/request crash.
-
-## Handoff rule for a new chat/window
-Read this file and DEVELOPMENT_ROADMAP.md first.
-Continue from the numbered current position.
-Do not redo completed work.
-Do not mark physical testing as complete from CI alone.
-Do not prepare release packaging until the 1.8 gate is verified.
-
-## User progress format
-Every substantial continuation should end with:
-- 📍 POSITION
-- 🟩🟩 / 🟩🟥 / 🟥🟥 status
-- ➡️ NEXT
-- 📱 PHYSICAL TEST
-- 🚀 v0.2
-- 📦 RELEASE
-
-
-## Corrected Android packaging — CI #64
-
-The silent early exit was traced to the release APK being assembled without the main native Godot editor library. SCons had produced the library but the old workflow consumed the wrong packaging path.
-
-Fixes:
-- SCons builds release native editor library with `store_release=yes`.
-- Gradle uses `generateGodotEditor`.
-- Workflow consumes the canonical Gradle APK output.
-- CI #64 audit confirms `lib/arm64-v8a/libgodot_android.so` is present.
-- Native library size in APK: 168,766,080 bytes.
-- APK size: 192,421,503 bytes.
-- zipalign and apksigner validation: passed.
-- Direct prerelease APK: https://github.com/UniGi5/godotAI/releases/download/build-11e68e28cfc8/godot-android-editor-arm64.apk
-
-The previous 22 MB APK must not be used for physical testing. Physical validation is now required on the corrected 192 MB APK.
+## Handoff Rules
+- Never switch away from Godot 4.7.2 stable.
+- Never blindly merge/rebase `master`.
+- Do not claim physical verification from CI.
+- Keep experimental work frozen.
+- Every major transition gets a DEBUG checkpoint.
