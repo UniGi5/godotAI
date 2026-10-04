@@ -2,7 +2,7 @@
 
 ## Как ориентироваться в разработке
 
-Основная рабочая ветка сейчас: master.
+Основная рабочая ветка сейчас: `fix/p1-nim-mobile-chat-ui`.
 
 Формат позиции:
 ЭТАП.ПОДЭТАП → конкретная техническая цель.
@@ -35,9 +35,7 @@
 
 ---
 
-## 1. NIM FIRST MILESTONE — текущий этап
-
-Цель: получить реально работающий NVIDIA NIM внутри Android Godot Editor.
+## 1. NIM FIRST MILESTONE
 
 ### 1.1 Provider transport
 🟩🟩 HTTPS + OpenAI-compatible chat endpoint.
@@ -49,98 +47,76 @@
 - model: nvidia/nemotron-3-ultra-550b-a55b
 
 ### 1.3 NIM Editor UI
-🟩🟥 Частично готов.
+🟩🟩 Базовый mobile UI физически проверен:
 - touch-friendly NIM panel;
 - статус подключения;
-- поле API key;
+- API key;
 - Test Connection;
 - Send/cancel;
-- streaming output.
+- chat output;
+- Copy Chat.
 
 ### 1.4 Secret storage
-🟩🟥 Частично готов.
-- Android-compatible local storage;
-- API key не попадает в Git/project/logs;
-- storage abstraction оставлена пригодной для последующего secure backend.
+🟩🟩 API key persistence физически подтверждена.
 
 ### 1.5 Chat
-🟩🟥 Частично готов.
-- message input;
-- send/cancel;
-- streamed response;
-- ошибки;
-- response buffer reset per turn.
+🟩🟩 Базовый non-stream chat физически подтверждён. Пользователь также подтвердил исправления Test Connection и Copy Chat на Android.
 
 ### 1.6 Runtime/UI event bridge
-🟩🟥 Частично готов.
-Worker/provider events доставляются в UI через deferred main-thread обработку; request-id guard защищает от stale events; lifecycle Panel → Runtime исправлен.
-Остаётся подтверждение поведения на реальном Android Editor.
+🟩🟩 Базовый lifecycle и request/response path физически подтверждены.
 
-### 1.7 First physical smoke test / corrected APK ready
-🟥🟥 PHYSICAL RETEST REQUIRED — previous silent early exit diagnosed
+### 1.7 Physical baseline
+🟩🟩 **CONFIRMED**
 
-Тестовый пакет до диагностики:
-- Commit: 4f5028ef9f87447ab71f75bbef6f925f9e63d220
-- CI run: #58 🟩
-- APK: godot-android-editor-arm64.apk
-- SHA-256: 33332749c987ad64707022008bb898bc641b71d0c92e6629597a7fca2353dbe4
-- Direct APK:
-  https://github.com/UniGi5/godotAI/releases/download/build-4f5028ef9f87/godot-android-editor-arm64.apk
+Подтверждённый baseline:
+- Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
+- CI Run: #156
+- Run ID: `37057401793`
+- Result: SUCCESS
+- APK: `godot-android-editor-arm64.apk`
+- SHA-256: `52e385775ff38585c1e80a556a0c885ef2e9eee4dfa62bca1247fecbcba5fda5`
+- Release tag: `build-0201ff8138d`
 
-Проверка:
-1. Install APK.
-2. Launch Editor.
-3. Confirm no startup crash.
-4. Open NIM.
-5. Enter/save API key.
-6. Test Connection.
-7. Verify NIM_OK.
-8. Send a second coding request.
-9. Verify streaming.
-10. Test invalid-key handling.
-11. Test network-error handling.
-12. Reopen editor and verify current key persistence.
-
-Фактический результат предыдущего физического теста: APK устанавливался, но при запуске практически сразу закрывался без видимой ошибки. Причина установлена: release APK не содержал основной native `libgodot_android.so`.
-
-Исправление подтверждено CI #64: корректный APK 192,421,503 bytes содержит `lib/arm64-v8a/libgodot_android.so` размером 168,766,080 bytes; zipalign и apksigner проходят.
-
-Новый физический тестовый APK: https://github.com/UniGi5/godotAI/releases/download/build-11e68e28cfc8/godot-android-editor-arm64.apk
-
-Диагностический commit: `025846eaa556f187035f2f0f56df6171464c0ffc`.
-Исправление packaging: `11e68e28cfc80d7d705e0cccb0a29b96cb8d9cb6`.
-
-Переход 1.7 → 1.8: только после исправления/подтверждения launch path на реальном устройстве.
+Физически подтверждено:
+1. Android Editor запускается.
+2. NVIDIA NIM connection работает.
+3. Nemotron отвечает.
+4. Test Connection после успеха не зависает.
+5. Copy Chat копирует историю из conversation.
+6. Android UI стабилен.
 
 ### 1.8 First milestone gate
-🟥🟥
+🟩🟩 **BASELINE PASSED**
 
-Условие:
-BUILD + INSTALL + LAUNCH + NIM REQUEST + RESPONSE verified on physical Android device, плюс базовая проверка streaming/error paths.
+NIM first-milestone baseline больше не блокирует дальнейшую разработку. Для новых изменений, затрагивающих context/streaming/UI, физический тест требуется только после успешного CI соответствующего нового APK.
 
 ---
 
 ## 2. PROJECT CONTEXT — v0.2
 
 ### 2.1 Project identity
-🟥🟥
+🟩🟩 code implemented
 
 ### 2.2 Current scene
-🟥🟥
+🟩🟩 code implemented
 
 ### 2.3 Selected node
-🟥🟥
+🟩🟩 code implemented
 
 ### 2.4 Current script
-🟥🟥
+🟩🟩 code implemented
+- selected node script path;
+- selected script source;
+- source limit: 12,000 characters;
+- explicit truncation marker.
 
 ### 2.5 Debugger/errors context
-🟥🟥
+🟥🟥 Not implemented.
 
 ### 2.6 Controlled context assembly
-🟥🟥
+🟥🟥 Not implemented.
 
-**Переход:** только после завершения этапа 1.
+**Current blocker:** Android CI for the current context-code HEAD is not confirmed by the available GitHub status/run endpoints. Do not request physical testing until a successful APK for the current HEAD is available.
 
 ---
 
@@ -193,31 +169,34 @@ MCP, shell и автономные действия не добавляются 
 
 «Переходим на 1.3» → продолжить с NIM Editor UI.
 «Переходим на 1.4» → продолжить с API-key storage.
-«Переходим на 1.7» → подготовить/проводить физический smoke test; не считать его выполненным без реального устройства.
-«Готовы к v0.2?» → проверить gate 1.8, а не просто наличие успешного CI.
+«Переходим на 1.7» → использовать подтверждённый baseline и не повторять уже выполненный smoke test без причины.
+«Готовы к v0.2?» → проверить текущий code/CI gate и необходимость физического regression test для новых изменений.
 «Готовы к релизу?» → отдельно проверить build, install, launch, functional verification, regression и release packaging.
 
 ---
 
 ## Current position
 
-### v0.2 — Project Context / Current Script
+### v0.2 — Project Context
 
 - Project identity: 🟩🟩
-- Current edited scene: 🟩🟩 code implemented
-- Selected node: 🟩🟩 code implemented
-- Current script path/source: 🟩🟩 code implemented
-- Script source limit: 12,000 characters with explicit truncation marker: 🟩🟩
+- Current edited scene: 🟩🟩
+- Selected node: 🟩🟩
+- Current script path/source: 🟩🟩
+- Script source limit/truncation: 🟩🟩
 - Debugger/errors context: 🟥🟥
 - Controlled context assembly: 🟥🟥
 
 ### Verification gate
 
 - Current branch: `fix/p1-nim-mobile-chat-ui`
-- Current HEAD: `ac19c9bbcaf519f67507116920f71f5ebe580682`
-- Android CI for this HEAD: 🟥🟥 not confirmed by the available GitHub status/run endpoints.
-- Physical Android test: 🟥🟥 NOT REQUESTED yet.
+- Current HEAD: `84587d909a46f609d602aafa58d2d6afac12b15b`
+- Current HEAD CI: 🟥🟥 not confirmed by the available GitHub status/run endpoints.
+- Physical Android test for current HEAD: 🟥🟥 NOT REQUESTED.
+- Previous NIM/mobile baseline: 🟩🟩 physically confirmed at `0201ff8`.
 - v0.2: 🟩🟥 partial.
 - Release: 🟥🟥 not ready.
 
-**Next action:** obtain a successful Android CI build for `ac19c9b`. Only then issue the physical-test package with direct APK + SHA-256. After physical confirmation, proceed to debugger/errors context and controlled context assembly.
+**Next engineering action:** obtain/confirm Android CI for the current HEAD. If a valid APK is available, run the focused physical regression for the new context code. After that, continue with debugger/errors context and controlled context assembly.
+
+**Do not label the current HEAD as release-ready merely because the older baseline is physically green.**
