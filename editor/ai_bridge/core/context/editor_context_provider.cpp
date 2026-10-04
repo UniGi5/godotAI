@@ -43,6 +43,9 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 	context.source = p_scope;
 	const bool identity_only = p_scope == "project_identity";
 	const bool debugger_only = p_scope == "debugger_context";
+	const bool scene_only = p_scope == "scene_context";
+	const bool selection_only = p_scope == "selection_context";
+	const bool script_only = p_scope == "script_context";
 
 	const ProjectSettings *settings = ProjectSettings::get_singleton();
 	if (!settings) {
@@ -105,6 +108,9 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 			scene_message.content = scene_context;
 			context.messages.push_back(scene_message);
 		}
+		if (scene_only) {
+			return context;
+		}
 
 		EditorSelection *editor_selection = EditorNode::get_singleton()->get_editor_selection();
 		if (editor_selection) {
@@ -124,6 +130,9 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 					selected_message.role = AIMessageRole::SYSTEM;
 					selected_message.content = selected_context;
 					context.messages.push_back(selected_message);
+					if (selection_only) {
+						return context;
+					}
 
 					if (selected_script.is_valid()) {
 						String script_context = vformat("Current script:\nPath: %s", selected_script->get_path());
@@ -139,6 +148,9 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 						script_message.role = AIMessageRole::SYSTEM;
 						script_message.content = script_context;
 						context.messages.push_back(script_message);
+						if (script_only) {
+							return context;
+						}
 					}
 				}
 			}
