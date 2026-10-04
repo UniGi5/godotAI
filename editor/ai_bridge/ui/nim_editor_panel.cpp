@@ -62,7 +62,7 @@ void NIMEditorPanel::_bind_methods() {
 NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	runtime = p_runtime;
 	set_name("NIMEditorPanel");
-	set_custom_minimum_size(Vector2(0, 340 * EDSCALE));
+	set_custom_minimum_size(Vector2(0, 420 * EDSCALE));
 	set_v_size_flags(SIZE_EXPAND_FILL);
 	set_h_size_flags(SIZE_EXPAND_FILL);
 
@@ -104,7 +104,7 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	// Android viewports this prevents the chat controls from being pushed
 	// below the visible bottom-panel area.
 	ScrollContainer *settings_scroll = memnew(ScrollContainer);
-	settings_scroll->set_custom_minimum_size(Vector2(0, 88 * EDSCALE));
+	settings_scroll->set_custom_minimum_size(Vector2(0, 76 * EDSCALE));
 	settings_scroll->set_h_size_flags(SIZE_EXPAND_FILL);
 	settings_scroll->set_horizontal_scroll_mode(ScrollContainer::SCROLL_MODE_DISABLED);
 	settings_scroll->set_vertical_scroll_mode(ScrollContainer::SCROLL_MODE_AUTO);
@@ -179,7 +179,7 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	output->set_selection_enabled(true);
 	output->set_h_size_flags(SIZE_EXPAND_FILL);
 	output->set_v_size_flags(SIZE_EXPAND_FILL);
-	output->set_custom_minimum_size(Vector2(0, 60 * EDSCALE));
+	output->set_custom_minimum_size(Vector2(0, 180 * EDSCALE));
 	add_child(output);
 
 	HBoxContainer *input_row = memnew(HBoxContainer);
