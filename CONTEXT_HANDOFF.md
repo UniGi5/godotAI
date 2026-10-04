@@ -7,10 +7,11 @@
 - Base engine: **Godot 4.7.2 stable**. Do not switch to Godot master.
 - Product branch: `fix/p1-nim-mobile-chat-ui`
 - Main PR: #1 — `fix(ui): keep NIM chat visible on mobile editor`
-- Product branch HEAD: `319e9f2be2e89c8dd9d332c25b1c6bf002471f09`
+- Product branch runtime HEAD: `319e9f2be2e89c8dd9d332c25b1c6bf002471f09`
+- Product branch current documentation HEAD: `4cc3eb57d24482af25417f4732afef360ffb2d15`
 - Current working UI branch: `ui/p1-chat-ux`
 - Current UI branch HEAD: `838b899f634be2f714d5eae3de48349ac7a05880`
-- UI branch is **7 commits ahead / 0 behind** the product branch. The last 2 commits are documentation-only.
+- UI branch is **8 commits ahead / 1 behind** the current product branch. The 1-behind divergence is documentation-only; merge base remains `319e9f2`.
 - DEBUG control branch: `debug/versions`
 - Latest known DEBUG HEAD before the UI checkpoint: `8a0fa0ee56e6a18fd915c623b9c419d2fbe80c2d`
 
