@@ -114,7 +114,7 @@ NIM first-milestone baseline больше не блокирует дальней
 🟥🟥 Not implemented.
 
 ### 2.6 Controlled context assembly
-🟥🟥 Not implemented.
+🟩🟥 Partial — `project_identity` now returns identity-only context; `editor_context` returns the full editor context. Further scope definitions can be added without changing the provider contract.
 
 **Current blocker:** Android CI for the current context-code HEAD is not confirmed by the available GitHub status/run endpoints. Do not request physical testing until a successful APK for the current HEAD is available.
 
@@ -185,18 +185,18 @@ MCP, shell и автономные действия не добавляются 
 - Current script path/source: 🟩🟩
 - Script source limit/truncation: 🟩🟩
 - Debugger/errors context: 🟥🟥
-- Controlled context assembly: 🟥🟥
+- Controlled context assembly: 🟩🟥
 
 ### Verification gate
 
 - Current branch: `fix/p1-nim-mobile-chat-ui`
-- Current HEAD: `84587d909a46f609d602aafa58d2d6afac12b15b`
+- Current HEAD: `3a0311be11d071312bc2c608163644702f6308e6`
 - Current HEAD CI: 🟥🟥 not confirmed by the available GitHub status/run endpoints.
 - Physical Android test for current HEAD: 🟥🟥 NOT REQUESTED.
 - Previous NIM/mobile baseline: 🟩🟩 physically confirmed at `0201ff8`.
 - v0.2: 🟩🟥 partial.
 - Release: 🟥🟥 not ready.
 
-**Next engineering action:** obtain/confirm Android CI for the current HEAD. If a valid APK is available, run the focused physical regression for the new context code. After that, continue with debugger/errors context and controlled context assembly.
+**Next engineering action:** obtain/confirm Android CI for the current HEAD. If a valid APK is available, run the focused physical regression for the new context/scoping code. After that, continue with debugger/errors context and expand controlled context scopes.
 
 **Do not label the current HEAD as release-ready merely because the older baseline is physically green.**
