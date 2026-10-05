@@ -185,7 +185,7 @@ jobs:
           sha256sum "$APK" | tee "dist/godot-android-editor-arm64.apk.sha256"
 
       - name: Publish direct APK release
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' || github.event_name == 'pull_request'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
