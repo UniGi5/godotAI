@@ -13,7 +13,7 @@ Factual checkpoint for continuation. Update after baseline repairs, important im
 - Exact stable commit: `ed1daf0bf001b61586d9930840f2f1394092c079`
 - `development/controlled-baseline` remains based directly on the exact stable root.
 - Current UI patch branch: `ui/v0.2-ux-fixes`
-- Current UI patch HEAD: `46122f2eeabbecfaed54625eb93bc0d7cf43d1ac`
+- Current UI patch HEAD: `e70f4fcf3f569321a3be022638d0d4a3e2a17d19`
 - The former incorrect 4.8-dev controlled branch remains archived as:
   `archive/controlled-baseline-4.8-dev-2026-10-04`.
 - The legacy `fix/p1-nim-mobile-chat-ui` / PR #1 remains isolated because it is based on `master`.
@@ -36,7 +36,7 @@ PR #2:
 - title: `fix(ui): stabilize mobile chat UX for v0.2`
 - base: `development/controlled-baseline`
 - head: `ui/v0.2-ux-fixes`
-- current source head: `46122f2eeabbecfaed54625eb93bc0d7cf43d1ac`
+- current source head: `e70f4fcf3f569321a3be022638d0d4a3e2a17d19`
 
 UX fixes included:
 1. Preserve visible chat output during connection/reconnect checks.
@@ -104,16 +104,16 @@ The old run #90 APK must not be presented as **READY FOR PHYSICAL TEST** for the
 ### Current UX patch CI gate
 
 - PR #2 head: `ui/v0.2-ux-fixes`
-- Current source head: `46122f2eeabbecfaed54625eb93bc0d7cf43d1ac`
+- Current source head: `e70f4fcf3f569321a3be022638d0d4a3e2a17d19`
 - Earlier PR check run #99 / Run ID `37249141697`: **FAIL**
 - Failure location: `prek` style checks
 - Android stage was skipped after the static-check failure.
 - Root cause identified in the touched C++: include ordering and whitespace-only line.
 - Style correction commit: `0122eac9a2556ca72bc7474ceae5e54374fb4879`
-- CI concurrency isolation commit: `60eb2ae42feeae8810c254a791dbc3198952a74b`
-- CI event-isolation commit: `46122f2eeabbecfaed54625eb93bc0d7cf43d1ac`
+- CI concurrency experiment commits were reverted after log diagnosis showed the cancellations were caused by the external GitHub Actions incident, not repository concurrency.
 - CI #128 / Run ID `37374009155`: **FAIL / cancelled before Static Checks**
 - CI #129 / Run ID `37374014584`: **FAIL / cancelled before Static Checks**
+- CI #126/#127 and #128/#129 were affected by the same hosted-runner assignment degradation window.
 - GitHub Status reported an active Actions incident on 2026-10-05: delayed assignment of GitHub-hosted runners.
 - The earlier Android `Error -15` was separately traced to a runner shutdown signal, not a C++ compile error.
 - New successful CI package: **PENDING**
