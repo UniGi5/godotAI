@@ -1,7 +1,7 @@
 # DEVELOPMENT_STATE.md — Controlled Baseline / v0.2 Governance
 
 ## 0. Audit Identity
-- Audit date: 2026-10-04
+- Audit date: 2026-10-05
 - Repository: `UniGi5/godotAI`
 - Controlled development branch: `development/controlled-baseline`
 - Product: official Godot Engine fork with integrated NVIDIA NIM / Nemotron
@@ -86,9 +86,9 @@ The branch root is the exact upstream Godot 4.7.2 Stable commit. No 4.8-dev sour
 🟩🟩 PROTECTED
 
 ### UI TRACK
-🟡🟡 ISOLATED
+🟩🟩 FINAL STATE PORTED / CI VALIDATED
 
-Mobile UI work remains outside the controlled baseline until intentionally transplanted and verified.
+The final mobile NIM UI state is intentionally included in the controlled baseline and is protected from experimental MCP/Agent work.
 
 ### EXPERIMENTAL
 🟥🟥 FROZEN
@@ -183,22 +183,30 @@ Evidence:
 - GitHub artifact: `android-editor`
 - extracted installable APK: `godot-android-editor-arm64-46ba6a621.apk`
 - APK size: 179,514,605 bytes
-- APK SHA-256: `8eb107305910a0413939176b8bb2e9e780e26fa5af408b54a91a8e7634851279`
+- Run #90 / Run ID `37245928600` at controlled HEAD `4e2126a3ef0024e1865d213ea0c85ec2d9dfcfa6` — SUCCESS
+- Android Editor ARM64 job: SUCCESS
+- Direct artifact: `android-editor-arm64-apk` (artifact ID `11318848305`)
+- Published APK filename: `godot-android-editor-arm64.apk`
+- APK size: 179,514,605 bytes
+- APK SHA-256: `63db6fdd7337eef282cfa9c2c4fd66c7f6d99563dac92cc35d84417f0a204dfe`
+- APK archive integrity: PASS
 
-A CI-only follow-up commit `6e6ecc067bce46e93cd1f14c4429d40745834751` adds an APK-only artifact publication step; its validation run is pending.
+Run #86 remains a prior successful product-code build checkpoint; run #90 proves the direct APK-only publication path end-to-end.
 
 ### Step 4 — Physical Android validation
 🟨🟨 READY FOR PHYSICAL TEST
 
-Use the exact APK from CI run #86 generated from commit `46ba6a621007aefc3c4a8f649230b680246749ac`.
+Use the exact APK published by CI run #90 from controlled HEAD `4e2126a3ef0024e1865d213ea0c85ec2d9dfcfa6`. The product-code checkpoint remains `46ba6a621007aefc3c4a8f649230b680246749ac`; the four commits after it are workflow/documentation-only.
 
 Marker:
 **READY FOR PHYSICAL TEST**
 
 Current package evidence:
-- commit: `46ba6a621007aefc3c4a8f649230b680246749ac`
-- run: #86 / `37241554466`
-- APK SHA-256: `8eb107305910a0413939176b8bb2e9e780e26fa5af408b54a91a8e7634851279`
+- source HEAD: `4e2126a3ef0024e1865d213ea0c85ec2d9dfcfa6`
+- product-code checkpoint: `46ba6a621007aefc3c4a8f649230b680246749ac`
+- run: #90 / `37245928600`
+- direct artifact: `android-editor-arm64-apk` / `11318848305`
+- APK SHA-256: `63db6fdd7337eef282cfa9c2c4fd66c7f6d99563dac92cc35d84417f0a204dfe`
 
 CI success is not physical verification.
 
@@ -233,11 +241,12 @@ Run conceptually in this order:
 ## 6. PHYSICAL TEST / PACKAGE RULES
 
 Current state:
-- Behavior-changing Android candidate exists for exact commit `46ba6a621007aefc3c4a8f649230b680246749ac`.
+- A behavior-changing Android candidate is published from source HEAD `4e2126a3ef0024e1865d213ea0c85ec2d9dfcfa6`; product code is unchanged since checkpoint `46ba6a621007aefc3c4a8f649230b680246749ac`.
 - **READY FOR PHYSICAL TEST: ACTIVE**
-- Package: `godot-android-editor-arm64-46ba6a621.apk`
-- APK SHA-256: `8eb107305910a0413939176b8bb2e9e780e26fa5af408b54a91a8e7634851279`
-- CI run: #86 / `37241554466`
+- Package: `godot-android-editor-arm64.apk`
+- APK SHA-256: `63db6fdd7337eef282cfa9c2c4fd66c7f6d99563dac92cc35d84417f0a204dfe`
+- CI run: #90 / `37245928600`
+- Direct artifact: `android-editor-arm64-apk` / `11318848305`
 - No physical result has been recorded yet.
 
 ## 7. RELEASE READINESS
@@ -282,4 +291,4 @@ Never:
 - RELEASE: 🟥🟥 not ready
 
 ### NEXT IMMEDIATE STEP
-Physically test the exact CI APK from run #86 on the Android device, then record PASS/FAIL and any UI/NIM regressions before v0.2 Candidate Lock.
+Physically test the exact direct APK from run #90 on the Android device, then record PASS/FAIL and any UI/NIM regressions before v0.2 Candidate Lock.
