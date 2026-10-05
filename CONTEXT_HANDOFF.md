@@ -77,6 +77,11 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 - Release packaging only after v0.2 lock.
 - MCP / Agent / Safe Editing remain isolated from release engineering and require a separate development track.
 
+## Release engineering
+- Verification record: `RELEASE_NOTES_v0.2.md`
+- v0.2 is locked; remaining work is final release engineering only.
+- Do not turn the existing prerelease build into a public release until final release checks pass.
+
 ## Gemini rules
 - Read `DEVELOPMENT_STATE.md`, `DEVELOPMENT_ROADMAP.md`, `DEBUG_VERSIONS.md` first.
 - Never switch Godot version.
