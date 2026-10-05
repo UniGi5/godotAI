@@ -154,7 +154,7 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	clear_button->connect(SceneStringName(pressed), Callable(this, "_confirm_clear_chat"));
 
 	clear_confirmation = memnew(ConfirmationDialog);
-	clear_confirmation->set_text(TTRC("Are you sure you want to clear the chat history?"));
+	clear_confirmation->set_text(TTRC("Вы уверены, что хотите очистить историю чата?"));
 	clear_confirmation->set_ok_button_text(TTRC("Clear"));
 	clear_confirmation->connect(SceneStringName(confirmed), Callable(this, "_clear_chat"));
 	add_child(clear_confirmation);
