@@ -423,7 +423,8 @@ bool NIMEditorPanel::_start_chat_request(const String &p_prompt, bool p_append_u
 				p_event.delta,
 				p_event.finish_reason,
 				p_event.error_code,
-				p_event.error_message);
+				p_event.error_message,
+				p_event.reasoning);
 	});
 
 	if (active_request_id == 0) {
