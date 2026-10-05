@@ -582,14 +582,21 @@ String NIMEditorPanel::_markdown_to_bbcode(const String &p_text) {
 }
 
 void NIMEditorPanel::_rebuild_chat_output() {
-	if (!output) return;
+	if (!output) {
+		return;
+	}
 	output->clear();
 	last_code_block = String();
 	for (const AIMessage &message : conversation) {
-		if (message.role == AIMessageRole::USER) output->append_text(vformat("[b]You:[/b] %s\n", _escape_bbcode(message.content)));
-		else if (message.role == AIMessageRole::ASSISTANT) output->append_text(vformat("[b]Nemotron:[/b] %s\n", _markdown_to_bbcode(message.content)));
+		if (message.role == AIMessageRole::USER) {
+			output->append_text(vformat("[b]You:[/b] %s\n", _escape_bbcode(message.content)));
+		} else if (message.role == AIMessageRole::ASSISTANT) {
+			output->append_text(vformat("[b]Nemotron:[/b] %s\n", _markdown_to_bbcode(message.content)));
+		}
 	}
 	copy_code_button->set_disabled(last_code_block.is_empty());
-	if (!last_prompt.is_empty() && active_request_id != 0) output->append_text(vformat("[b]You:[/b] %s\n[b]Nemotron:[/b] ", _escape_bbcode(last_prompt)));
+	if (!last_prompt.is_empty() && active_request_id != 0) {
+		output->append_text(vformat("[b]You:[/b] %s\n[b]Nemotron:[/b] ", _escape_bbcode(last_prompt)));
+	}
 }
 
