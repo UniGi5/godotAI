@@ -214,3 +214,11 @@ MCP, shell и автономные действия не добавляются 
 - SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`.
 - Physical Android test: **PENDING**.
 - Release remains blocked until focused chat smoke test passes on this exact APK.
+
+
+## Current verification checkpoint — 2026-10-05
+- Exact fixed APK `build-24215c0ae9d1`: **physical chat smoke-test PASS**.
+- Nemotron answered the greeting and all 5 ECHO checks correctly.
+- Previous “connected but silent chat” regression is therefore physically cleared.
+- Remaining observation: first Test Connection attempt returned HTTP 503, then retry succeeded. This is tracked separately and is not yet classified as a code regression.
+- Release: 🟡🟡 final v0.2 review pending; experimental MCP/Agent/Safe Editing remain frozen until release gate is closed.
