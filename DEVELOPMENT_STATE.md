@@ -10,7 +10,7 @@
 - Endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`
 
 ## Current Position
-**v0.2 — Physical verification PASSED / release-lock preparation**
+**v0.2 — RELEASE LOCKED**
 
 ### Safe Core
 - Provider transport: 🟩🟩
@@ -34,8 +34,8 @@
 - Previous physical baseline: 🟩🟩 confirmed at `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
 - v0.2 candidate CI: 🟩🟩 confirmed
 - Current v0.2 physical regression: 🟩🟩 PASS — user confirmed physical Android test
-- v0.2 release lock: 🟡🟡 pending documentation checkpoint / release-lock step
-- Release: 🟥🟥 not ready — release engineering has not started
+- v0.2 release lock: 🟩🟩 LOCKED after physical PASS
+- Release: 🟡🟡 release engineering pending
 
 ## Confirmed Physical Baseline
 - Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
@@ -104,7 +104,7 @@ Minimum checklist:
 - Physical PASS on the current candidate → record DEBUG checkpoint, update handoff/roadmap, then proceed to v0.2 release lock.
 - Physical regression → keep Safe Core protected, apply smallest targeted fix, rebuild, retest.
 - Release packaging starts only after v0.2 lock.
-- MCP / Agent / Safe Editing work starts only after v0.2 release lock.
+- v0.2 is locked. Release engineering is now the primary path; experimental work remains isolated.
 
 ## Handoff Rules
 - Never switch away from Godot 4.7.2 stable.
@@ -112,4 +112,4 @@ Minimum checklist:
 - Do not claim physical verification from CI.
 - Keep experimental work frozen.
 - Every major transition gets a DEBUG checkpoint.
-- Current checkpoint: physical PASS confirmed; next action is release-lock documentation, not another routine regression test.
+- Current checkpoint: `DEBUG-v0.2-RELEASE-CANDIDATE` / physical PASS / v0.2 RELEASE LOCK. Next action: release engineering.
