@@ -603,4 +603,3 @@ void NIMEditorPanel::_rebuild_chat_output() {
 		output->append_text(vformat("[b]You:[/b] %s\n[b]Nemotron:[/b] ", _escape_bbcode(last_prompt)));
 	}
 }
-
