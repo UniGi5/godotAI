@@ -10,7 +10,7 @@
 - Endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`
 
 ## Current Position
-**v0.2 — Physical verification gate**
+**v0.2 — Physical verification PASSED / release-lock preparation**
 
 ### Safe Core
 - Provider transport: 🟩🟩
@@ -33,9 +33,9 @@
 ### Verification
 - Previous physical baseline: 🟩🟩 confirmed at `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
 - v0.2 candidate CI: 🟩🟩 confirmed
-- Current v0.2 physical regression: 🟡🟡 pending user/device test
-- v0.2 release lock: 🟡🟡 pending physical PASS
-- Release: 🟥🟥 not ready
+- Current v0.2 physical regression: 🟩🟩 PASS — user confirmed physical Android test
+- v0.2 release lock: 🟡🟡 pending documentation checkpoint / release-lock step
+- Release: 🟥🟥 not ready — release engineering has not started
 
 ## Confirmed Physical Baseline
 - Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
@@ -85,7 +85,7 @@ Current focus: v0.2 context verification and diagnostic-quality reporting.
 MCP / Agent / Safe Editing remain **FROZEN** until v0.2 Release Lock.
 
 ## Physical Test Gate
-The next physical test is specifically for **Run #188 / build-c35fc592b3a2**.
+The physical test gate for **Run #188 / build-c35fc592b3a2** has been completed successfully.
 
 Minimum checklist:
 1. Install APK.
@@ -101,7 +101,7 @@ Minimum checklist:
 **CI success is not physical verification. Do not mark this gate PASS until the user reports the device result.**
 
 ## v0.2 / Release Rules
-- Physical PASS on the current candidate → create a DEBUG checkpoint, update handoff, then lock v0.2.
+- Physical PASS on the current candidate → record DEBUG checkpoint, update handoff/roadmap, then proceed to v0.2 release lock.
 - Physical regression → keep Safe Core protected, apply smallest targeted fix, rebuild, retest.
 - Release packaging starts only after v0.2 lock.
 - MCP / Agent / Safe Editing work starts only after v0.2 release lock.
@@ -112,3 +112,4 @@ Minimum checklist:
 - Do not claim physical verification from CI.
 - Keep experimental work frozen.
 - Every major transition gets a DEBUG checkpoint.
+- Current checkpoint: physical PASS confirmed; next action is release-lock documentation, not another routine regression test.
