@@ -10,7 +10,7 @@
 - Endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`
 
 ## Current Position
-**v0.2 — REGRESSION REWORK: CHAT RESPONSE SILENCE ON FINAL APK**
+**v0.2 — FINAL RELIABILITY REVIEW AFTER PHYSICAL CHAT PASS**
 
 ### Safe Core
 - Provider transport: 🟩🟩
@@ -33,9 +33,10 @@
 ### Verification
 - Previous physical baseline: 🟩🟩 confirmed at `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
 - v0.2 candidate CI: 🟩🟩 confirmed
-- Current v0.2 physical regression: 🔴🔴 **FAIL — 503 during connection check followed by silent chat response**
-- v0.2 release lock: 🔴🔴 **REOPENED — regression rework required**
-- Release: 🔴🔴 blocked until regression fix + CI + new physical test
+- Current v0.2 physical chat regression: 🟢🟢 **CLEARED — exact fixed APK passed Android chat smoke test**
+- First Test Connection 503: 🟡🟡 **OPEN RELIABILITY OBSERVATION — retry succeeds; no code cause proven**
+- v0.2 release lock: 🟡🟡 **FINAL RELIABILITY REVIEW**
+- Release: 🟡🟡 pending final release checklist
 
 ## Confirmed Physical Baseline
 - Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
@@ -128,8 +129,8 @@ Minimum checklist:
 - APK size: **192,454,267 bytes**
 - SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`
 - Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-24215c0ae9d1/godot-android-editor-arm64.apk
-- Physical Android status: **PENDING**
-- Release remains blocked until this exact APK passes physical chat smoke test.
+- Physical Android status: **PASS** — exact APK passed greeting + ECHO-1..ECHO-5 smoke test.
+- Release remains pending final reliability/release review.
 
 
 ## Physical Android verification — 2026-10-05
@@ -139,4 +140,5 @@ Minimum checklist:
 - Simple greeting also received a normal Nemotron response.
 - Therefore the previous physical regression **“Connected but silent chat” is fixed** on the tested APK.
 - Initial Test Connection still showed **HTTP 503 on the first attempt**, then connected successfully on retry. Treat this as a separate connection-reliability observation; do not claim it fixed or release-blocking without further evidence.
-- Release gate: chat regression gate **PASS**; v0.2 release remains pending final review of the intermittent first-attempt 503 and remaining release checks.
+- Release gate: chat regression gate **PASS**; v0.2 remains in final reliability/release review.
+- Investigation: `Test Connection` issues one POST request; historical redundant-request protection is present. NVIDIA's public API docs document 200/202/422/500 for this operation, not 503. No transport change is justified without reproducible evidence tying the 503 to our code.
