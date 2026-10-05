@@ -150,6 +150,8 @@ MCP, shell и автономные действия не добавляются 
 
 ## 5. RELEASE ENGINEERING
 
+**Current entry point:** `RELEASE_NOTES_v0.2.md` — v0.2 is locked; remaining work is final metadata/versioning, final build, final regression gate and public release publication.
+
 ### 5.1 Automated regression
 🟥🟥
 ### 5.2 Physical Android smoke workflow
