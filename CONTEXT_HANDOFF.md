@@ -12,9 +12,10 @@ Factual checkpoint for continuation. Update after baseline repairs, important im
 - Upstream tag: `4.7.2-stable`
 - Exact stable commit: `ed1daf0bf001b61586d9930840f2f1394092c079`
 - `development/controlled-baseline` was reset directly to the exact stable commit.
-- Current branch HEAD: `389c980f9556c25d6719275f3a6d9b2d16b71d07`
+- Current branch HEAD: `4e2126a3ef0024e1865d213ea0c85ec2d9dfcfa6`
 - Latest product-code checkpoint: `46ba6a621007aefc3c4a8f649230b680246749ac`
-- Latest CI-only APK publication commit: `6e6ecc067bce46e93cd1f14c4429d40745834751`
+- Direct APK publication implementation commit: `6e6ecc067bce46e93cd1f14c4429d40745834751`
+- Direct APK publication validation: CI run #90 / Run ID `37245928600` — SUCCESS
 - Current HEAD is a governance/documentation commit whose ancestry reaches the exact stable commit.
 - `version.py` on the controlled branch is naturally:
   `4.7.2 / stable / docs 4.7`.
@@ -40,7 +41,7 @@ The NIM mobile panel state, context display, test flow, copy-chat, retry and sto
 ### Release
 🟥🟥 **NOT READY**
 
-A behavior-changing Android candidate exists, but real-device validation has not yet been recorded.
+A behavior-changing Android candidate is published; real-device validation has not yet been recorded.
 
 ## EXACT EVIDENCE
 
@@ -77,16 +78,18 @@ Verified mobile UI commit inventory:
 
 ### Current Android candidate
 
-- Product commit: `46ba6a621007aefc3c4a8f649230b680246749ac`
-- CI run: #86 / Run ID `37241554466`
+- Product-code checkpoint: `46ba6a621007aefc3c4a8f649230b680246749ac`
+- Build/source HEAD: `4e2126a3ef0024e1865d213ea0c85ec2d9dfcfa6`
+- CI run: #90 / Run ID `37245928600`
 - Android Editor ARM64 job: SUCCESS
-- GitHub artifact: `android-editor`
-- Installable APK extracted from that exact artifact: `godot-android-editor-arm64-46ba6a621.apk`
+- Direct GitHub artifact: `android-editor-arm64-apk` / ID `11318848305`
+- Installable APK: `godot-android-editor-arm64.apk`
 - APK size: 179,514,605 bytes
-- APK SHA-256: `8eb107305910a0413939176b8bb2e9e780e26fa5af408b54a91a8e7634851279`
-- Direct APK-only CI publication was added in `6e6ecc067bce46e93cd1f14c4429d40745834751`.
-- CI run #87 was superseded/cancelled by the subsequent handoff checkpoint before its Android job completed.
-- Run #86 remains the authoritative physical-test package because it completed successfully at product commit `46ba6a621007aefc3c4a8f649230b680246749ac`.
+- APK SHA-256: `63db6fdd7337eef282cfa9c2c4fd66c7f6d99563dac92cc35d84417f0a204dfe`
+- APK archive integrity check: PASS
+- Run #90 validates the direct APK-only publication path end-to-end.
+- Commits after the product-code checkpoint are workflow/documentation-only; compare shows no product source changes versus `46ba6a621007aefc3c4a8f649230b680246749ac`.
+- This run #90 package is now the authoritative physical-test package.
 
 ### Historical physical baseline
 Previously verified physical Android baseline remains protected for reference:
@@ -114,9 +117,11 @@ This historical package is **not** the new 4.7.2 controlled-baseline candidate.
 **READY FOR PHYSICAL TEST: ACTIVE**
 
 Test the exact package:
-- commit `46ba6a621007aefc3c4a8f649230b680246749ac`
-- CI run #86 / `37241554466`
-- APK SHA-256 `8eb107305910a0413939176b8bb2e9e780e26fa5af408b54a91a8e7634851279`
+- source HEAD `4e2126a3ef0024e1865d213ea0c85ec2d9dfcfa6`
+- product-code checkpoint `46ba6a621007aefc3c4a8f649230b680246749ac`
+- CI run #90 / `37245928600`
+- direct artifact `android-editor-arm64-apk` / `11318848305`
+- APK SHA-256 `63db6fdd7337eef282cfa9c2c4fd66c7f6d99563dac92cc35d84417f0a204dfe`
 
 Required real-device checks: editor startup, NIM panel opening/closing, API-key persistence, Test Connection recovery, chat send/response, Copy Chat, Retry/Stop, and project/scene/selected-node context. Do not infer physical verification from CI.
 
@@ -141,7 +146,7 @@ Required real-device checks: editor startup, NIM panel opening/closing, API-key 
 
 ## NEXT IMMEDIATE STEP
 
-Physical validation of the exact CI APK from run #86 is the next gate. After the device result is recorded, either fix regressions in an atomic commit or promote the candidate toward v0.2 lock.
+Physical validation of the exact direct APK from run #90 is the next gate. After the device result is recorded, either fix regressions in an atomic commit or promote the candidate toward v0.2 lock.
 
 Do not unlock MCP/Agent/Safe Editing.
 
