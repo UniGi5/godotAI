@@ -10,7 +10,7 @@
 - Endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`
 
 ## Current Position
-**v0.2 — PHYSICAL VERIFICATION PENDING ON FINAL 4.7.2 APK**
+**v0.2 — REGRESSION REWORK: CHAT RESPONSE SILENCE ON FINAL APK**
 
 ### Safe Core
 - Provider transport: 🟩🟩
@@ -33,9 +33,9 @@
 ### Verification
 - Previous physical baseline: 🟩🟩 confirmed at `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
 - v0.2 candidate CI: 🟩🟩 confirmed
-- Current v0.2 physical regression: 🟩🟩 PASS — user confirmed physical Android test
-- v0.2 release lock: 🟡🟡 pending physical verification of final 4.7.2 APK
-- Release: 🟡🟡 release engineering pending; final candidate APK is available
+- Current v0.2 physical regression: 🔴🔴 **FAIL — 503 during connection check followed by silent chat response**
+- v0.2 release lock: 🔴🔴 **REOPENED — regression rework required**
+- Release: 🔴🔴 blocked until regression fix + CI + new physical test
 
 ## Confirmed Physical Baseline
 - Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
@@ -102,14 +102,14 @@ Minimum checklist:
 
 ## Release engineering
 - v0.2 release verification record: `RELEASE_NOTES_v0.2.md`
-- Current task: physical-test `build-ccaaebf77531`; if PASS, re-lock v0.2 and proceed to final release engineering.
+- Current task: fix silent non-stream response path, then CI + physical Android retest. Current failing APK: `build-ccaaebf77531`.
 - Do not create a non-prerelease public release until the final build/regression checks are recorded.
 
 ## v0.2 / Release Rules
 - Physical PASS on the current candidate → record DEBUG checkpoint, update handoff/roadmap, then proceed to v0.2 release lock.
 - Physical regression → keep Safe Core protected, apply smallest targeted fix, rebuild, retest.
 - Release packaging starts only after v0.2 lock.
-- v0.2 is locked. Release engineering is now the primary path; experimental work remains isolated.
+- v0.2 lock is reopened by physical regression. Release engineering is paused; experimental MCP / Agent / Safe Editing remain frozen.
 
 ## Handoff Rules
 - Never switch away from Godot 4.7.2 stable.
@@ -117,4 +117,4 @@ Minimum checklist:
 - Do not claim physical verification from CI.
 - Keep experimental work frozen.
 - Every major transition gets a DEBUG checkpoint.
-- Current checkpoint: Run #250 PASS with 4.7.2 guard; APK `build-ccaaebf77531` is the only current physical-test candidate.
+- Regression checkpoint: final APK `build-ccaaebf77531` physically failed chat smoke test. Fix commits: `959ba1cf7983d705645bd4a4d88213efdd62afa9`, `f3dce5fddbcc41de0c193d6cabf2b00f2b9d17b3`, `7a4600e8b8a5b00b268f1d447fd16cfdbf6afc2b`. CI #258 is the current Android verification run.
