@@ -221,7 +221,7 @@ jobs:
             echo
             echo "godot-android-editor-arm64.apk"
             echo
-            echo "**SHA-256:** `$SHA256`"
+            printf '%s\n' "**SHA-256:** `$SHA256`"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Save Godot build cache
