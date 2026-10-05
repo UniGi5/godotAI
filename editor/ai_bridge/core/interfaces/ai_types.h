@@ -69,8 +69,8 @@ struct AIStreamEvent {
 	AIStreamEventType type = AIStreamEventType::DELTA;
 	uint64_t request_id = 0;
 	String delta;
-	String finish_reason;
 	bool reasoning = false;
+	String finish_reason;
 	String error_code;
 	String error_message;
 };
