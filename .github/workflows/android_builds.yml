@@ -30,6 +30,39 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Verify Godot release version
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          values = {}
+          for line in Path("version.py").read_text().splitlines():
+              if " = " in line:
+                  key, value = line.split(" = ", 1)
+                  values[key] = value.strip().strip('"')
+
+          expected = {
+              "major": "4",
+              "minor": "7",
+              "patch": "2",
+              "status": "stable",
+              "docs": "4.7",
+          }
+
+          mismatches = {
+              key: (values.get(key), value)
+              for key, value in expected.items()
+              if values.get(key) != value
+          }
+
+          if mismatches:
+              print("Godot release version mismatch:", mismatches)
+              raise SystemExit(1)
+
+          print("Godot release version verified: 4.7.2 stable")
+          PY
+
       - name: Restore Godot build cache
         uses: ./.github/actions/godot-cache-restore
         with:
