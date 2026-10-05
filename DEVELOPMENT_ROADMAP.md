@@ -116,7 +116,7 @@ NIM first-milestone baseline больше не блокирует дальней
 ### 2.6 Controlled context assembly
 🟩🟩 code implemented — explicit scopes now include `project_identity`, `scene_context`, `selection_context`, `script_context`, `debugger_context`, and the compatibility/full `editor_context`. Existing provider contract is unchanged.
 
-**Current blocker:** none for CI/package availability. A valid APK exists for code candidate `6c05308`; physical Android regression is the next gate.
+**Current blocker:** none for CI/package availability. A valid APK exists for code candidate `d4bced3`; physical Android regression has PASSED.
 
 ---
 
@@ -192,12 +192,12 @@ MCP, shell и автономные действия не добавляются 
 - Current branch: `fix/p1-nim-mobile-chat-ui`
 - Current branch HEAD: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
 - Code candidate for physical test: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
-- Current HEAD CI: 🟡🟡 pending; no new APK claimed.
+- Current HEAD CI: 🟩🟩 Run #188 / `build-c35fc592b3a2` SUCCESS.
 - Physical Android test for current HEAD: 🟩🟩 PASS — user confirmed successful physical test.
 - Previous NIM/mobile baseline: 🟩🟩 physically confirmed at `0201ff8`.
 - v0.2: 🟩🟩 physical verification PASSED; release-lock documentation is next.
 - Release: 🟥🟥 not ready.
 
-**Next engineering action:** record the physical PASS checkpoint, synchronize release-lock status across state/handoff, then begin release engineering only after v0.2 lock.
+**Next engineering action:** create/record the `DEBUG-v0.2-RELEASE-CANDIDATE` checkpoint, lock v0.2, then begin release engineering.
 
-**Do not label the current HEAD as release-ready merely because the older baseline is physically green.**
+**Do not label the current HEAD as release-ready yet: v0.2 release lock and release engineering are still pending.**
