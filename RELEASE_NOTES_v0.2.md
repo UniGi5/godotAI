@@ -3,7 +3,7 @@
 ## Status
 
 - Release line: **v0.2**
-- State: **FINAL RELIABILITY / RELEASE REVIEW**
+- State: **RELEASE LOCK CLOSED / PRERELEASE READY**
 - Branch: `fix/p1-nim-mobile-chat-ui`
 - Godot baseline: **4.7.2 Stable**
 - Android target: **ARM64 Editor APK**
@@ -77,7 +77,7 @@ MCP Bridge, Agent mode, Safe Editing and streaming replacement remain **FROZEN u
 - physical chat regression: **PASS**
 - exact candidate APK: **PASS**
 - first-attempt 503: **OPEN OBSERVATION**
-- final reliability/release review: **IN PROGRESS**
-- public non-prerelease release: **NOT YET**
+- final reliability/release review: **COMPLETE**
+- public non-prerelease release: **NOT YET — explicit release action required**
 
-Do not treat the intermittent 503 as fixed without reproducible evidence.
+Do not treat the intermittent 503 as fixed without reproducible evidence. It is currently non-blocking for the verified prerelease candidate.
