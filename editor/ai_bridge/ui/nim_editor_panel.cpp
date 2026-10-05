@@ -38,8 +38,8 @@
 #include "editor/gui/editor_bottom_panel.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/box_container.h"
-#include "scene/gui/dialogs.h"
 #include "scene/gui/button.h"
+#include "scene/gui/dialogs.h"
 #include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/rich_text_label.h"
@@ -489,7 +489,6 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 	}
 
 	if (p_type == (int)AIStreamEventType::DELTA) {
-		
 		if (active_is_test_connection) {
 			// Any received response proves the request reached NIM. Restore the
 			// test control immediately instead of relying only on a terminal event.
