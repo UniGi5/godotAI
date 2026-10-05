@@ -100,6 +100,11 @@ Minimum checklist:
 
 **Physical result has now been reported by the user; this gate is PASS. CI alone is never treated as physical verification.**
 
+## Release engineering
+- v0.2 release verification record: `RELEASE_NOTES_v0.2.md`
+- Current task: final release metadata/versioning, final build and final distribution gate.
+- Do not create a non-prerelease public release until the final build/regression checks are recorded.
+
 ## v0.2 / Release Rules
 - Physical PASS on the current candidate → record DEBUG checkpoint, update handoff/roadmap, then proceed to v0.2 release lock.
 - Physical regression → keep Safe Core protected, apply smallest targeted fix, rebuild, retest.
@@ -112,4 +117,4 @@ Minimum checklist:
 - Do not claim physical verification from CI.
 - Keep experimental work frozen.
 - Every major transition gets a DEBUG checkpoint.
-- Current checkpoint: `DEBUG-v0.2-RELEASE-CANDIDATE` / physical PASS / v0.2 RELEASE LOCK. Next action: release engineering.
+- Current checkpoint: `DEBUG-v0.2-RELEASE-CANDIDATE` / physical PASS / v0.2 RELEASE LOCK. Next action: release engineering from `RELEASE_NOTES_v0.2.md`.
