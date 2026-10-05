@@ -3,7 +3,7 @@
 ## Status
 
 - Release line: **v0.2**
-- v0.2 state: **FINAL PHYSICAL VERIFICATION PENDING**
+- v0.2 state: **FINAL PHYSICAL VERIFICATION PENDING — NIM CHAT REWORK APK READY**
 - Branch: `fix/p1-nim-mobile-chat-ui`
 - Godot baseline: **4.7.2 Stable**
 - Android target: **ARM64 Editor APK**
@@ -82,8 +82,8 @@ Remaining release-engineering work:
 
 1. Rebuild the candidate after the `version.py` correction.
 2. Verify the new APK's version metadata and CI integrity; the Android workflow now enforces 4.7.2 Stable.
-3. Reconfirm install/launch and focused regression on the new package.
-4. Re-lock v0.2.
+3. Reconfirm install/launch and focused NIM chat regression on `build-24215c0ae9d1`.
+4. Re-lock v0.2 only after physical PASS.
 5. Continue final release engineering.
 3. Final install/launch/regression verification.
 4. Final release notes and distribution check.
@@ -92,3 +92,14 @@ Remaining release-engineering work:
 ## Experimental tracks
 
 MCP Bridge, Agent mode, Safe Editing and streaming replacement remain separate development tracks and must not be mixed into the v0.2 release path.
+
+
+## NIM chat regression rework — 2026-10-05
+- Physical regression: HTTP 503 during connection check followed by silent chat response on `build-ccaaebf77531`.
+- Fixes: `959ba1c` (non-stream failure exposure), `f3dce5f` (reasoning event flag), `7a4600e` (empty content rejection).
+- Exact current branch HEAD: `24215c0ae9d1338e49848d2e19d5124c8971d21e`.
+- CI #260: **SUCCESS**.
+- APK tag: `build-24215c0ae9d1`.
+- SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`.
+- Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-24215c0ae9d1/godot-android-editor-arm64.apk
+- Physical verification: **PENDING**.
