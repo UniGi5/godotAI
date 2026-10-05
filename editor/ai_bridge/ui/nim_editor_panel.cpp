@@ -1,25 +1,59 @@
 /**************************************************************************/
 /*  nim_editor_panel.cpp                                                  */
 /**************************************************************************/
+/*                         This file is part of:                          */
+/*                             GODOT ENGINE                               */
+/*                        https://godotengine.org                         */
+/**************************************************************************/
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
+/*                                                                        */
+/* Permission is hereby granted, free of charge, to any person obtaining  */
+/* a copy of this software and associated documentation files (the        */
+/* "Software"), to deal in the Software without restriction, including    */
+/* without limitation the rights to use, copy, modify, merge, publish,    */
+/* distribute, sublicense, and/or sell copies of the Software, and to     */
+/* permit persons to whom the Software is furnished to do so, subject to  */
+/* the following conditions:                                              */
+/*                                                                        */
+/* The above copyright notice and this permission notice shall be         */
+/* included in all copies or substantial portions of the Software.        */
+/*                                                                        */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,        */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
+/**************************************************************************/
 
 #include "nim_editor_panel.h"
 
 #include "core/object/class_db.h"
-#include "editor/editor_node.h"
-#include "editor/gui/editor_bottom_panel.h"
+#include "editor/ai_bridge/core/interfaces/context_provider.h"
 #include "editor/ai_bridge/runtime/ai_bridge_runtime.h"
 #include "editor/docks/editor_dock.h"
+#include "editor/editor_node.h"
+#include "editor/gui/editor_bottom_panel.h"
 #include "editor/themes/editor_scale.h"
-#include "editor/ai_bridge/core/interfaces/context_provider.h"
+#include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 #include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/rich_text_label.h"
+#include "scene/gui/scroll_container.h"
+#include "servers/display/display_server.h"
 
 void NIMEditorPanel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_test_connection"), &NIMEditorPanel::_test_connection);
 	ClassDB::bind_method(D_METHOD("_close_panel"), &NIMEditorPanel::_close_panel);
 	ClassDB::bind_method(D_METHOD("_send_chat"), &NIMEditorPanel::_send_chat);
+	ClassDB::bind_method(D_METHOD("_copy_chat"), &NIMEditorPanel::_copy_chat);
+	ClassDB::bind_method(D_METHOD("_clear_chat"), &NIMEditorPanel::_clear_chat);
+	ClassDB::bind_method(D_METHOD("_copy_code"), &NIMEditorPanel::_copy_code);
+	ClassDB::bind_method(D_METHOD("_retry_chat"), &NIMEditorPanel::_retry_chat);
+	ClassDB::bind_method(D_METHOD("_cancel_chat"), &NIMEditorPanel::_cancel_chat);
 	ClassDB::bind_method(
 			D_METHOD("_handle_event", "request_id", "type", "delta", "finish_reason", "error_code", "error_message", "reasoning"),
 			&NIMEditorPanel::_handle_event);
@@ -62,9 +96,27 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	model->set_modulate(Color(1, 1, 1, 0.7));
 	add_child(model);
 
+	status_label = memnew(Label);
+	status_label->set_text(TTRC("Idle"));
+	add_child(status_label);
+
+	// Keep connection settings in their own bounded scroll region. On small
+	// Android viewports this prevents the chat controls from being pushed
+	// below the visible bottom-panel area.
+	ScrollContainer *settings_scroll = memnew(ScrollContainer);
+	settings_scroll->set_custom_minimum_size(Vector2(0, 88 * EDSCALE));
+	settings_scroll->set_h_size_flags(SIZE_EXPAND_FILL);
+	settings_scroll->set_horizontal_scroll_mode(ScrollContainer::SCROLL_MODE_DISABLED);
+	settings_scroll->set_vertical_scroll_mode(ScrollContainer::SCROLL_MODE_AUTO);
+	add_child(settings_scroll);
+
+	VBoxContainer *settings = memnew(VBoxContainer);
+	settings->set_h_size_flags(SIZE_EXPAND_FILL);
+	settings_scroll->add_child(settings);
+
 	Label *key_label = memnew(Label);
 	key_label->set_text(TTRC("NVIDIA API key"));
-	add_child(key_label);
+	settings->add_child(key_label);
 
 	api_key_edit = memnew(LineEdit);
 	api_key_edit->set_placeholder(TTRC("Enter your NVIDIA API key"));
@@ -75,39 +127,77 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	api_key_edit->set_secret(true);
 	api_key_edit->set_clear_button_enabled(true);
 	api_key_edit->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
-	add_child(api_key_edit);
+	settings->add_child(api_key_edit);
 
 	test_button = memnew(Button);
 	test_button->set_text(TTRC("Test Connection"));
 	test_button->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
 	test_button->connect(SceneStringName(pressed), Callable(this, "_test_connection"));
-	add_child(test_button);
+	settings->add_child(test_button);
 
-	status_label = memnew(Label);
-	status_label->set_text(TTRC("Idle"));
-	add_child(status_label);
+	HBoxContainer *chat_toolbar = memnew(HBoxContainer);
+	chat_toolbar->set_h_size_flags(SIZE_EXPAND_FILL);
+	add_child(chat_toolbar);
 
-	// Keep chat controls before the expandable transcript so they remain
-	// reachable on compact Android editor layouts.
-	prompt_edit = memnew(LineEdit);
-	prompt_edit->set_placeholder(TTRC("Ask Nemotron..."));
-	prompt_edit->set_clear_button_enabled(true);
-	prompt_edit->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
-	add_child(prompt_edit);
+	copy_button = memnew(Button);
+	copy_button->set_text(TTRC("Copy chat"));
+	copy_button->set_custom_minimum_size(Vector2(0, 38 * EDSCALE));
+	copy_button->set_disabled(true);
+	copy_button->connect(SceneStringName(pressed), Callable(this, "_copy_chat"));
+	chat_toolbar->add_child(copy_button);
 
-	send_button = memnew(Button);
-	send_button->set_text(TTRC("Send"));
-	send_button->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
-	send_button->connect(SceneStringName(pressed), Callable(this, "_send_chat"));
-	add_child(send_button);
+	clear_button = memnew(Button);
+	clear_button->set_text(TTRC("Clear chat"));
+	clear_button->set_custom_minimum_size(Vector2(0, 38 * EDSCALE));
+	clear_button->connect(SceneStringName(pressed), Callable(this, "_clear_chat"));
+	chat_toolbar->add_child(clear_button);
+
+	copy_code_button = memnew(Button);
+	copy_code_button->set_text(TTRC("Copy code"));
+	copy_code_button->set_custom_minimum_size(Vector2(0, 38 * EDSCALE));
+	copy_code_button->set_disabled(true);
+	copy_code_button->connect(SceneStringName(pressed), Callable(this, "_copy_code"));
+	chat_toolbar->add_child(copy_code_button);
+
+	retry_button = memnew(Button);
+	retry_button->set_text(TTRC("Retry"));
+	retry_button->set_custom_minimum_size(Vector2(0, 38 * EDSCALE));
+	retry_button->set_disabled(true);
+	retry_button->connect(SceneStringName(pressed), Callable(this, "_retry_chat"));
+	chat_toolbar->add_child(retry_button);
+
+	stop_button = memnew(Button);
+	stop_button->set_text(TTRC("Stop"));
+	stop_button->set_custom_minimum_size(Vector2(0, 38 * EDSCALE));
+	stop_button->set_disabled(true);
+	stop_button->connect(SceneStringName(pressed), Callable(this, "_cancel_chat"));
+	chat_toolbar->add_child(stop_button);
 
 	output = memnew(RichTextLabel);
 	output->set_fit_content(false);
 	output->set_scroll_active(true);
 	output->set_selection_enabled(true);
+	output->set_h_size_flags(SIZE_EXPAND_FILL);
 	output->set_v_size_flags(SIZE_EXPAND_FILL);
-	output->set_custom_minimum_size(Vector2(0, 90 * EDSCALE));
+	output->set_custom_minimum_size(Vector2(0, 60 * EDSCALE));
 	add_child(output);
+
+	HBoxContainer *input_row = memnew(HBoxContainer);
+	input_row->set_h_size_flags(SIZE_EXPAND_FILL);
+	add_child(input_row);
+
+	prompt_edit = memnew(LineEdit);
+	prompt_edit->set_placeholder(TTRC("Ask Nemotron..."));
+	prompt_edit->set_clear_button_enabled(true);
+	prompt_edit->set_h_size_flags(SIZE_EXPAND_FILL);
+	prompt_edit->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
+	input_row->add_child(prompt_edit);
+
+	send_button = memnew(Button);
+	send_button->set_text(TTRC("Send"));
+	send_button->set_custom_minimum_size(Vector2(92 * EDSCALE, 42 * EDSCALE));
+	send_button->connect(SceneStringName(pressed), Callable(this, "_send_chat"));
+	input_row->add_child(send_button);
 }
 
 NIMEditorPanel::~NIMEditorPanel() {
@@ -136,49 +226,177 @@ void NIMEditorPanel::_test_connection() {
 		return;
 	}
 
-	// Do not send a second paid/rate-limited NIM request just to validate the key.
-	// The next chat request is the real connection test and avoids triggering 429
-	// when the user presses Test Connection repeatedly.
 	runtime->get_secret_storage().set_secret("ai.providers.nvidia_nemotron.api_key", api_key);
+
+	AIRequest request;
+	request.model = "nvidia/nemotron-3-ultra-550b-a55b";
+	request.temperature = 0.0;
+	request.max_tokens = 16;
+	request.extra_parameters["stream"] = false;
+	Dictionary chat_template_kwargs;
+	chat_template_kwargs["enable_thinking"] = false;
+	chat_template_kwargs["force_nonempty_content"] = true;
+	request.extra_parameters["chat_template_kwargs"] = chat_template_kwargs;
+
+	AIContext project_context = runtime->get_context_provider().build_context("editor_context");
+	request.messages = project_context.messages;
+
+	AIMessage message;
+	message.role = AIMessageRole::USER;
+	message.content = "Hello. Reply with exactly: NIM_OK";
+	request.messages.push_back(message);
+
 	output->clear();
-	status_label->set_text(TTRC("API key saved. Send a message to verify connection."));
+	output->append_text(TTRC("Waiting for NVIDIA NIM..."));
+	status_label->set_text(TTRC("Connecting..."));
+	test_button->set_disabled(true);
+	test_button->set_text(TTRC("Testing..."));
+	send_button->set_disabled(true);
+	stop_button->set_disabled(true);
+	retry_available = false;
+	active_is_test_connection = true;
+	retry_button->set_disabled(true);
+
+	// The connection check is a real, visible validation transaction.
+	// Keep the test request outside the normal conversation history.
+	current_response = String();
+	output->append_text(vformat("\n\nYou: %s\nNemotron: ", message.content));
+
+	active_is_chat = true;
+	active_is_test_connection = true;
+	const ObjectID panel_id = get_instance_id();
+	active_request_id = runtime->get_orchestrator().submit(request, [panel_id](const AIStreamEvent &p_event) {
+		Object *object = ObjectDB::get_instance(panel_id);
+		NIMEditorPanel *panel = Object::cast_to<NIMEditorPanel>(object);
+		if (!panel) {
+			return;
+		}
+		panel->call_deferred(
+				"_handle_event",
+				(uint64_t)p_event.request_id,
+				(int)p_event.type,
+				p_event.delta,
+				p_event.finish_reason,
+				p_event.error_code,
+				p_event.error_message,
+				p_event.reasoning);
+	});
+
+	if (active_request_id == 0) {
+		active_is_test_connection = false;
+		test_button->set_disabled(false);
+		send_button->set_disabled(false);
+		stop_button->set_disabled(true);
+		test_button->set_text(TTRC("Test Connection"));
+		status_label->set_text(TTRC("Request could not be started"));
+	}
 }
-void NIMEditorPanel::_send_chat() {
-	if (!runtime || active_request_id != 0) {
+
+void NIMEditorPanel::_copy_chat() {
+	String text;
+	for (const AIMessage &message : conversation) {
+		String role;
+		switch (message.role) {
+			case AIMessageRole::USER:
+				role = TTRC("You");
+				break;
+			case AIMessageRole::ASSISTANT:
+				role = TTRC("Nemotron");
+				break;
+			default:
+				role = TTRC("Message");
+				break;
+		}
+		if (!text.is_empty()) {
+			text += "\n\n";
+		}
+		text += role + ": " + message.content;
+	}
+	if (text.is_empty()) {
+		status_label->set_text(TTRC("Chat is empty"));
 		return;
 	}
+	DisplayServer::get_singleton()->clipboard_set(text);
+	status_label->set_text(TTRC("Chat copied"));
+}
 
-	String prompt = prompt_edit->get_text().strip_edges();
-	if (prompt.is_empty()) {
+void NIMEditorPanel::_copy_code() {
+	if (last_code_block.is_empty()) {
+		status_label->set_text(TTRC("No code block available"));
 		return;
+	}
+	DisplayServer::get_singleton()->clipboard_set(last_code_block);
+	status_label->set_text(TTRC("Code copied"));
+}
+
+void NIMEditorPanel::_clear_chat() {
+	if (active_request_id != 0) {
+		status_label->set_text(TTRC("Wait for the active request to finish"));
+		return;
+	}
+	conversation.clear();
+	current_response = String();
+	last_prompt = String();
+	last_code_block = String();
+	retry_available = false;
+	active_is_chat = false;
+	active_is_test_connection = false;
+	retry_button->set_disabled(true);
+	stop_button->set_disabled(true);
+	copy_code_button->set_disabled(true);
+	copy_button->set_disabled(true);
+	output->clear();
+	status_label->set_text(TTRC("Idle"));
+}
+
+void NIMEditorPanel::_cancel_chat() {
+	if (!runtime || active_request_id == 0) {
+		return;
+	}
+	status_label->set_text(TTRC("Stopping..."));
+	stop_button->set_disabled(true);
+	runtime->get_orchestrator().cancel(active_request_id);
+}
+
+bool NIMEditorPanel::_start_chat_request(const String &p_prompt, bool p_append_user_message) {
+	if (!runtime || active_request_id != 0 || p_prompt.is_empty()) {
+		return false;
 	}
 
 	String api_key = api_key_edit->get_text().strip_edges();
 	if (api_key.is_empty()) {
 		status_label->set_text(TTRC("API key required"));
-		return;
+		return false;
 	}
 
 	runtime->get_secret_storage().set_secret("ai.providers.nvidia_nemotron.api_key", api_key);
 
 	current_response = String();
-	AIMessage user_message;
-	user_message.role = AIMessageRole::USER;
-	user_message.content = prompt;
-	conversation.push_back(user_message);
+	last_prompt = p_prompt;
+	retry_available = false;
+	retry_button->set_disabled(true);
+	active_is_test_connection = false;
 
-	output->append_text(vformat("\n\nYou: %s\nNemotron: ", prompt));
-	prompt_edit->clear();
-	status_label->set_text(TTRC("Connecting..."));
+	if (p_append_user_message) {
+		AIMessage user_message;
+		user_message.role = AIMessageRole::USER;
+		user_message.content = p_prompt;
+		conversation.push_back(user_message);
+		copy_button->set_disabled(false);
+	}
+
+	output->append_text(vformat("\n\nYou: %s\nNemotron: ", p_prompt));
+	if (p_append_user_message) {
+		prompt_edit->clear();
+	}
+	status_label->set_text(TTRC("Waiting for NVIDIA NIM..."));
 	test_button->set_disabled(true);
 	send_button->set_disabled(true);
-	send_button->set_text(TTRC("Sending..."));
 
 	AIRequest request;
 	request.model = "nvidia/nemotron-3-ultra-550b-a55b";
 	request.temperature = 0.7;
-	request.max_tokens = 512;
-	// Keep the physically verified non-stream path as the stable chat baseline.
+	request.max_tokens = 256;
 	request.extra_parameters["stream"] = false;
 	Dictionary chat_template_kwargs;
 	chat_template_kwargs["enable_thinking"] = false;
@@ -210,12 +428,39 @@ void NIMEditorPanel::_send_chat() {
 	});
 
 	if (active_request_id == 0) {
-		conversation.remove_at(conversation.size() - 1);
+		if (p_append_user_message && !conversation.is_empty()) {
+			conversation.remove_at(conversation.size() - 1);
+		}
+		active_is_chat = false;
 		test_button->set_disabled(false);
 		send_button->set_disabled(false);
-		send_button->set_text(TTRC("Send"));
+		stop_button->set_disabled(true);
 		status_label->set_text(TTRC("Request could not be started"));
+		return false;
 	}
+
+	stop_button->set_disabled(false);
+	return true;
+}
+
+void NIMEditorPanel::_retry_chat() {
+	if (!retry_available || last_prompt.is_empty() || active_request_id != 0) {
+		return;
+	}
+	_start_chat_request(last_prompt, false);
+}
+
+void NIMEditorPanel::_send_chat() {
+	if (!runtime || active_request_id != 0) {
+		return;
+	}
+
+	String prompt = prompt_edit->get_text().strip_edges();
+	if (prompt.is_empty()) {
+		return;
+	}
+
+	_start_chat_request(prompt, true);
 }
 
 void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const String &p_delta, const String &p_finish_reason, const String &p_error_code, const String &p_error_message, bool p_reasoning) {
@@ -227,47 +472,111 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 		if (output->get_text().contains(TTRC("Waiting for NVIDIA NIM..."))) {
 			output->clear();
 		}
+		if (active_is_test_connection) {
+			// Any received response proves the request reached NIM. Restore the
+			// test control immediately instead of relying only on a terminal event.
+			test_button->set_disabled(false);
+			test_button->set_text(TTRC("Test Connection"));
+			status_label->set_text(TTRC("Connected"));
+		}
 		if (active_is_chat && !p_reasoning) {
 			current_response += p_delta;
 		}
 		if (p_reasoning) {
-			output->append_text(vformat("\\n[Reasoning] %s", p_delta));
+			output->append_text(vformat("\n[Reasoning] %s", p_delta));
 		} else {
 			output->append_text(p_delta);
 		}
 		return;
 	}
 
+	const bool was_chat = active_is_chat && !active_is_test_connection;
 	active_request_id = 0;
+	active_is_test_connection = false;
 	test_button->set_disabled(false);
 	send_button->set_disabled(false);
-	send_button->set_text(TTRC("Send"));
+	stop_button->set_disabled(true);
+	retry_available = false;
+	retry_button->set_disabled(true);
 
 	switch ((AIStreamEventType)p_type) {
 		case AIStreamEventType::COMPLETED:
-			if (active_is_chat && current_response.is_empty()) {
+			if (was_chat && current_response.is_empty()) {
 				status_label->set_text(TTRC("Error: empty_response"));
 				output->append_text(TTRC("\n\nNVIDIA NIM completed without a response. Please retry."));
+				if (was_chat) {
+					retry_available = true;
+					retry_button->set_disabled(false);
+				}
 				break;
 			}
 			status_label->set_text(TTRC("Connected"));
-			if (active_is_chat) {
+			if (was_chat) {
 				AIMessage assistant_message;
 				assistant_message.role = AIMessageRole::ASSISTANT;
 				assistant_message.content = current_response;
-				conversation.push_back(assistant_message);
+				if (!assistant_message.content.is_empty()) {
+					conversation.push_back(assistant_message);
+				}
+				_rebuild_chat_output();
 			}
 			break;
 		case AIStreamEventType::ERROR:
 			status_label->set_text(vformat(TTRC("Error: %s"), p_error_code));
 			output->append_text(vformat(TTRC("\n\nNVIDIA NIM request failed.\n%s"), p_error_message.is_empty() ? TTRC("No additional error details.") : p_error_message));
+			if (was_chat) {
+				retry_available = true;
+				retry_button->set_disabled(false);
+			}
 			break;
 		case AIStreamEventType::CANCELLED:
 			status_label->set_text(TTRC("Cancelled"));
 			output->append_text(TTRC("\n\nRequest cancelled."));
+			if (was_chat) {
+				retry_available = true;
+				retry_button->set_disabled(false);
+			}
 			break;
 		default:
 			break;
 	}
 	active_is_chat = false;
+}String NIMEditorPanel::_escape_bbcode(const String &p_text) const {
+	return p_text.replace("[", "[lb]").replace("]", "[rb]");
 }
+
+String NIMEditorPanel::_markdown_to_bbcode(const String &p_text) {
+	last_code_block = String();
+	PackedStringArray parts = p_text.split("```");
+	String result;
+	for (int i = 0; i < parts.size(); i++) {
+		String part = parts[i];
+		if ((i % 2) == 1) {
+			int newline = part.find("\n");
+			String code = newline >= 0 ? part.substr(newline + 1) : part;
+			last_code_block = code.strip_edges(false, true);
+			result += "[code]" + _escape_bbcode(code) + "[/code]";
+		} else {
+			String normal = _escape_bbcode(part);
+			PackedStringArray bold_parts = normal.split("**");
+			for (int j = 0; j < bold_parts.size(); j++) {
+				if (j > 0) result += (j % 2 == 1) ? "[b]" : "[/b]";
+				result += bold_parts[j];
+			}
+		}
+	}
+	return result;
+}
+
+void NIMEditorPanel::_rebuild_chat_output() {
+	if (!output) return;
+	output->clear();
+	last_code_block = String();
+	for (const AIMessage &message : conversation) {
+		if (message.role == AIMessageRole::USER) output->append_text(vformat("[b]You:[/b] %s\n", _escape_bbcode(message.content)));
+		else if (message.role == AIMessageRole::ASSISTANT) output->append_text(vformat("[b]Nemotron:[/b] %s\n", _markdown_to_bbcode(message.content)));
+	}
+	copy_code_button->set_disabled(last_code_block.is_empty());
+	if (!last_prompt.is_empty() && active_request_id != 0) output->append_text(vformat("[b]You:[/b] %s\n[b]Nemotron:[/b] ", _escape_bbcode(last_prompt)));
+}
+
