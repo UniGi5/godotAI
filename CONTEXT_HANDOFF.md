@@ -13,7 +13,7 @@ Factual checkpoint for continuation. Update after baseline repairs, important im
 - Exact stable commit: `ed1daf0bf001b61586d9930840f2f1394092c079`
 - `development/controlled-baseline` remains based directly on the exact stable root.
 - Current UI patch branch: `ui/v0.2-ux-fixes`
-- Current UI patch HEAD: `e70f4fcf3f569321a3be022638d0d4a3e2a17d19`
+- Current UI patch HEAD at candidate packaging: `b5c0624b72f4fea19e0b9d12c0a657b9a010921a`
 - The former incorrect 4.8-dev controlled branch remains archived as:
   `archive/controlled-baseline-4.8-dev-2026-10-04`.
 - The legacy `fix/p1-nim-mobile-chat-ui` / PR #1 remains isolated because it is based on `master`.
@@ -36,7 +36,7 @@ PR #2:
 - title: `fix(ui): stabilize mobile chat UX for v0.2`
 - base: `development/controlled-baseline`
 - head: `ui/v0.2-ux-fixes`
-- current source head: `e70f4fcf3f569321a3be022638d0d4a3e2a17d19`
+- current source head at candidate packaging: `b5c0624b72f4fea19e0b9d12c0a657b9a010921a`
 
 UX fixes included:
 1. Preserve visible chat output during connection/reconnect checks.
@@ -48,9 +48,9 @@ The patch changes only:
 - `editor/ai_bridge/ui/nim_editor_panel.h`
 
 ### Release
-🟥🟥 **NOT READY**
+🟨🟨 **READY FOR PHYSICAL TEST**
 
-v0.2 remains on HOLD until the UX patch has a successful CI build and the exact new APK passes real-device regression.
+The UX patch has a successful push CI run with Android Editor ARM64 packaging. v0.2 still remains on HOLD until the exact APK passes real-device regression and the PR-wide Linux diagnostics are resolved or explicitly accepted.
 
 ## EXACT EVIDENCE
 
@@ -116,7 +116,17 @@ The old run #90 APK must not be presented as **READY FOR PHYSICAL TEST** for the
 - CI #126/#127 and #128/#129 were affected by the same hosted-runner assignment degradation window.
 - GitHub Status reported an active Actions incident on 2026-10-05: delayed assignment of GitHub-hosted runners.
 - The earlier Android `Error -15` was separately traced to a runner shutdown signal, not a C++ compile error.
-- New successful CI package: **PENDING**
+- Push CI #138 / Run ID `37376302809`: **SUCCESS**
+- Android Editor ARM64: **SUCCESS**
+- Android Template ARM64: **SUCCESS**
+- Android Template arm32: **SUCCESS**
+- Direct artifact: `android-editor-arm64-apk` / ID `11371533448`
+- APK size: `179,514,605` bytes
+- Independently verified APK SHA-256: `6da437400a59f6ffcd19b609c0674ba9d024e0e81300bf95c84f76652227d3c9`
+- Artifact ZIP digest: `sha256:292e8031b6fd46b36c92f783a90c09e74987ab63ba0c2d38f47f271c6bdc05e4`
+- PR CI #139 / Run ID `37376309566`: **FAIL** only in generic Linux diagnostics; Android path is not implicated.
+- PR failures: Linux ASAN `heap-use-after-free` in the generic project test and Linux Mono export log-check failure (`current_edited_scene = -1`).
+- These failures reproduce outside the Android packaging path and the ASAN issue was already present on earlier UI-track runs; no workaround was added to the UI code.
 
 ### Historical physical baseline
 
@@ -143,9 +153,9 @@ This package is historical reference only and is not the current 4.7.2 UX candid
 
 ## PHYSICAL TEST GATE
 
-**READY FOR PHYSICAL TEST: INACTIVE**
+**READY FOR PHYSICAL TEST: ACTIVE**
 
-Do not test the UX patch yet. The required sequence is:
+Use only the exact APK recorded below. The required device sequence is:
 1. successful CI for the current `ui/v0.2-ux-fixes` head;
 2. exact direct ARM64 APK artifact;
 3. independent APK SHA-256 verification;
@@ -185,7 +195,7 @@ This evidence strengthens Step 1 / Safe Core validation. It does **not** replace
 
 ## NEXT IMMEDIATE STEP
 
-Get a clean CI result for the UX patch after GitHub Actions runner assignment recovers. Once the Android APK is published and its SHA-256 is independently verified, update this file again with the exact package and mark **READY FOR PHYSICAL TEST** before handing it to Gemini.
+Run the exact physical regression against source checkpoint `b5c0624b72f4fea19e0b9d12c0a657b9a010921a` and APK SHA-256 `6da437400a59f6ffcd19b609c0674ba9d024e0e81300bf95c84f76652227d3c9`. Record the device result here after testing.
 
 Do not unlock MCP/Agent/Safe Editing.
 
