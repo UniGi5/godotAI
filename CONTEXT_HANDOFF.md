@@ -12,7 +12,9 @@ Factual checkpoint for continuation. Update after baseline repairs, important im
 - Upstream tag: `4.7.2-stable`
 - Exact stable commit: `ed1daf0bf001b61586d9930840f2f1394092c079`
 - `development/controlled-baseline` was reset directly to the exact stable commit.
-- Current branch HEAD: `35e32d482beb77e3fa9cf46c87124902a499e327`
+- Current branch HEAD: `389c980f9556c25d6719275f3a6d9b2d16b71d07`
+- Latest product-code checkpoint: `46ba6a621007aefc3c4a8f649230b680246749ac`
+- Latest CI-only APK publication commit: `6e6ecc067bce46e93cd1f14c4429d40745834751`
 - Current HEAD is a governance/documentation commit whose ancestry reaches the exact stable commit.
 - `version.py` on the controlled branch is naturally:
   `4.7.2 / stable / docs 4.7`.
@@ -20,7 +22,7 @@ Factual checkpoint for continuation. Update after baseline repairs, important im
   `archive/controlled-baseline-4.8-dev-2026-10-04`.
 
 ### Core
-🟩🟩 **PROTECTED / NOT YET TRANSPLANTED**
+🟩🟩 **PROTECTED / CI VALIDATED**
 
 Safe transport contract remains frozen for v0.2:
 - `stream=false`
@@ -28,17 +30,17 @@ Safe transport contract remains frozen for v0.2:
 - `chat_template_kwargs.enable_thinking=false`
 - `chat_template_kwargs.force_nonempty_content=true`
 
-No Safe Core implementation was silently copied from the 4.8-dev line during the baseline repair.
+The current Safe Core transport contract remains frozen and was preserved during the controlled final-state port. Android Editor compilation succeeded in run #86.
 
 ### UI
-🟡🟡 **ISOLATED**
+🟩🟩 **FINAL STATE PORTED / CI VALIDATED**
 
-The mobile UI commit set is identified and verified to exist, but it is not yet transplanted onto the clean 4.7.2 baseline.
+The NIM mobile panel state, context display, test flow, copy-chat, retry and stop controls are present in the controlled branch and compiled successfully.
 
 ### Release
 🟥🟥 **NOT READY**
 
-No current release candidate exists from this newly corrected baseline.
+A behavior-changing Android candidate exists, but real-device validation has not yet been recorded.
 
 ## EXACT EVIDENCE
 
@@ -73,6 +75,17 @@ Verified mobile UI commit inventory:
 - `679425959764caa2966b697a6dd1ee30b7d5eedc`
 - `5908d16db5a42d739ae2fb8780bfb7c9b2ccb762`
 
+### Current Android candidate
+
+- Product commit: `46ba6a621007aefc3c4a8f649230b680246749ac`
+- CI run: #86 / Run ID `37241554466`
+- Android Editor ARM64 job: SUCCESS
+- GitHub artifact: `android-editor`
+- Installable APK extracted from that exact artifact: `godot-android-editor-arm64-46ba6a621.apk`
+- APK size: 179,514,605 bytes
+- APK SHA-256: `8eb107305910a0413939176b8bb2e9e780e26fa5af408b54a91a8e7634851279`
+- Direct APK-only CI publication was added in `6e6ecc067bce46e93cd1f14c4429d40745834751`; the next CI run will validate that convenience artifact.
+
 ### Historical physical baseline
 Previously verified physical Android baseline remains protected for reference:
 - Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
@@ -86,21 +99,24 @@ This historical package is **not** the new 4.7.2 controlled-baseline candidate.
 
 - Step 0 — clean 4.7.2 Stable baseline: 🟩🟩 COMPLETE
 - Step 1-A — dependency audit: 🟩🟩 COMPLETE
-- Step 1-B — AI Bridge foundation port: 🟨🟨 NEXT
-- Step 1-C — approved context transplant: 🟥🟥 QUEUED
-- Step 2 — mobile chat UI transplant: 🟥🟥 QUEUED
-- Step 3 — Android CI + APK + SHA-256: 🟥🟥 QUEUED
-- Step 4 — real-device Android validation: 🟥🟥 QUEUED
+- Step 1-B — AI Bridge foundation port: 🟩🟩 COMPLETE
+- Step 1-C — approved context transplant: 🟩🟩 COMPLETE — final state ported
+- Step 2 — mobile chat UI transplant: 🟩🟩 COMPLETE — final state ported
+- Step 3 — Android CI + APK + SHA-256: 🟩🟩 COMPLETE
+- Step 4 — real-device Android validation: 🟨🟨 READY FOR PHYSICAL TEST
 - Step 5 — v0.2 Candidate Lock: 🟥🟥 QUEUED
 - Experimental MCP / Agent / Safe Editing: 🟥🟥 FROZEN until v0.2 lock
 
 ## PHYSICAL TEST GATE
 
-**READY FOR PHYSICAL TEST: NOT ACTIVE**
+**READY FOR PHYSICAL TEST: ACTIVE**
 
-A physical test is not requested for this baseline/documentation operation. It becomes mandatory when a behavior-changing Android APK is built from the corrected baseline.
+Test the exact package:
+- commit `46ba6a621007aefc3c4a8f649230b680246749ac`
+- CI run #86 / `37241554466`
+- APK SHA-256 `8eb107305910a0413939176b8bb2e9e780e26fa5af408b54a91a8e7634851279`
 
-Do not infer physical verification from CI.
+Required real-device checks: editor startup, NIM panel opening/closing, API-key persistence, Test Connection recovery, chat send/response, Copy Chat, Retry/Stop, and project/scene/selected-node context. Do not infer physical verification from CI.
 
 ## EXACT STEP 1 EVIDENCE
 
@@ -111,22 +127,21 @@ Do not infer physical verification from CI.
   - `383e035d9e442f2e2348ab55a04653c2599fc30c` — AI Bridge build integration on the old development line
 - Clean 4.7.2 baseline contains no `editor/ai_bridge/` tree.
 
-## FOUNDATION PORT EVIDENCE
+## FOUNDATION / FINAL-STATE PORT EVIDENCE
 
-Ported files:
-- `editor/ai_bridge/SCsub`
-- `editor/ai_bridge/core/interfaces/ai_types.h`
-- `editor/ai_bridge/core/interfaces/ai_provider.h`
-- `editor/ai_bridge/core/interfaces/ai_provider.cpp`
-- `editor/SCsub` registration
+- 4.7.2-compatible AI Bridge contracts are present.
+- Full project-specific bridge/runtime/context/provider/UI final state was ported without replaying the old 4.8-dev ancestry.
+- Android run #215 validated the minimal foundation.
+- Android run #216 validated the expanded bridge/runtime/context/UI base.
+- Android run #86 validated the controlled branch state at product commit `46ba6a621007aefc3c4a8f649230b680246749ac`.
+- The six approved context behaviors are present in final state: project identity, context string fixes, current scene, scene formatting/injection, selected node, selected-node API fix.
 
-Current branch has no workflow run associated with the latest foundation commit, so compilation is not yet verified.
 
 ## NEXT IMMEDIATE STEP
 
-Validate the ported AI Bridge contract layer on the clean 4.7.2 baseline through the Android/engine build path. Do not apply `6b7c7e5…` until that validation passes.
+Physical validation of the exact CI APK from run #86 is the next gate. After the device result is recorded, either fix regressions in an atomic commit or promote the candidate toward v0.2 lock.
 
-Do not blindly cherry-pick the old 4.8-dev ancestry.
+Do not unlock MCP/Agent/Safe Editing.
 
 ## Handoff Rules
 - Never switch to Godot master / 4.8-dev.
