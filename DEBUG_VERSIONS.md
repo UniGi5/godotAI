@@ -44,8 +44,8 @@ CI does not count as physical verification.
 - [x] Restart/persistence check
 
 ### Gate
-- v0.2: 🟡 RELEASE-LOCK PREPARATION after physical PASS
-- Release: 🟥 NOT READY
+- v0.2: 🟩 RELEASE LOCKED
+- Release: 🟡 RELEASE ENGINEERING PENDING
 - Experimental MCP / Agent / Safe Editing: FROZEN
 
 ## Physical verification result
@@ -53,7 +53,16 @@ CI does not count as physical verification.
 User confirmed the Run #188 / `build-c35fc592b3a2` APK passed the required Android physical regression checklist. This supersedes the previous PENDING state.
 
 ## Next checkpoint
-Physical PASS is complete. Next: `DEBUG-v0.2-RELEASE-CANDIDATE` → lock v0.2 → release engineering.
+`DEBUG-v0.2-RELEASE-CANDIDATE` is complete and v0.2 is locked. Next: release engineering.
 
 If regression:
 `REWORK` → smallest targeted fix → new CI APK → new physical test.
+
+
+## DEBUG-v0.2-RELEASE-CANDIDATE
+
+- Physical Android verification: PASS
+- CI candidate: #188 / `build-c35fc592b3a2`
+- v0.2 release lock: **LOCKED**
+- Safe transport contract: unchanged
+- Next phase: release engineering
