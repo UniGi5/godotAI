@@ -15,7 +15,7 @@
 - APK SHA-256: `52e385775ff38585c1e80a556a0c885ef2e9eee4dfa62bca1247fecbcba5fda5`
 - Confirmed: launch, NIM connection, API-key persistence, Nemotron response, Test Connection recovery, Copy Chat, mobile UI and project context.
 
-## v0.2 RELEASE CANDIDATE — VERSION METADATA REBUILD REQUIRED
+## v0.2 RELEASE CANDIDATE — FINAL APK PHYSICAL VERIFICATION PENDING
 - Runtime candidate: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
 - Change: debugger/context fields use real newline separators.
 - Scope: context/diagnostic formatting only.
@@ -71,7 +71,7 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 
 ## Gate policy
 
-**Current transition:** the physical gate for Run #188 / `build-c35fc592b3a2` is PASS. Release engineering found a version metadata blocker (`version.py` was 4.8.0-dev); commit `28d72c9` restores 4.7.2 Stable. A new CI APK is required before the candidate is re-locked. The Android workflow now fails fast unless `version.py` is exactly 4.7.2 Stable.
+**Current transition:** the physical gate for Run #188 / `build-c35fc592b3a2` is PASS. Release engineering found a version metadata blocker (`version.py` was 4.8.0-dev); commit `28d72c9` restores 4.7.2 Stable. Run #250 produced the final verification candidate. The Android workflow now fails fast unless `version.py` is exactly 4.7.2 Stable.
 - Physical PASS → recorded in `DEBUG_VERSIONS.md`; next step is `DEBUG-v0.2-RELEASE-CANDIDATE`, then v0.2 lock.
 - Regression → mark REWORK, smallest targeted fix, new CI APK, new physical test.
 - Release packaging only after v0.2 lock.
@@ -93,7 +93,7 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 
 ## Current status
 - SAFE CORE: 🟢
-- v0.2 candidate: 🟡 **PHYSICAL TEST PASSED; 4.7.2 REBUILD/CI PENDING**
-- ANDROID TEST: 🟡 **PREVIOUS CANDIDATE PASS; NEW PACKAGE VERIFICATION PENDING**
-- v0.2 RELEASE LOCK: 🟡 **TEMPORARILY OPENED FOR VERSION METADATA REBUILD**
-- RELEASE: 🟡 release engineering pending; CI rebuild required
+- v0.2 candidate: 🟡 **CI PASS; FINAL PHYSICAL TEST PENDING**
+- ANDROID TEST: 🟡 **FINAL CANDIDATE PENDING**
+- v0.2 RELEASE LOCK: 🟡 **PENDING FINAL APK PHYSICAL PASS**
+- RELEASE: 🟡 release engineering pending; final APK available
