@@ -195,9 +195,9 @@ MCP, shell и автономные действия не добавляются 
 - Current HEAD CI: 🟩🟩 Run #188 / `build-c35fc592b3a2` SUCCESS.
 - Physical Android test for current HEAD: 🟩🟩 PASS — user confirmed successful physical test.
 - Previous NIM/mobile baseline: 🟩🟩 physically confirmed at `0201ff8`.
-- v0.2: 🟩🟩 physical verification PASSED; release-lock documentation is next.
-- Release: 🟥🟥 not ready.
+- v0.2: 🟩🟩 physical verification PASSED; **RELEASE LOCKED**.
+- Release: 🟡🟡 release engineering pending.
 
-**Next engineering action:** create/record the `DEBUG-v0.2-RELEASE-CANDIDATE` checkpoint, lock v0.2, then begin release engineering.
+**Next engineering action:** begin release engineering from the locked v0.2 candidate; do not alter the locked Safe Core without a new verification cycle.
 
-**Do not label the current HEAD as release-ready yet: v0.2 release lock and release engineering are still pending.**
+**v0.2 is locked, but the product is not release-ready until release engineering gates pass.**
