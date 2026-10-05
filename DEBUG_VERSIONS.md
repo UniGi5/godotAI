@@ -76,3 +76,36 @@ If regression:
 - Physical package verification: **PENDING — `build-ccaaebf77531`**
 - CI version guard: `18783595397c15f69364811af0d04dc2452a1df9`
 - v0.2 re-lock: **PENDING**
+
+
+## DEBUG-v0.2-NIM-CHAT-REWORK-260
+
+- Date: 2026-10-05
+- Branch: `fix/p1-nim-mobile-chat-ui`
+- Runtime fixes: `959ba1c`, `f3dce5f`, `7a4600e`
+- Branch HEAD packaged: `24215c0ae9d1338e49848d2e19d5124c8971d21e`
+- CI Run: #260 / Run ID `37341176576`
+- Result: **SUCCESS**
+- APK tag: `build-24215c0ae9d1`
+- APK: `godot-android-editor-arm64.apk`
+- Size: **192,454,267 bytes**
+- SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`
+- Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-24215c0ae9d1/godot-android-editor-arm64.apk
+
+### Physical status
+**PENDING — CI is not physical verification.**
+
+### Focused device checklist
+- [ ] Install exact APK
+- [ ] Launch Godot Editor
+- [ ] Open NIM panel
+- [ ] Test Connection
+- [ ] Send `Привет`
+- [ ] Verify Nemotron response appears
+- [ ] Verify no silent/stuck response
+- [ ] Verify Copy Chat
+- [ ] Restart editor / confirm API-key persistence
+
+### Gate
+- v0.2 release lock: **REOPENED / BLOCKED**
+- Next transition: physical PASS → re-lock and release engineering; regression → smallest targeted fix.
