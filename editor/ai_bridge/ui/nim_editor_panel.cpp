@@ -33,7 +33,6 @@
 #include "core/object/class_db.h"
 #include "editor/ai_bridge/core/interfaces/context_provider.h"
 #include "editor/ai_bridge/runtime/ai_bridge_runtime.h"
-#include "editor/docks/editor_dock.h"
 #include "editor/editor_node.h"
 #include "editor/gui/editor_bottom_panel.h"
 #include "editor/themes/editor_scale.h"
