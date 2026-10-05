@@ -15,7 +15,7 @@
 - APK SHA-256: `52e385775ff38585c1e80a556a0c885ef2e9eee4dfa62bca1247fecbcba5fda5`
 - Confirmed: launch, NIM connection, API-key persistence, Nemotron response, Test Connection recovery, Copy Chat, mobile UI and project context.
 
-## v0.2 RELEASE CANDIDATE — FINAL APK PHYSICAL VERIFICATION PENDING
+## v0.2 RELEASE CANDIDATE — REGRESSION REWORK REQUIRED
 - Runtime candidate: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
 - Change: debugger/context fields use real newline separators.
 - Scope: context/diagnostic formatting only.
@@ -25,7 +25,7 @@
 - APK size: **192,454,271 bytes**
 - SHA-256: `d87c189794942cf84ea7aca1c3bcf83889c5b5e5691e7620143b2863effe84ce`
 - Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-c35fc592b3a2/godot-android-editor-arm64.apk
-- Physical status: **PASS — user confirmed the Android physical regression test.**
+- Physical status: **FAIL — final `build-ccaaebf77531` showed HTTP 503 during connection check and then silent chat response.**
 
 ## v0.2 context implemented
 - project identity/name/path;
@@ -79,7 +79,7 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 
 ## Release engineering
 - Verification record: `RELEASE_NOTES_v0.2.md`
-- v0.2 is locked; remaining work is final release engineering only.
+- v0.2 release lock is **REOPENED** due to physical chat regression; release engineering is paused.
 - Do not turn the existing prerelease build into a public release until final release checks pass.
 
 ## Gemini rules
@@ -93,7 +93,16 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 
 ## Current status
 - SAFE CORE: 🟢
-- v0.2 candidate: 🟡 **CI PASS; FINAL PHYSICAL TEST PENDING**
-- ANDROID TEST: 🟡 **FINAL CANDIDATE PENDING**
-- v0.2 RELEASE LOCK: 🟡 **PENDING FINAL APK PHYSICAL PASS**
-- RELEASE: 🟡 release engineering pending; final APK available
+- v0.2 candidate: 🔴 **PHYSICAL REGRESSION — CHAT RESPONSE SILENCE**
+- ANDROID TEST: 🔴 **REGRESSION CONFIRMED ON `build-ccaaebf77531`**
+- v0.2 RELEASE LOCK: 🔴 **REOPENED FOR REWORK**
+- RELEASE: 🔴 blocked by regression
+
+
+## Regression checkpoint — 2026-10-05
+- Physical report: Test Connection initially returned HTTP 503, then UI showed Connected; sending a simple greeting produced no Nemotron answer.
+- Android Debugger > Errors: empty.
+- Output: only Debug adapter server port 6006 and GDScript language server port 6005.
+- Fixes applied: `959ba1c` exposes malformed/empty non-stream responses; `f3dce5f` preserves provider reasoning flag into UI; `7a4600e` rejects empty non-stream content explicitly.
+- Current CI: Run #258 / `37341095535` in progress.
+- Required next gate: CI PASS → new direct ARM64 APK → physical Android chat retest. No release lock until PASS.
