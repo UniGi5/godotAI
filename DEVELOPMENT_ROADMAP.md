@@ -193,11 +193,11 @@ MCP, shell и автономные действия не добавляются 
 - Current branch HEAD: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
 - Code candidate for physical test: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
 - Current HEAD CI: 🟡🟡 pending; no new APK claimed.
-- Physical Android test for current HEAD: 🟡🟡 blocked until current candidate APK exists.
+- Physical Android test for current HEAD: 🟩🟩 PASS — user confirmed successful physical test.
 - Previous NIM/mobile baseline: 🟩🟩 physically confirmed at `0201ff8`.
-- v0.2: 🟩🟥 partial — physical regression pending.
+- v0.2: 🟩🟩 physical verification PASSED; release-lock documentation is next.
 - Release: 🟥🟥 not ready.
 
-**Next engineering action:** obtain/confirm Android CI for `d4bced3`, then run the focused physical regression and prepare the v0.2 verification gate.
+**Next engineering action:** record the physical PASS checkpoint, synchronize release-lock status across state/handoff, then begin release engineering only after v0.2 lock.
 
 **Do not label the current HEAD as release-ready merely because the older baseline is physically green.**
