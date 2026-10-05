@@ -193,32 +193,45 @@ Evidence:
 
 Run #86 remains a prior successful product-code build checkpoint; run #90 proves the direct APK-only publication path end-to-end.
 
-### Step 4 — Physical Android validation
-🟨🟨 READY FOR PHYSICAL TEST
+### Step 4 — Physical Android validation / UX regression
+🟨🟨 **PHYSICAL TEST COMPLETE — UX FIXES REQUIRED**
 
-Use the exact APK published by CI run #90 from controlled HEAD `4e2126a3ef0024e1865d213ea0c85ec2d9dfcfa6`. The product-code checkpoint remains `46ba6a621007aefc3c4a8f649230b680246749ac`; the four commits after it are workflow/documentation-only.
+The previous controlled candidate was physically tested on a real Android device. Core runtime behavior passed, but three mobile UX issues were identified:
+1. Network reconnect / connection checks could clear the visible chat history.
+2. Clear Chat was too close to Copy/other controls and could be triggered accidentally.
+3. Chat history/code could compress into a narrow viewport on mobile.
 
-Marker:
-**READY FOR PHYSICAL TEST**
+The corrective UI patch is isolated on:
+- branch: `ui/v0.2-ux-fixes`
+- PR: #2 — `fix(ui): stabilize mobile chat UX for v0.2`
+- current head after style fix: `90bdef7d7bd3f7ae41d23e639a697464d6c84b16`
 
-Current package evidence:
-- source HEAD: `4e2126a3ef0024e1865d213ea0c85ec2d9dfcfa6`
-- product-code checkpoint: `46ba6a621007aefc3c4a8f649230b680246749ac`
-- run: #90 / `37245928600`
-- direct artifact: `android-editor-arm64-apk` / `11318848305`
-- APK SHA-256: `63db6fdd7337eef282cfa9c2c4fd66c7f6d99563dac92cc35d84417f0a204dfe`
+Patch scope:
+- preserve visible chat output during connection tests/reconnect checks;
+- require ConfirmationDialog before destructive chat clearing;
+- separate Clear Chat from Copy/Retry controls;
+- expand the chat viewport and enable word wrapping / scroll following.
 
-CI success is not physical verification.
+CI gate:
+- PR run #99 / Run ID `37249141697` failed only at `prek` style checks;
+- Android jobs were skipped because the static-check gate failed first;
+- style correction commit: `90bdef7d7bd3f7ae41d23e639a697464d6c84b16`;
+- exact new Android candidate package is not yet validated/published.
+
+**Current marker: CI RETRY REQUIRED**
 
 ### Step 5 — v0.2 Candidate Lock
-🟥🟥 QUEUED
+🟥🟥 **QUEUED**
 
 Required before lock:
-- current candidate physically passes;
-- Safe Core remains unchanged or separately revalidated;
-- mobile chat behavior is stable;
-- context behavior is verified;
+- UX patch CI passes;
+- exact new APK artifact is published;
+- fresh `CONTEXT_HANDOFF.md` records the candidate;
+- real-device regression test passes on that exact APK;
+- Safe Core remains unchanged;
+- context behavior remains valid;
 - no experimental zone has leaked into the release candidate.
+
 
 ## 5. GIT BASELINE VERIFICATION ALGORITHM
 
@@ -241,25 +254,32 @@ Run conceptually in this order:
 ## 6. PHYSICAL TEST / PACKAGE RULES
 
 Current state:
-- A behavior-changing Android candidate is published from source HEAD `4e2126a3ef0024e1865d213ea0c85ec2d9dfcfa6`; product code is unchanged since checkpoint `46ba6a621007aefc3c4a8f649230b680246749ac`.
-- **READY FOR PHYSICAL TEST: ACTIVE**
-- Package: `godot-android-editor-arm64.apk`
-- APK SHA-256: `63db6fdd7337eef282cfa9c2c4fd66c7f6d99563dac92cc35d84417f0a204dfe`
-- CI run: #90 / `37245928600`
-- Direct artifact: `android-editor-arm64-apk` / `11318848305`
-- No physical result has been recorded yet.
+- The earlier run #90 package is superseded for v0.2 physical validation because its real-device test exposed the three UX issues above.
+- The new behavior-changing APK must come from the current `ui/v0.2-ux-fixes` head after successful CI.
+- Do not mark **READY FOR PHYSICAL TEST** until the exact new CI run, artifact and independently verified APK SHA-256 are recorded.
+- CI success is not physical verification.
 
+Required real-device checks for the new package:
+1. Editor startup and NIM panel open/close.
+2. API-key persistence.
+3. Network disconnect/reconnect without chat history loss.
+4. Test Connection recovery without replacing/clearing existing chat history.
+5. Chat send/response.
+6. Copy Chat and Copy code.
+7. Retry / Stop.
+8. Clear Chat requires confirmation and clears only after confirmation.
+9. Chat viewport remains readable and fills the mobile panel.
+10. Project / scene / selected-node context remains correct.
 ## 7. RELEASE READINESS
 
-- v0.2 Candidate: 🟡🟡 HOLD
-- Release: 🟥🟥 NOT READY
+- v0.2 Candidate: 🟡🟡 **HOLD — UX PATCH / PHYSICAL REGRESSION PENDING**
+- Release: 🟥🟥 **NOT READY**
 
 Release packaging is prohibited until:
-1. Step 1 and Step 2 are integrated and validated;
-2. Step 3 produces the candidate APK;
+1. UX patch CI succeeds;
+2. a fresh Android candidate APK is published with exact artifact + SHA-256;
 3. Step 4 is a real-device PASS;
 4. Step 5 locks v0.2.
-
 ## 8. HANDOFF RULE
 
 For every substantial continuation, finish with:
@@ -279,16 +299,18 @@ Never:
 
 ## 9. CURRENT POSITION
 
-**Step 0 COMPLETE → Step 1-A COMPLETE → Step 1-B COMPLETE → Step 1-C COMPLETE → Step 2 COMPLETE → Step 3 COMPLETE → READY FOR PHYSICAL TEST**
+**Step 0 COMPLETE → Step 1-A COMPLETE → Step 1-B COMPLETE → Step 1-C COMPLETE → Step 2 COMPLETE → Step 3 COMPLETE → PHYSICAL TEST COMPLETE → UX PATCH / CI RETRY**
 
 ### Final status
 - ENGINE BASELINE: 🟩🟩 4.7.2 Stable verified
 - DEVELOPMENT BASE: 🟩🟩 corrected and isolated
-- SAFE CORE: 🟩🟩 protected / validated by CI
-- UI TRACK: 🟩🟩 final mobile UI state ported / CI validated
-- PHYSICAL TEST: 🟨🟨 **READY FOR PHYSICAL TEST**
-- v0.2: 🟡🟡 hold pending real-device PASS
+- SAFE CORE: 🟩🟩 protected / unchanged by UX patch
+- UI TRACK: 🟨🟨 v0.2 UX patch in progress
+- PHYSICAL TEST: 🟨🟨 completed; 3 UX issues identified
+- v0.2: 🟡🟡 hold pending CI + new physical regression PASS
 - RELEASE: 🟥🟥 not ready
 
 ### NEXT IMMEDIATE STEP
-Physically test the exact direct APK from run #90 on the Android device, then record PASS/FAIL and any UI/NIM regressions before v0.2 Candidate Lock.
+Obtain a successful CI run for `ui/v0.2-ux-fixes`, publish the exact ARM64 APK + independently verified SHA-256, then produce a fresh handoff for Gemini before the real-device regression test.
+
+Do not unlock MCP/Agent/Safe Editing.
