@@ -218,9 +218,18 @@ CI gate:
 - CI concurrency isolation commits: `60eb2ae42feeae8810c254a791dbc3198952a74b`, `e70f4fcf3f569321a3be022638d0d4a3e2a17d19`;
 - CI #128 / Run ID `37374009155` and #129 / Run ID `37374014584` were cancelled before Static Checks while GitHub Actions had an active hosted-runner assignment incident;
 - the prior Android `Error -15` was caused by a runner shutdown signal, not a source compile error;
-- exact new Android candidate package is not yet validated/published.
+- push CI #138 / Run ID `37376302809`: SUCCESS;
+- Android Editor ARM64 job: SUCCESS;
+- Android Template ARM64 job: SUCCESS;
+- Android Template arm32 job: SUCCESS;
+- direct artifact: `android-editor-arm64-apk` / ID `11371533448`;
+- APK size: `179,514,605` bytes;
+- APK SHA-256: `6da437400a59f6ffcd19b609c0674ba9d024e0e81300bf95c84f76652227d3c9`;
+- artifact ZIP digest: `sha256:292e8031b6fd46b36c92f783a90c09e74987ab63ba0c2d38f47f271c6bdc05e4`;
+- PR CI #139 / Run ID `37376309566` remains red only on generic Linux diagnostics: ASAN `heap-use-after-free` and Mono export log-check (`current_edited_scene = -1`);
+- these failures do not invalidate the successful Android packaging job, but they remain open integration diagnostics.
 
-**Current marker: CI BLOCKED BY GITHUB ACTIONS INCIDENT**
+**Current marker: READY FOR PHYSICAL TEST — Android push CI PASS**
 
 ### Step 5 — v0.2 Candidate Lock
 🟥🟥 **QUEUED**
@@ -274,14 +283,13 @@ Required real-device checks for the new package:
 10. Project / scene / selected-node context remains correct.
 ## 7. RELEASE READINESS
 
-- v0.2 Candidate: 🟡🟡 **HOLD — UX PATCH / PHYSICAL REGRESSION PENDING**
+- v0.2 Candidate: 🟨🟨 **READY FOR PHYSICAL TEST — PR-WIDE LINUX DIAGNOSTICS OPEN**
 - Release: 🟥🟥 **NOT READY**
 
-Release packaging is prohibited until:
-1. UX patch CI succeeds;
-2. a fresh Android candidate APK is published with exact artifact + SHA-256;
-3. Step 4 is a real-device PASS;
-4. Step 5 locks v0.2.
+Release packaging remains prohibited until:
+1. Step 4 is a real-device PASS on the exact recorded APK;
+2. PR-wide Linux diagnostics are resolved or explicitly accepted at release review;
+3. Step 5 locks v0.2.
 ## 8. HANDOFF RULE
 
 For every substantial continuation, finish with:
@@ -301,18 +309,18 @@ Never:
 
 ## 9. CURRENT POSITION
 
-**Step 0 COMPLETE → Step 1-A COMPLETE → Step 1-B COMPLETE → Step 1-C COMPLETE → Step 2 COMPLETE → Step 3 COMPLETE → PHYSICAL TEST COMPLETE → UX PATCH / CI RETRY**
+**Step 0 COMPLETE → Step 1-A COMPLETE → Step 1-B COMPLETE → Step 1-C COMPLETE → Step 2 COMPLETE → Step 3 COMPLETE → PHYSICAL TEST COMPLETE → UX PATCH CI PASS → READY FOR PHYSICAL TEST**
 
 ### Final status
 - ENGINE BASELINE: 🟩🟩 4.7.2 Stable verified
 - DEVELOPMENT BASE: 🟩🟩 corrected and isolated
 - SAFE CORE: 🟩🟩 protected / unchanged by UX patch
 - UI TRACK: 🟨🟨 v0.2 UX patch in progress
-- PHYSICAL TEST: 🟨🟨 completed; 3 UX issues identified
+- PHYSICAL TEST: 🟨🟨 ready on exact APK from `b5c0624…`
 - v0.2: 🟡🟡 hold pending CI + new physical regression PASS
 - RELEASE: 🟥🟥 not ready
 
 ### NEXT IMMEDIATE STEP
-Obtain a successful CI run for `ui/v0.2-ux-fixes` after GitHub Actions runner assignment recovers, publish the exact ARM64 APK + independently verified SHA-256, then produce a fresh handoff for Gemini before the real-device regression test.
+Run the exact physical Android regression on APK SHA-256 `6da437400a59f6ffcd19b609c0674ba9d024e0e81300bf95c84f76652227d3c9`, then record the device result and decide whether the remaining PR-wide Linux diagnostics require a separate cleanup track.
 
 Do not unlock MCP/Agent/Safe Editing.
