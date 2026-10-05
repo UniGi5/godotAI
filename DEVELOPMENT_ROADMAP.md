@@ -198,9 +198,9 @@ MCP, shell и автономные действия не добавляются 
 - Current HEAD CI: 🟩🟩 Run #188 / `build-c35fc592b3a2` SUCCESS.
 - Physical Android test for current HEAD: 🟩🟩 PASS — user confirmed successful physical test.
 - Previous NIM/mobile baseline: 🟩🟩 physically confirmed at `0201ff8`.
-- v0.2: 🟡🟡 physical verification passed on prior candidate; release metadata rebuild pending.
+- v0.2: 🟡🟡 prior physical verification passed; final 4.7.2 candidate physical verification pending.
 - Release: 🟡🟡 release engineering pending.
 
-**Next engineering action:** verify CI for `28d72c9`, inspect the new APK, then run focused physical regression if the package/version changed.
+**Next engineering action:** physically test `build-ccaaebf77531`; on PASS, re-lock v0.2 and continue final release engineering.
 
 **v0.2 lock is temporarily reopened only for release metadata correction; no feature work is permitted during this gate.**
