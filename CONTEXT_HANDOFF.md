@@ -70,6 +70,8 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 9. Restart editor and confirm persistence.
 
 ## Gate policy
+
+**Current transition:** the physical gate for Run #188 / `build-c35fc592b3a2` is PASS. Do not repeat the same smoke test without a new package or regression signal.
 - Physical PASS → record in `DEBUG_VERSIONS.md`, promote to `DEBUG-v0.2-RELEASE-CANDIDATE`, update roadmap/handoff, lock v0.2.
 - Regression → mark REWORK, smallest targeted fix, new CI APK, new physical test.
 - Release packaging only after v0.2 lock.
@@ -87,6 +89,6 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 ## Current status
 - SAFE CORE: 🟢
 - v0.2 candidate: 🟡 **READY FOR PHYSICAL TEST**
-- ANDROID TEST: 🟡 **USER ACTION REQUIRED**
-- v0.2 RELEASE LOCK: 🟥 pending physical PASS
+- ANDROID TEST: 🟩 **PHYSICAL PASS CONFIRMED**
+- v0.2 RELEASE LOCK: 🟡 next documentation/checkpoint step
 - RELEASE: 🟥 not ready
