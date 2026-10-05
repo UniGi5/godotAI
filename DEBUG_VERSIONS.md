@@ -26,7 +26,7 @@ Debugger/context formatting only. Debugger fields use real newline separators. N
 - Direct APK publication: PASS
 
 ### Physical status
-**PENDING — READY FOR PHYSICAL TEST**
+**PASS — PHYSICAL ANDROID TEST CONFIRMED**
 
 CI does not count as physical verification.
 
@@ -44,9 +44,13 @@ CI does not count as physical verification.
 - [ ] Restart/persistence check
 
 ### Gate
-- v0.2: 🟡 HOLD until physical PASS
+- v0.2: 🟡 RELEASE-LOCK PREPARATION after physical PASS
 - Release: 🟥 NOT READY
 - Experimental MCP / Agent / Safe Editing: FROZEN
+
+## Physical verification result
+
+User confirmed the Run #188 / `build-c35fc592b3a2` APK passed the required Android physical regression checklist. This supersedes the previous PENDING state.
 
 ## Next checkpoint
 If physical PASS:
