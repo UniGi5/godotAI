@@ -103,3 +103,11 @@ MCP Bridge, Agent mode, Safe Editing and streaming replacement remain separate d
 - SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`.
 - Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-24215c0ae9d1/godot-android-editor-arm64.apk
 - Physical verification: **PENDING**.
+
+
+## Physical verification checkpoint — 2026-10-05
+- Exact fixed APK `build-24215c0ae9d1` passed the focused Android NIM chat smoke-test.
+- Nemotron answered the greeting and all five ECHO checks correctly.
+- The previously observed “Connected but silent chat” regression is no longer reproduced.
+- First Test Connection attempt still produced HTTP 503 before a successful retry. This remains an open reliability observation for final release review.
+- v0.2 release lock may proceed to final review, but do not mark the intermittent 503 as fixed without additional evidence.
