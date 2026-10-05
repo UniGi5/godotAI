@@ -150,7 +150,7 @@ MCP, shell и автономные действия не добавляются 
 
 ## 5. RELEASE ENGINEERING
 
-**Current entry point:** `RELEASE_NOTES_v0.2.md` — v0.2 is locked; remaining work is final metadata/versioning, final build, final regression gate and public release publication.
+**Current entry point:** `RELEASE_NOTES_v0.2.md` — v0.2 release lock is reopened for NIM chat regression rework; exact fixed APK is ready for physical verification.
 
 ### 5.1 Automated regression
 🟥🟥
@@ -204,3 +204,13 @@ MCP, shell и автономные действия не добавляются 
 **Next engineering action:** physically test `build-ccaaebf77531`; on PASS, re-lock v0.2 and continue final release engineering.
 
 **v0.2 lock is temporarily reopened only for release metadata correction; no feature work is permitted during this gate.**
+
+
+## Current verification gate — NIM chat regression rework
+- Fix commits: `959ba1c`, `f3dce5f`, `7a4600e`.
+- Exact runtime packaged at branch HEAD before docs-only follow-ups: `24215c0ae9d1338e49848d2e19d5124c8971d21e`.
+- CI #260: **SUCCESS**.
+- APK: `build-24215c0ae9d1`.
+- SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`.
+- Physical Android test: **PENDING**.
+- Release remains blocked until focused chat smoke test passes on this exact APK.
