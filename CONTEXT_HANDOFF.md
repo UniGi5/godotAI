@@ -103,6 +103,16 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing remain **FROZEN u
 - Every major transition gets a DEBUG checkpoint.
 - If a physical test is required, use only the exact APK named in the current checkpoint.
 
+## Repository integration status — 2026-10-06
+
+- PR #1: **OPEN / UNMERGED / `mergeable=false`**.
+- PR base: `master` (`165856f82fd01ef34d24a272e224a36ab75d3c01` merge base).
+- Current comparison: `master` +25 commits; product branch +145 commits relative to the PR base.
+- Both sides modify NIM/context/release-relevant files.
+- No blind merge/rebase of `master`.
+- Required integration method: explicit three-way reconciliation with the verified NIM runtime preserved, followed by fresh integration CI.
+- Exact physical APK remains `build-24215c0ae9d1`; no runtime change is authorized merely to resolve the branch divergence.
+
 ## Release gate
 
 - Chat regression: **PASS**
