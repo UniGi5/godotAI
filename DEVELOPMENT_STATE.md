@@ -10,7 +10,7 @@
 - Endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`
 
 ## Current Position
-**v0.2 — RELEASE LOCKED**
+**v0.2 — RELEASE CANDIDATE REBUILD / VERSION METADATA GATE**
 
 ### Safe Core
 - Provider transport: 🟩🟩
@@ -34,8 +34,8 @@
 - Previous physical baseline: 🟩🟩 confirmed at `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
 - v0.2 candidate CI: 🟩🟩 confirmed
 - Current v0.2 physical regression: 🟩🟩 PASS — user confirmed physical Android test
-- v0.2 release lock: 🟩🟩 LOCKED after physical PASS
-- Release: 🟡🟡 release engineering pending
+- v0.2 release lock: 🟡🟡 reopened for release metadata correction
+- Release: 🟡🟡 release engineering pending; new CI rebuild required
 
 ## Confirmed Physical Baseline
 - Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
@@ -102,7 +102,7 @@ Minimum checklist:
 
 ## Release engineering
 - v0.2 release verification record: `RELEASE_NOTES_v0.2.md`
-- Current task: final release metadata/versioning, final build and final distribution gate.
+- Current task: rebuild after correcting `version.py` to Godot 4.7.2 Stable, then verify the resulting APK before re-locking.
 - Do not create a non-prerelease public release until the final build/regression checks are recorded.
 
 ## v0.2 / Release Rules
@@ -117,4 +117,4 @@ Minimum checklist:
 - Do not claim physical verification from CI.
 - Keep experimental work frozen.
 - Every major transition gets a DEBUG checkpoint.
-- Current checkpoint: `DEBUG-v0.2-RELEASE-CANDIDATE` / physical PASS / v0.2 RELEASE LOCK. Next action: release engineering from `RELEASE_NOTES_v0.2.md`.
+- Current checkpoint: release metadata corrected in `28d72c9`; CI rebuild and release-candidate verification are required before re-lock.
