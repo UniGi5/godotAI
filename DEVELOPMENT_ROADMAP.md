@@ -192,7 +192,8 @@ MCP, shell и автономные действия не добавляются 
 ### Verification gate
 
 - Current branch: `fix/p1-nim-mobile-chat-ui`
-- Current branch HEAD: `05fd003bf8f5cdaf01c2a5a40933d013e54c115c`
+- Runtime/source checkpoint: `28d72c9351b0940e754e85654182ee8c1d3f4167`
+- Latest documentation checkpoint: tracked by the branch history; do not use documentation commit SHA as the runtime candidate SHA.
 - Code candidate for physical test: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
 - Current HEAD CI: 🟩🟩 Run #188 / `build-c35fc592b3a2` SUCCESS.
 - Physical Android test for current HEAD: 🟩🟩 PASS — user confirmed successful physical test.
