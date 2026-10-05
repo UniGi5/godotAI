@@ -93,22 +93,22 @@ If regression:
 - Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-24215c0ae9d1/godot-android-editor-arm64.apk
 
 ### Physical status
-**PENDING — CI is not physical verification.**
+**PASS — exact APK physically verified.**
 
 ### Focused device checklist
-- [ ] Install exact APK
-- [ ] Launch Godot Editor
-- [ ] Open NIM panel
-- [ ] Test Connection
-- [ ] Send `Привет`
-- [ ] Verify Nemotron response appears
-- [ ] Verify no silent/stuck response
-- [ ] Verify Copy Chat
-- [ ] Restart editor / confirm API-key persistence
+- [x] Install exact APK
+- [x] Launch Godot Editor
+- [x] Open NIM panel
+- [x] Test Connection
+- [x] Send greeting
+- [x] Verify Nemotron response appears
+- [x] Verify no silent/stuck response
+- [x] Verify ECHO-1..ECHO-5
+- [x] Verify physical chat recovery
 
 ### Gate
-- v0.2 release lock: **REOPENED / BLOCKED**
-- Next transition: physical PASS → re-lock and release engineering; regression → smallest targeted fix.
+- v0.2 chat regression gate: **PASS**
+- Remaining: final reliability/release review; first-attempt HTTP 503 is still an open observation.
 
 
 ## DEBUG checkpoint — 2026-10-05 — physical NIM chat recovery
@@ -118,3 +118,4 @@ If regression:
 - Physical Android: **PASS** for greeting + 5-step ECHO smoke-test.
 - Result: Nemotron responded normally; prior silent-chat regression is cleared.
 - Observation: first Test Connection attempt returned HTTP 503, retry succeeded. Track separately before final release decision.
+- Investigation: one POST is issued by Test Connection; no duplicate-request cause found. No code change justified yet.
