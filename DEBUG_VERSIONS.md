@@ -45,7 +45,7 @@
 - Exact candidate APK physical verification: **PASS**
 - First-attempt HTTP 503: **OPEN OBSERVATION**
 - Final reliability/release review: **BLOCKED ON PR INTEGRATION**
-- Public non-prerelease release: **NOT YET — PR #1 integration must be reconciled first**
+- Public non-prerelease release: **NOT YET — PR #3 integration must be reconciled first**
 - MCP / Agent / Safe Editing / streaming replacement: **FROZEN by release-lock policy**
 
 ## Historical checkpoints
@@ -81,7 +81,7 @@
 
 ## Release handling rule
 
-The v0.2 release lock remains open because PR #1 is still open and reports `mergeable=false`. The exact runtime candidate is physically verified, but repository integration has not been safely reconciled. The intermittent first-attempt 503 remains a documented non-blocking observation and is not treated as fixed.
+The v0.2 release lock remains open because PR #3 is still open and reports `mergeable=false`. The exact runtime candidate is physically verified, but repository integration has not been safely reconciled. The intermittent first-attempt 503 remains a documented non-blocking observation and is not treated as fixed.
 
 If a new physical regression appears:
 `REWORK` → smallest targeted fix → new CI APK → exact physical retest → new DEBUG checkpoint.
