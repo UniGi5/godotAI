@@ -1,225 +1,72 @@
 # DEVELOPMENT_ROADMAP.md
 
-## Как ориентироваться в разработке
+## Current position — 2026-10-05
 
-Основная рабочая ветка сейчас: `fix/p1-nim-mobile-chat-ui`.
+Основная ветка: `fix/p1-nim-mobile-chat-ui`.
 
-Формат позиции:
-ЭТАП.ПОДЭТАП → конкретная техническая цель.
+**v0.2 → FINAL RELIABILITY / RELEASE REVIEW**
 
-При каждом существенном продолжении работы статус должен указывать:
-- текущую позицию;
-- что завершено;
-- что блокирует переход;
-- следующий раздел;
-- требуется ли физический тест;
-- готов ли продукт к v0.2/release.
+### 0. FOUNDATION
+- 0.1 Godot 4.7.2 Stable: 🟩🟩
+- 0.2 Android ARM64 CI: 🟩🟩
+- 0.3 Direct APK distribution: 🟩🟩
+- 0.4 AI Bridge runtime/provider lifecycle: 🟩🟩
 
----
+### 1. NIM FIRST MILESTONE
+- 1.1 HTTPS + OpenAI-compatible transport: 🟩🟩
+- 1.2 NVIDIA configuration: 🟩🟩
+- 1.3 Mobile NIM UI: 🟩🟩 physical baseline verified
+- 1.4 API-key persistence: 🟩🟩 physical verification
+- 1.5 Non-stream chat: 🟩🟩 physical verification
+- 1.6 Runtime/UI event bridge: 🟩🟩 physical verification
+- 1.7 First milestone gate: 🟩🟩 PASSED
 
-## 0. FOUNDATION — базовая инфраструктура
+### 2. PROJECT CONTEXT — v0.2
+- 2.1 Project identity: 🟩🟩
+- 2.2 Current scene: 🟩🟩
+- 2.3 Selected node: 🟩🟩
+- 2.4 Current script + 12,000-char limit/truncation: 🟩🟩
+- 2.5 Debugger/errors context: 🟩🟩
+- 2.6 Controlled context scopes: 🟩🟩
 
-### 0.1 Repository / Godot base
-🟩🟩 База Godot Engine и Android Editor build pipeline.
+### 3. SAFE EDITING
+🟥🟥 Frozen until v0.2 release lock.
 
-### 0.2 Android CI
-🟩🟩 Android ARM64 APK автоматически собирается после push.
+### 4. AGENT
+🟥🟥 Frozen until v0.2 release lock.
 
-### 0.3 Direct APK distribution
-🟩🟩 Workflow публикует прямой APK asset.
+### 5. RELEASE ENGINEERING
+- 5.1 Automated regression: 🟥🟥 final review pending
+- 5.2 Physical Android smoke workflow: 🟨🟨 manual physical verification completed
+- 5.3 Versioning: 🟩🟩 4.7.2 Stable enforced
+- 5.4 Release APK: 🟨🟨 exact candidate physically verified; public release not yet
+- 5.5 Release notes/migration: 🟨🟨 synchronization in progress
 
-### 0.4 AI Bridge runtime
-🟩🟩 Runtime, orchestrator, provider registry и lifecycle подключены.
+## Exact verification checkpoint
 
-**Переход:** завершён.
+- Runtime fixes: `959ba1c`, `f3dce5f`, `7a4600e`
+- Packaged runtime checkpoint: `24215c0ae9d1338e49848d2e19d5124c8971d21e`
+- CI #260 / Run ID `37341176576`: **SUCCESS**
+- APK: `build-24215c0ae9d1`
+- SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`
+- Physical Android chat smoke test: **PASS**
+- Greeting + ECHO-1..ECHO-5: **PASS**
+- Previous “Connected but silent chat” regression: **CLEARED**
+- First Test Connection HTTP 503: **OPEN RELIABILITY OBSERVATION**
+- Deterministic code cause for 503: **NOT PROVEN**
 
----
+## Release gate
 
-## 1. NIM FIRST MILESTONE
+Current flow:
 
-### 1.1 Provider transport
-🟩🟩 HTTPS + OpenAI-compatible chat endpoint.
+**Foundation → NIM baseline → v0.2 context → chat regression rework → exact APK physical PASS → final reliability/release review**
 
-### 1.2 NVIDIA configuration
-🟩🟩
-- provider: nvidia_nemotron
-- base URL: https://integrate.api.nvidia.com/v1
-- model: nvidia/nemotron-3-ultra-550b-a55b
+Do not:
+- change the working NIM transport without reproducible evidence;
+- reopen the cleared chat regression without new evidence;
+- switch to Godot master;
+- unlock MCP/Agent/Safe Editing;
+- publish a public non-prerelease release before final checklist completion.
 
-### 1.3 NIM Editor UI
-🟩🟩 Базовый mobile UI физически проверен:
-- touch-friendly NIM panel;
-- статус подключения;
-- API key;
-- Test Connection;
-- Send/cancel;
-- chat output;
-- Copy Chat.
-
-### 1.4 Secret storage
-🟩🟩 API key persistence физически подтверждена.
-
-### 1.5 Chat
-🟩🟩 Базовый non-stream chat физически подтверждён. Пользователь также подтвердил исправления Test Connection и Copy Chat на Android.
-
-### 1.6 Runtime/UI event bridge
-🟩🟩 Базовый lifecycle и request/response path физически подтверждены.
-
-### 1.7 Physical baseline
-🟩🟩 **CONFIRMED**
-
-Подтверждённый baseline:
-- Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
-- CI Run: #156
-- Run ID: `37057401793`
-- Result: SUCCESS
-- APK: `godot-android-editor-arm64.apk`
-- SHA-256: `52e385775ff38585c1e80a556a0c885ef2e9eee4dfa62bca1247fecbcba5fda5`
-- Release tag: `build-0201ff8138d`
-
-Физически подтверждено:
-1. Android Editor запускается.
-2. NVIDIA NIM connection работает.
-3. Nemotron отвечает.
-4. Test Connection после успеха не зависает.
-5. Copy Chat копирует историю из conversation.
-6. Android UI стабилен.
-
-### 1.8 First milestone gate
-🟩🟩 **BASELINE PASSED**
-
-NIM first-milestone baseline больше не блокирует дальнейшую разработку. Для новых изменений, затрагивающих context/streaming/UI, физический тест требуется только после успешного CI соответствующего нового APK.
-
----
-
-## 2. PROJECT CONTEXT — v0.2
-
-### 2.1 Project identity
-🟩🟩 code implemented
-
-### 2.2 Current scene
-🟩🟩 code implemented
-
-### 2.3 Selected node
-🟩🟩 code implemented
-
-### 2.4 Current script
-🟩🟩 code implemented
-- selected node script path;
-- selected script source;
-- source limit: 12,000 characters;
-- explicit truncation marker.
-
-### 2.5 Debugger/errors context
-🟩🟩 code implemented — explicit `debugger_context` scope exposes active session, paused state, error count and warning count via Godot's native debugger API.
-
-### 2.6 Controlled context assembly
-🟩🟩 code implemented — explicit scopes now include `project_identity`, `scene_context`, `selection_context`, `script_context`, `debugger_context`, and the compatibility/full `editor_context`. Existing provider contract is unchanged.
-
-**Current blocker:** none for CI/package availability. A valid APK exists for code candidate `d4bced3`; physical Android regression has PASSED.
-
----
-
-## 3. SAFE EDITING — после v0.2
-
-### 3.1 Proposed changes
-🟥🟥
-### 3.2 Preview/diff
-🟥🟥
-### 3.3 Explicit apply
-🟥🟥
-### 3.4 Undo/recovery
-🟥🟥
-
----
-
-## 4. AGENT — после стабильного editing layer
-
-### 4.1 Tool registry
-🟥🟥
-### 4.2 Permission manager
-🟥🟥
-### 4.3 Agent loop
-🟥🟥
-### 4.4 Controlled tool execution
-🟥🟥
-
-MCP, shell и автономные действия не добавляются раньше необходимости.
-
----
-
-## 5. RELEASE ENGINEERING
-
-**Current entry point:** `RELEASE_NOTES_v0.2.md` — v0.2 chat regression is physically cleared; final reliability/release review remains.
-
-### 5.1 Automated regression
-🟥🟥
-### 5.2 Physical Android smoke workflow
-🟥🟥
-### 5.3 Versioning
-🟥🟥
-### 5.4 Release APK
-🟥🟥
-### 5.5 Release notes / migration
-🟥🟥
-
----
-
-## Navigation rules
-
-Если пользователь пишет:
-
-«Переходим на 1.3» → продолжить с NIM Editor UI.
-«Переходим на 1.4» → продолжить с API-key storage.
-«Переходим на 1.7» → использовать подтверждённый baseline и не повторять уже выполненный smoke test без причины.
-«Готовы к v0.2?» → проверить текущий code/CI gate и необходимость физического regression test для новых изменений.
-«Готовы к релизу?» → отдельно проверить build, install, launch, functional verification, regression и release packaging.
-
----
-
-## Current position
-
-### v0.2 — Project Context
-
-- Project identity: 🟩🟩
-- Current edited scene: 🟩🟩
-- Selected node: 🟩🟩
-- Current script path/source: 🟩🟩
-- Script source limit/truncation: 🟩🟩
-- Debugger/errors context: 🟩🟩 code implemented
-- Controlled context assembly: 🟩🟩
-
-### Verification gate
-
-- Current branch: `fix/p1-nim-mobile-chat-ui`
-- Runtime/source checkpoint: `28d72c9351b0940e754e85654182ee8c1d3f4167`
-- Latest documentation checkpoint: tracked by the branch history; do not use documentation commit SHA as the runtime candidate SHA.
-- Code candidate for physical test: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
-- Current HEAD CI: 🟩🟩 Run #188 / `build-c35fc592b3a2` SUCCESS.
-- Physical Android test for current HEAD: 🟩🟩 PASS — user confirmed successful physical test.
-- Previous NIM/mobile baseline: 🟩🟩 physically confirmed at `0201ff8`.
-- v0.2: 🟡🟡 prior physical verification passed; final 4.7.2 candidate physical verification pending.
-- Release: 🟡🟡 release engineering pending.
-
-**Next engineering action:** complete the final v0.2 reliability/release review. The intermittent first-attempt 503 remains an observation; no feature work is permitted during this gate.
-
-**Physical chat gate is PASS.**
-
-
-## Current verification gate — NIM chat regression rework
-- Fix commits: `959ba1c`, `f3dce5f`, `7a4600e`.
-- Exact runtime packaged at branch HEAD before docs-only follow-ups: `24215c0ae9d1338e49848d2e19d5124c8971d21e`.
-- CI #260: **SUCCESS**.
-- APK: `build-24215c0ae9d1`.
-- SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`.
-- Physical Android test: **PASS** — greeting + ECHO-1..ECHO-5 on this exact APK.
-- Chat regression gate is closed; release remains pending final reliability/release checks.
-
-
-## Current verification checkpoint — 2026-10-05
-- Exact fixed APK `build-24215c0ae9d1`: **physical chat smoke-test PASS**.
-- Nemotron answered the greeting and all 5 ECHO checks correctly.
-- Previous “connected but silent chat” regression is therefore physically cleared.
-- Remaining observation: first Test Connection attempt returned HTTP 503, then retry succeeded. This is tracked separately and is not yet classified as a code regression.
-- Release: 🟡🟡 final v0.2 reliability/release review pending; experimental MCP/Agent/Safe Editing remain frozen until release gate is closed.
-- 503 review result so far: one POST is sent by `Test Connection`; no duplicate request path found. Public NVIDIA API docs do not list 503 among the documented chat-completions responses. No code change is made on this evidence alone.
+### Next engineering action
+Complete final v0.2 reliability/release consistency review.
