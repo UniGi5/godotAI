@@ -150,7 +150,7 @@ MCP, shell и автономные действия не добавляются 
 
 ## 5. RELEASE ENGINEERING
 
-**Current entry point:** `RELEASE_NOTES_v0.2.md` — v0.2 release lock is reopened for NIM chat regression rework; exact fixed APK is ready for physical verification.
+**Current entry point:** `RELEASE_NOTES_v0.2.md` — v0.2 chat regression is physically cleared; final reliability/release review remains.
 
 ### 5.1 Automated regression
 🟥🟥
@@ -201,9 +201,9 @@ MCP, shell и автономные действия не добавляются 
 - v0.2: 🟡🟡 prior physical verification passed; final 4.7.2 candidate physical verification pending.
 - Release: 🟡🟡 release engineering pending.
 
-**Next engineering action:** physically test `build-ccaaebf77531`; on PASS, re-lock v0.2 and continue final release engineering.
+**Next engineering action:** complete the final v0.2 reliability/release review. The intermittent first-attempt 503 remains an observation; no feature work is permitted during this gate.
 
-**v0.2 lock is temporarily reopened only for release metadata correction; no feature work is permitted during this gate.**
+**Physical chat gate is PASS.**
 
 
 ## Current verification gate — NIM chat regression rework
@@ -212,8 +212,8 @@ MCP, shell и автономные действия не добавляются 
 - CI #260: **SUCCESS**.
 - APK: `build-24215c0ae9d1`.
 - SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`.
-- Physical Android test: **PENDING**.
-- Release remains blocked until focused chat smoke test passes on this exact APK.
+- Physical Android test: **PASS** — greeting + ECHO-1..ECHO-5 on this exact APK.
+- Chat regression gate is closed; release remains pending final reliability/release checks.
 
 
 ## Current verification checkpoint — 2026-10-05
@@ -221,4 +221,5 @@ MCP, shell и автономные действия не добавляются 
 - Nemotron answered the greeting and all 5 ECHO checks correctly.
 - Previous “connected but silent chat” regression is therefore physically cleared.
 - Remaining observation: first Test Connection attempt returned HTTP 503, then retry succeeded. This is tracked separately and is not yet classified as a code regression.
-- Release: 🟡🟡 final v0.2 review pending; experimental MCP/Agent/Safe Editing remain frozen until release gate is closed.
+- Release: 🟡🟡 final v0.2 reliability/release review pending; experimental MCP/Agent/Safe Editing remain frozen until release gate is closed.
+- 503 review result so far: one POST is sent by `Test Connection`; no duplicate request path found. Public NVIDIA API docs do not list 503 among the documented chat-completions responses. No code change is made on this evidence alone.
