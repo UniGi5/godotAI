@@ -31,17 +31,17 @@ Debugger/context formatting only. Debugger fields use real newline separators. N
 CI does not count as physical verification.
 
 ### Required device result
-- [ ] Install
-- [ ] Launch
-- [ ] NIM panel
-- [ ] API-key persistence
+- [x] Install
+- [x] Launch
+- [x] NIM panel
+- [x] API-key persistence
 - [ ] Test Connection
-- [ ] Context-aware request
-- [ ] Project/scene/selection/script/debugger context
-- [ ] Test Connection regression check
-- [ ] Copy Chat regression check
-- [ ] Mobile UI regression check
-- [ ] Restart/persistence check
+- [x] Context-aware request
+- [x] Project/scene/selection/script/debugger context
+- [x] Test Connection regression check
+- [x] Copy Chat regression check
+- [x] Mobile UI regression check
+- [x] Restart/persistence check
 
 ### Gate
 - v0.2: 🟡 RELEASE-LOCK PREPARATION after physical PASS
@@ -53,8 +53,7 @@ CI does not count as physical verification.
 User confirmed the Run #188 / `build-c35fc592b3a2` APK passed the required Android physical regression checklist. This supersedes the previous PENDING state.
 
 ## Next checkpoint
-If physical PASS:
-`DEBUG-v0.2-RELEASE-CANDIDATE` → lock v0.2 → release engineering.
+Physical PASS is complete. Next: `DEBUG-v0.2-RELEASE-CANDIDATE` → lock v0.2 → release engineering.
 
 If regression:
 `REWORK` → smallest targeted fix → new CI APK → new physical test.
