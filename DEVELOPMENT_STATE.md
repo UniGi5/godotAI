@@ -98,7 +98,7 @@ Minimum checklist:
 8. Confirm no regression in Test Connection, Copy Chat and mobile UI.
 9. Restart editor and confirm persistence.
 
-**CI success is not physical verification. Do not mark this gate PASS until the user reports the device result.**
+**Physical result has now been reported by the user; this gate is PASS. CI alone is never treated as physical verification.**
 
 ## v0.2 / Release Rules
 - Physical PASS on the current candidate → record DEBUG checkpoint, update handoff/roadmap, then proceed to v0.2 release lock.
