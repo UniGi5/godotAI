@@ -78,6 +78,6 @@ MCP Bridge, Agent mode, Safe Editing and streaming replacement remain **FROZEN w
 - exact candidate APK: **PASS**
 - first-attempt 503: **OPEN OBSERVATION**
 - final reliability/release review: **BLOCKED ON PR INTEGRATION**
-- public non-prerelease release: **NOT YET — PR #1 integration must be reconciled first**
+- public non-prerelease release: **NOT YET — PR #3 integration must be reconciled first**
 
 Do not treat the intermittent 503 as fixed without reproducible evidence. It remains non-blocking for the physically verified runtime candidate.
