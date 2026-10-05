@@ -554,7 +554,9 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 			break;
 	}
 	active_is_chat = false;
-}String NIMEditorPanel::_escape_bbcode(const String &p_text) const {
+}
+
+String NIMEditorPanel::_escape_bbcode(const String &p_text) const {
 	return p_text.replace("[", "[lb]").replace("]", "[rb]");
 }
 
