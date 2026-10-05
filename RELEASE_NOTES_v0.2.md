@@ -3,57 +3,52 @@
 ## Status
 
 - Release line: **v0.2**
-- v0.2 state: **FINAL PHYSICAL VERIFICATION PENDING — NIM CHAT REWORK APK READY**
+- State: **FINAL RELIABILITY / RELEASE REVIEW**
 - Branch: `fix/p1-nim-mobile-chat-ui`
 - Godot baseline: **4.7.2 Stable**
 - Android target: **ARM64 Editor APK**
 - AI provider: NVIDIA NIM
 - Model: `nvidia/nemotron-3-ultra-550b-a55b`
 
-## Locked candidate
+## Exact fixed candidate — physically verified
 
-- Previous locked runtime commit: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
-- Release metadata correction commit: `28d72c9351b0940e754e85654182ee8c1d3f4167`
-- Android CI version guard: `18783595397c15f69364811af0d04dc2452a1df9`
-- CI run #250: **SUCCESS**
-- Final verification APK: `build-ccaaebf77531`
-- APK size: **192,454,267 bytes**
-- Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-ccaaebf77531/godot-android-editor-arm64.apk
-- CI Run: **#188**
-- Run ID: `37225291853`
-- APK tag: `build-c35fc592b3a2`
+- Runtime fixes: `959ba1c`, `f3dce5f`, `7a4600e`
+- Packaged runtime checkpoint: `24215c0ae9d1338e49848d2e19d5124c8971d21e`
+- CI #260 / Run ID `37341176576`: **SUCCESS**
+- APK tag: `build-24215c0ae9d1`
 - APK: `godot-android-editor-arm64.apk`
-- Size: **192,454,271 bytes**
-- SHA-256: `d87c189794942cf84ea7aca1c3bcf83889c5b5e5691e7620143b2863effe84ce`
-- Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-c35fc592b3a2/godot-android-editor-arm64.apk
+- Size: **192,454,267 bytes**
+- SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`
+- Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-24215c0ae9d1/godot-android-editor-arm64.apk
 
-## v0.2 scope
+## Physical Android verification — PASS
 
-- Project identity context.
-- Current edited scene context.
-- Selected node context.
-- Selected script path/source with 12,000-character limit and truncation marker.
-- Debugger/error context.
-- Explicit context scopes.
-- Debugger fields formatted with real newline separators.
+Exact APK tested on a real Android device:
+- launch: PASS
+- NIM panel: PASS
+- Nemotron greeting: PASS
+- ECHO-1 `NIM CHAT OK`: PASS
+- ECHO-2 `Nemotron 3 Ultra`: PASS
+- ECHO-3 `391`: PASS
+- ECHO-4 project context: PASS
+- ECHO-5 `END-OF-TEST`: PASS
+- previous “Connected but silent chat” regression: **CLEARED**
 
-## Verification
+## Connection reliability observation
 
-CI #188 passed:
+First Test Connection attempt again returned **HTTP 503**; retry succeeded and chat then worked.
 
-- Android native editor build.
-- Release APK generation.
-- Runtime payload audit.
-- APK validation/signing.
-- SHA-256 generation.
-- Direct APK publication.
+Current evidence:
+- one visible POST is issued;
+- historical anti-redundant-request protection is present;
+- no deterministic duplicate-request path found;
+- 503 is not classified as a code defect without reproducible evidence.
 
-Physical Android regression was **confirmed PASS by the user** for the previous locked candidate. Because version metadata was corrected afterward, the resulting rebuilt APK must pass the focused package/install regression gate before re-lock.
+**HTTP 503 is open and is not marked fixed.**
 
-## Safe transport contract
+## Stable transport contract
 
-Locked for the v0.2 release candidate:
-
+Frozen during v0.2 release review:
 - `stream=false`
 - `max_tokens=256`
 - `chat_template_kwargs.enable_thinking=false`
@@ -61,53 +56,28 @@ Locked for the v0.2 release candidate:
 
 ## Protected areas
 
-The v0.2 lock does not permit casual changes to:
+No casual changes to:
+- Godot 4.7.2 baseline;
+- provider architecture;
+- HTTPS/TLS;
+- API-key persistence;
+- stable NIM request/response path;
+- Test Connection;
+- Copy Chat;
+- Android packaging.
 
-- Godot 4.7.2 baseline.
-- Provider architecture.
-- HTTPS/TLS transport.
-- API-key persistence.
-- Stable NIM request/response path.
-- Existing Test Connection behavior.
-- Existing Copy Chat behavior.
-- Android packaging pipeline.
-
-Any change to these areas requires a new verification cycle.
-
-## Release gate
-
-v0.2 is locked, but the product is **not yet the final public release**.
-
-Remaining release-engineering work:
-
-1. Rebuild the candidate after the `version.py` correction.
-2. Verify the new APK's version metadata and CI integrity; the Android workflow now enforces 4.7.2 Stable.
-3. Reconfirm install/launch and focused NIM chat regression on `build-24215c0ae9d1`.
-4. Re-lock v0.2 only after physical PASS.
-5. Continue final release engineering.
-3. Final install/launch/regression verification.
-4. Final release notes and distribution check.
-5. Only then publish the non-prerelease release.
+Behavior-changing modifications require a new CI build and physical regression cycle.
 
 ## Experimental tracks
 
-MCP Bridge, Agent mode, Safe Editing and streaming replacement remain separate development tracks and must not be mixed into the v0.2 release path.
+MCP Bridge, Agent mode, Safe Editing and streaming replacement remain **FROZEN until v0.2 Release Lock is explicitly closed**.
 
+## Release gate
 
-## NIM chat regression rework — 2026-10-05
-- Physical regression: HTTP 503 during connection check followed by silent chat response on `build-ccaaebf77531`.
-- Fixes: `959ba1c` (non-stream failure exposure), `f3dce5f` (reasoning event flag), `7a4600e` (empty content rejection).
-- Exact current branch HEAD: `24215c0ae9d1338e49848d2e19d5124c8971d21e`.
-- CI #260: **SUCCESS**.
-- APK tag: `build-24215c0ae9d1`.
-- SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`.
-- Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-24215c0ae9d1/godot-android-editor-arm64.apk
-- Physical verification: **PASS** — greeting + ECHO-1..ECHO-5 on the exact fixed APK.
+- physical chat regression: **PASS**
+- exact candidate APK: **PASS**
+- first-attempt 503: **OPEN OBSERVATION**
+- final reliability/release review: **IN PROGRESS**
+- public non-prerelease release: **NOT YET**
 
-
-## Physical verification checkpoint — 2026-10-05
-- Exact fixed APK `build-24215c0ae9d1` passed the focused Android NIM chat smoke-test.
-- Nemotron answered the greeting and all five ECHO checks correctly.
-- The previously observed “Connected but silent chat” regression is no longer reproduced.
-- First Test Connection attempt still produced HTTP 503 before a successful retry. This remains an open reliability observation for final release review.
-- v0.2 release lock may proceed to final review, but do not mark the intermittent 503 as fixed without additional evidence.
+Do not treat the intermittent 503 as fixed without reproducible evidence.
