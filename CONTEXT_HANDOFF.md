@@ -15,7 +15,7 @@
 - APK SHA-256: `52e385775ff38585c1e80a556a0c885ef2e9eee4dfa62bca1247fecbcba5fda5`
 - Confirmed: launch, NIM connection, API-key persistence, Nemotron response, Test Connection recovery, Copy Chat, mobile UI and project context.
 
-## Current v0.2 candidate — READY FOR PHYSICAL TEST
+## Current v0.2 candidate — PHYSICAL TEST PASSED
 - Runtime candidate: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
 - Change: debugger/context fields use real newline separators.
 - Scope: context/diagnostic formatting only.
@@ -25,7 +25,7 @@
 - APK size: **192,454,271 bytes**
 - SHA-256: `d87c189794942cf84ea7aca1c3bcf83889c5b5e5691e7620143b2863effe84ce`
 - Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-c35fc592b3a2/godot-android-editor-arm64.apk
-- Physical status: **PENDING**. CI is not physical verification.
+- Physical status: **PASS — user confirmed the Android physical regression test.**
 
 ## v0.2 context implemented
 - project identity/name/path;
@@ -72,7 +72,7 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 ## Gate policy
 
 **Current transition:** the physical gate for Run #188 / `build-c35fc592b3a2` is PASS. Do not repeat the same smoke test without a new package or regression signal.
-- Physical PASS → record in `DEBUG_VERSIONS.md`, promote to `DEBUG-v0.2-RELEASE-CANDIDATE`, update roadmap/handoff, lock v0.2.
+- Physical PASS → recorded in `DEBUG_VERSIONS.md`; next step is `DEBUG-v0.2-RELEASE-CANDIDATE`, then v0.2 lock.
 - Regression → mark REWORK, smallest targeted fix, new CI APK, new physical test.
 - Release packaging only after v0.2 lock.
 - MCP / Agent / Safe Editing only after v0.2 release lock.
@@ -88,7 +88,7 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 
 ## Current status
 - SAFE CORE: 🟢
-- v0.2 candidate: 🟡 **READY FOR PHYSICAL TEST**
+- v0.2 candidate: 🟩 **PHYSICAL TEST PASSED**
 - ANDROID TEST: 🟩 **PHYSICAL PASS CONFIRMED**
 - v0.2 RELEASE LOCK: 🟡 next documentation/checkpoint step
 - RELEASE: 🟥 not ready
