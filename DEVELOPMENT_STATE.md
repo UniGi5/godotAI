@@ -102,7 +102,7 @@ Minimum checklist:
 
 ## Release engineering
 - v0.2 release verification record: `RELEASE_NOTES_v0.2.md`
-- Current task: fix silent non-stream response path, then CI + physical Android retest. Current failing APK: `build-ccaaebf77531`.
+- Current task: physical Android retest of the exact fixed runtime APK `build-24215c0ae9d1`.
 - Do not create a non-prerelease public release until the final build/regression checks are recorded.
 
 ## v0.2 / Release Rules
@@ -117,4 +117,16 @@ Minimum checklist:
 - Do not claim physical verification from CI.
 - Keep experimental work frozen.
 - Every major transition gets a DEBUG checkpoint.
-- Regression checkpoint: final APK `build-ccaaebf77531` physically failed chat smoke test. Fix commits: `959ba1cf7983d705645bd4a4d88213efdd62afa9`, `f3dce5fddbcc41de0c193d6cabf2b00f2b9d17b3`, `7a4600e8b8a5b00b268f1d447fd16cfdbf6afc2b`. CI #258 is the current Android verification run.
+- Regression checkpoint: final APK `build-ccaaebf77531` physically failed chat smoke test. Fix commits: `959ba1cf7983d705645bd4a4d88213efdd62afa9`, `f3dce5fddbcc41de0c193d6cabf2b00f2b9d17b3`, `7a4600e8b8a5b00b268f1d447fd16cfdbf6afc2b`. CI #260 is the current Android packaging verification run; exact APK for current branch HEAD is `build-24215c0ae9d1`.
+
+
+## Exact fixed APK gate — 2026-10-05
+- Branch HEAD: `24215c0ae9d1338e49848d2e19d5124c8971d21e`
+- Runtime fixes included: `959ba1c`, `f3dce5f`, `7a4600e`
+- Android CI Run: #260 / Run ID `37341176576` — **SUCCESS**
+- APK: `godot-android-editor-arm64.apk`
+- APK size: **192,454,267 bytes**
+- SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`
+- Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-24215c0ae9d1/godot-android-editor-arm64.apk
+- Physical Android status: **PENDING**
+- Release remains blocked until this exact APK passes physical chat smoke test.
