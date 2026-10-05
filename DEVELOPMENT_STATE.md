@@ -86,7 +86,7 @@ The branch root is the exact upstream Godot 4.7.2 Stable commit. No 4.8-dev sour
 🟩🟩 PROTECTED
 
 ### UI TRACK
-🟩🟩 FINAL STATE PORTED / CI VALIDATED
+🟨🟨 V0.2 UX PATCH IN PROGRESS
 
 The final mobile NIM UI state is intentionally included in the controlled baseline and is protected from experimental MCP/Agent work.
 
@@ -215,7 +215,7 @@ Patch scope:
 CI gate:
 - PR run #99 / Run ID `37249141697` failed at `prek` style checks;
 - style correction commit: `0122eac9a2556ca72bc7474ceae5e54374fb4879`;
-- CI concurrency isolation commits: `60eb2ae42feeae8810c254a791dbc3198952a74b`, `46122f2eeabbecfaed54625eb93bc0d7cf43d1ac`;
+- CI concurrency isolation commits: `60eb2ae42feeae8810c254a791dbc3198952a74b`, `e70f4fcf3f569321a3be022638d0d4a3e2a17d19`;
 - CI #128 / Run ID `37374009155` and #129 / Run ID `37374014584` were cancelled before Static Checks while GitHub Actions had an active hosted-runner assignment incident;
 - the prior Android `Error -15` was caused by a runner shutdown signal, not a source compile error;
 - exact new Android candidate package is not yet validated/published.
