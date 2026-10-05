@@ -120,7 +120,7 @@ Finding:
 - The old development line itself diverges from 4.7.2 Stable, so blindly importing that ancestry would reintroduce the baseline problem.
 
 ### Step 1-B — Controlled AI Bridge foundation port
-🟨🟨 NEXT
+🟩🟩 COMPLETE
 
 Goal:
 - Port only the required project-specific AI Bridge/NIM foundation onto the verified 4.7.2 root.
@@ -133,13 +133,14 @@ Foundation evidence:
 - The AI Bridge path currently contains 34 project files at the reference implementation.
 - NIM integration also requires selected editor lifecycle/build integration commits; these must be ported deliberately rather than inherited from the 4.8-dev ancestry.
 
-Promotion rule:
-- foundation port is a controlled port, not a blind range cherry-pick;
-- CI is required after the foundation compiles;
-- physical Android testing is not required until a behavior-changing Android candidate is produced.
+Promotion evidence:
+- controlled 4.7.2 compatibility fixes applied without importing old 4.8-dev history;
+- Android build run #215 succeeded after the foundation compatibility fixes;
+- the complete project-specific bridge/runtime/context/UI layer was then ported from the previously physical-verified final state, preserving the current transport contract;
+- Android build run #218 succeeded for the resulting product state.
 
 ### Step 1-C — Approved AI/context commits
-🟥🟥 QUEUED
+🟩🟩 COMPLETE — FINAL STATE PORTED
 
 Approved context commits, each verified to exist in the repository:
 - `6b7c7e558e4809ec1532013174d5b16bdd445447` — project identity
@@ -149,14 +150,14 @@ Approved context commits, each verified to exist in the repository:
 - `489a99ed6e92a11d0c3c792239ab890ffae620f5` — selected node context
 - `3079a2b013213deba0376372fb6bba2c7ca4a010` — selected node API fix
 
-Rule:
-- transplant in small atomic groups;
-- preserve the stable transport contract;
-- run CI after each meaningful integration group;
-- do not blindly merge the former 4.8-dev branch.
+Promotion evidence:
+- the net result of all six approved context changes is present in the controlled branch;
+- project identity, project path, current edited scene, scene formatting, selected node context, and selected-node API compatibility are present;
+- these changes were applied as a controlled final-state port rather than replaying the old branch ancestry;
+- the v0.2 NIM transport contract remains unchanged.
 
 ### Step 2 — Mobile chat UI transplant
-🟥🟥 QUEUED
+🟩🟩 COMPLETE — FINAL STATE PORTED
 
 Approved UI commits:
 - `07f5454c0f5a6420def7a2c56d82f25bc9fc6d69`
@@ -167,30 +168,39 @@ Approved UI commits:
 - `679425959764caa2966b697a6dd1ee30b7d5eedc`
 - `5908d16db5a42d739ae2fb8780bfb7c9b2ccb762`
 
-Rule:
-- UI remains isolated from experimental MCP/Agent work;
-- behavior-changing UI patches require CI and physical Android verification.
+Promotion evidence:
+- mobile NIM panel, fixed test state, copy-chat, retry and stop behavior from the previously physical-verified final state is present;
+- NIM panel is attached to the EditorNode lifecycle;
+- experimental MCP/Agent work remains frozen.
 
 ### Step 3 — Android CI package
-🟥🟥 QUEUED
+🟩🟩 COMPLETE — CANDIDATE PACKAGE GENERATED
 
-Required:
-- Android ARM64 editor APK
-- direct downloadable `.apk` artifact
-- reproducible CI result
-- SHA-256 recorded in state/handoff
+Evidence:
+- CI run #86 / Run ID `37241554466`
+- head: `46ba6a621007aefc3c4a8f649230b680246749ac`
+- Android Editor ARM64 job: SUCCESS
+- GitHub artifact: `android-editor`
+- extracted installable APK: `godot-android-editor-arm64-46ba6a621.apk`
+- APK size: 179,514,605 bytes
+- APK SHA-256: `8eb107305910a0413939176b8bb2e9e780e26fa5af408b54a91a8e7634851279`
+
+A CI-only follow-up commit `6e6ecc067bce46e93cd1f14c4429d40745834751` adds an APK-only artifact publication step; its validation run is pending.
 
 ### Step 4 — Physical Android validation
-🟥🟥 QUEUED
+🟨🟨 READY FOR PHYSICAL TEST
 
-Use the exact CI package generated from the candidate commit.
+Use the exact APK from CI run #86 generated from commit `46ba6a621007aefc3c4a8f649230b680246749ac`.
 
 Marker:
 **READY FOR PHYSICAL TEST**
 
-The marker is valid only when the exact commit, CI run, APK, and SHA-256 are recorded.
+Current package evidence:
+- commit: `46ba6a621007aefc3c4a8f649230b680246749ac`
+- run: #86 / `37241554466`
+- APK SHA-256: `8eb107305910a0413939176b8bb2e9e780e26fa5af408b54a91a8e7634851279`
 
-CI success alone is never physical verification.
+CI success is not physical verification.
 
 ### Step 5 — v0.2 Candidate Lock
 🟥🟥 QUEUED
@@ -223,10 +233,12 @@ Run conceptually in this order:
 ## 6. PHYSICAL TEST / PACKAGE RULES
 
 Current state:
-- No new behavior-changing APK has been generated from this freshly corrected baseline.
-- **READY FOR PHYSICAL TEST: NOT ACTIVE**
-- Physical test must not be requested for the baseline-only documentation/reset operation.
-- A physical test becomes required after Step 1/2 produces a behavior-changing Android candidate.
+- Behavior-changing Android candidate exists for exact commit `46ba6a621007aefc3c4a8f649230b680246749ac`.
+- **READY FOR PHYSICAL TEST: ACTIVE**
+- Package: `godot-android-editor-arm64-46ba6a621.apk`
+- APK SHA-256: `8eb107305910a0413939176b8bb2e9e780e26fa5af408b54a91a8e7634851279`
+- CI run: #86 / `37241554466`
+- No physical result has been recorded yet.
 
 ## 7. RELEASE READINESS
 
@@ -258,16 +270,16 @@ Never:
 
 ## 9. CURRENT POSITION
 
-**Step 0 COMPLETE → Step 1-A COMPLETE → Step 1-B PORTED / VALIDATION NEXT**
+**Step 0 COMPLETE → Step 1-A COMPLETE → Step 1-B COMPLETE → Step 1-C COMPLETE → Step 2 COMPLETE → Step 3 COMPLETE → READY FOR PHYSICAL TEST**
 
 ### Final status
 - ENGINE BASELINE: 🟩🟩 4.7.2 Stable verified
 - DEVELOPMENT BASE: 🟩🟩 corrected and isolated
-- SAFE CORE: 🟨🟨 foundation port required before context transplant
-- UI TRACK: 🟡🟡 isolated, not yet transplanted
-- PHYSICAL TEST: 🟥🟥 not requested yet
-- v0.2: 🟡🟡 hold
+- SAFE CORE: 🟩🟩 protected / validated by CI
+- UI TRACK: 🟩🟩 final mobile UI state ported / CI validated
+- PHYSICAL TEST: 🟨🟨 **READY FOR PHYSICAL TEST**
+- v0.2: 🟡🟡 hold pending real-device PASS
 - RELEASE: 🟥🟥 not ready
 
 ### NEXT IMMEDIATE STEP
-Validate the ported AI Bridge contract layer on the 4.7.2 baseline (CI/build path); only after a successful build proceed to the first approved context commit.
+Physically test the exact CI APK from run #86 on the Android device, then record PASS/FAIL and any UI/NIM regressions before v0.2 Candidate Lock.
