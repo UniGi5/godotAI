@@ -109,3 +109,12 @@ If regression:
 ### Gate
 - v0.2 release lock: **REOPENED / BLOCKED**
 - Next transition: physical PASS → re-lock and release engineering; regression → smallest targeted fix.
+
+
+## DEBUG checkpoint — 2026-10-05 — physical NIM chat recovery
+- Exact APK: `build-24215c0ae9d1`
+- CI: #260 / Run ID `37341176576` / SUCCESS
+- SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`
+- Physical Android: **PASS** for greeting + 5-step ECHO smoke-test.
+- Result: Nemotron responded normally; prior silent-chat regression is cleared.
+- Observation: first Test Connection attempt returned HTTP 503, retry succeeded. Track separately before final release decision.
