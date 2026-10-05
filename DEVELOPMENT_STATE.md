@@ -102,7 +102,7 @@ Minimum checklist:
 
 ## Release engineering
 - v0.2 release verification record: `RELEASE_NOTES_v0.2.md`
-- Current task: rebuild after correcting `version.py` to Godot 4.7.2 Stable, then verify the resulting APK before re-locking.
+- Current task: verify CI for the corrected 4.7.2 metadata and Android version guard, then verify the resulting APK before re-locking.
 - Do not create a non-prerelease public release until the final build/regression checks are recorded.
 
 ## v0.2 / Release Rules
@@ -117,4 +117,4 @@ Minimum checklist:
 - Do not claim physical verification from CI.
 - Keep experimental work frozen.
 - Every major transition gets a DEBUG checkpoint.
-- Current checkpoint: release metadata corrected in `28d72c9`; CI rebuild and release-candidate verification are required before re-lock.
+- Current checkpoint: release metadata corrected in `28d72c9`; Android CI now enforces 4.7.2 Stable in `1878359`; CI/package verification is pending before re-lock.
