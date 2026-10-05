@@ -15,7 +15,7 @@
 - APK SHA-256: `52e385775ff38585c1e80a556a0c885ef2e9eee4dfa62bca1247fecbcba5fda5`
 - Confirmed: launch, NIM connection, API-key persistence, Nemotron response, Test Connection recovery, Copy Chat, mobile UI and project context.
 
-## Current v0.2 candidate — PHYSICAL TEST PASSED
+## v0.2 RELEASE CANDIDATE — LOCKED
 - Runtime candidate: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
 - Change: debugger/context fields use real newline separators.
 - Scope: context/diagnostic formatting only.
@@ -71,11 +71,11 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 
 ## Gate policy
 
-**Current transition:** the physical gate for Run #188 / `build-c35fc592b3a2` is PASS. Do not repeat the same smoke test without a new package or regression signal.
+**Current transition:** the physical gate for Run #188 / `build-c35fc592b3a2` is PASS and v0.2 is RELEASE LOCKED. Do not repeat the same smoke test without a new package or regression signal.
 - Physical PASS → recorded in `DEBUG_VERSIONS.md`; next step is `DEBUG-v0.2-RELEASE-CANDIDATE`, then v0.2 lock.
 - Regression → mark REWORK, smallest targeted fix, new CI APK, new physical test.
 - Release packaging only after v0.2 lock.
-- MCP / Agent / Safe Editing only after v0.2 release lock.
+- MCP / Agent / Safe Editing remain isolated from release engineering and require a separate development track.
 
 ## Gemini rules
 - Read `DEVELOPMENT_STATE.md`, `DEVELOPMENT_ROADMAP.md`, `DEBUG_VERSIONS.md` first.
@@ -88,7 +88,7 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 
 ## Current status
 - SAFE CORE: 🟢
-- v0.2 candidate: 🟩 **PHYSICAL TEST PASSED**
+- v0.2 candidate: 🟩 **PHYSICAL TEST PASSED / RELEASE LOCKED**
 - ANDROID TEST: 🟩 **PHYSICAL PASS CONFIRMED**
-- v0.2 RELEASE LOCK: 🟡 next documentation/checkpoint step
-- RELEASE: 🟥 not ready
+- v0.2 RELEASE LOCK: 🟩 **LOCKED**
+- RELEASE: 🟡 release engineering pending
