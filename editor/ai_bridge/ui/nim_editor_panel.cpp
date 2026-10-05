@@ -573,7 +573,9 @@ String NIMEditorPanel::_markdown_to_bbcode(const String &p_text) {
 			String normal = _escape_bbcode(part);
 			PackedStringArray bold_parts = normal.split("**");
 			for (int j = 0; j < bold_parts.size(); j++) {
-				if (j > 0) result += (j % 2 == 1) ? "[b]" : "[/b]";
+				if (j > 0) {
+					result += (j % 2 == 1) ? "[b]" : "[/b]";
+				}
 				result += bold_parts[j];
 			}
 		}
