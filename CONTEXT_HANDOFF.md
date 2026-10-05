@@ -84,7 +84,9 @@ Verified mobile UI commit inventory:
 - Installable APK extracted from that exact artifact: `godot-android-editor-arm64-46ba6a621.apk`
 - APK size: 179,514,605 bytes
 - APK SHA-256: `8eb107305910a0413939176b8bb2e9e780e26fa5af408b54a91a8e7634851279`
-- Direct APK-only CI publication was added in `6e6ecc067bce46e93cd1f14c4429d40745834751`; the next CI run will validate that convenience artifact.
+- Direct APK-only CI publication was added in `6e6ecc067bce46e93cd1f14c4429d40745834751`.
+- CI run #87 was superseded/cancelled by the subsequent handoff checkpoint before its Android job completed.
+- Run #86 remains the authoritative physical-test package because it completed successfully at product commit `46ba6a621007aefc3c4a8f649230b680246749ac`.
 
 ### Historical physical baseline
 Previously verified physical Android baseline remains protected for reference:
