@@ -71,7 +71,7 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 
 ## Gate policy
 
-**Current transition:** the physical gate for Run #188 / `build-c35fc592b3a2` is PASS. Release engineering found a version metadata blocker (`version.py` was 4.8.0-dev); commit `28d72c9` restores 4.7.2 Stable. A new CI APK is required before the candidate is re-locked.
+**Current transition:** the physical gate for Run #188 / `build-c35fc592b3a2` is PASS. Release engineering found a version metadata blocker (`version.py` was 4.8.0-dev); commit `28d72c9` restores 4.7.2 Stable. A new CI APK is required before the candidate is re-locked. The Android workflow now fails fast unless `version.py` is exactly 4.7.2 Stable.
 - Physical PASS → recorded in `DEBUG_VERSIONS.md`; next step is `DEBUG-v0.2-RELEASE-CANDIDATE`, then v0.2 lock.
 - Regression → mark REWORK, smallest targeted fix, new CI APK, new physical test.
 - Release packaging only after v0.2 lock.
@@ -93,7 +93,7 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 
 ## Current status
 - SAFE CORE: 🟢
-- v0.2 candidate: 🟡 **PHYSICAL TEST PASSED; VERSION REBUILD PENDING**
+- v0.2 candidate: 🟡 **PHYSICAL TEST PASSED; 4.7.2 REBUILD/CI PENDING**
 - ANDROID TEST: 🟡 **PREVIOUS CANDIDATE PASS; NEW PACKAGE VERIFICATION PENDING**
 - v0.2 RELEASE LOCK: 🟡 **TEMPORARILY OPENED FOR VERSION METADATA REBUILD**
 - RELEASE: 🟡 release engineering pending; CI rebuild required
