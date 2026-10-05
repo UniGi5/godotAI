@@ -114,3 +114,12 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 
 ## Exact fixed APK checkpoint — 2026-10-05
 The runtime fixes `959ba1c`, `f3dce5f` and `7a4600e` are now packaged in the current branch HEAD build. CI validates the APK structurally/signature-wise, but this is not physical verification. The only remaining v0.2 gate is the physical Android smoke test of `build-24215c0ae9d1`.
+
+
+## Physical Android verification — 2026-10-05
+- Exact APK `build-24215c0ae9d1` physically tested by the user.
+- Greeting: **PASS** — Nemotron responded with project identity.
+- ECHO smoke-test: **PASS** — all five requested outputs returned correctly.
+- This confirms the previous silent-chat regression is resolved in the physical Android build.
+- Separate observation: first Test Connection attempt again returned HTTP 503; retry connected and chat worked. Keep this as an open reliability observation, not as a proven code defect yet.
+- Next gate: record this PASS, then review whether the initial 503 is reproducible/provider-side before final v0.2 release lock. No experimental MCP/Agent work until release gate is closed.
