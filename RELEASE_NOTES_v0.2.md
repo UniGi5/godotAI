@@ -102,7 +102,7 @@ MCP Bridge, Agent mode, Safe Editing and streaming replacement remain separate d
 - APK tag: `build-24215c0ae9d1`.
 - SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`.
 - Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-24215c0ae9d1/godot-android-editor-arm64.apk
-- Physical verification: **PENDING**.
+- Physical verification: **PASS** — greeting + ECHO-1..ECHO-5 on the exact fixed APK.
 
 
 ## Physical verification checkpoint — 2026-10-05
