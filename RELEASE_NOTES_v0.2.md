@@ -3,7 +3,7 @@
 ## Status
 
 - Release line: **v0.2**
-- v0.2 state: **RELEASE LOCKED**
+- v0.2 state: **RELEASE-CANDIDATE REBUILD REQUIRED**
 - Branch: `fix/p1-nim-mobile-chat-ui`
 - Godot baseline: **4.7.2 Stable**
 - Android target: **ARM64 Editor APK**
@@ -12,7 +12,8 @@
 
 ## Locked candidate
 
-- Runtime commit: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
+- Previous locked runtime commit: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
+- Release metadata correction commit: `28d72c9351b0940e754e85654182ee8c1d3f4167`
 - CI Run: **#188**
 - Run ID: `37225291853`
 - APK tag: `build-c35fc592b3a2`
@@ -42,7 +43,7 @@ CI #188 passed:
 - SHA-256 generation.
 - Direct APK publication.
 
-Physical Android regression was subsequently **confirmed PASS by the user** for the locked candidate, including the existing NIM/mobile baseline checks and v0.2 context path.
+Physical Android regression was **confirmed PASS by the user** for the previous locked candidate. Because version metadata was corrected afterward, the resulting rebuilt APK must pass the focused package/install regression gate before re-lock.
 
 ## Safe transport contract
 
@@ -74,8 +75,11 @@ v0.2 is locked, but the product is **not yet the final public release**.
 
 Remaining release-engineering work:
 
-1. Final release metadata/versioning.
-2. Final release build from the locked candidate.
+1. Rebuild the candidate after the `version.py` correction.
+2. Verify the new APK's version metadata and CI integrity.
+3. Reconfirm install/launch and focused regression on the new package.
+4. Re-lock v0.2.
+5. Continue final release engineering.
 3. Final install/launch/regression verification.
 4. Final release notes and distribution check.
 5. Only then publish the non-prerelease release.
