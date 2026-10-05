@@ -95,8 +95,8 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 - SAFE CORE: 🟢
 - v0.2 candidate: 🔴 **PHYSICAL REGRESSION — CHAT RESPONSE SILENCE**
 - ANDROID TEST: 🔴 **REGRESSION CONFIRMED ON `build-ccaaebf77531`**
-- v0.2 RELEASE LOCK: 🔴 **REOPENED FOR REWORK**
-- RELEASE: 🔴 blocked by regression
+- v0.2 RELEASE LOCK: 🟡 **FINAL RELIABILITY REVIEW**
+- RELEASE: 🟡 pending final 503 review and release checklist
 
 
 ## Regression checkpoint — 2026-10-05
@@ -108,8 +108,8 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 - Exact current branch HEAD APK: `build-24215c0ae9d1`.
 - SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`.
 - Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-24215c0ae9d1/godot-android-editor-arm64.apk
-- Physical status: **PENDING**.
-- Required next gate: install exact APK → focused physical Android chat retest → record PASS/REWORK. No release lock until PASS.
+- Physical status: **PASS** — greeting + ECHO-1..ECHO-5 verified on the exact APK.
+- Remaining gate: review the intermittent first-attempt HTTP 503 before final v0.2 release lock.
 
 
 ## Exact fixed APK checkpoint — 2026-10-05
@@ -122,4 +122,5 @@ The runtime fixes `959ba1c`, `f3dce5f` and `7a4600e` are now packaged in the cur
 - ECHO smoke-test: **PASS** — all five requested outputs returned correctly.
 - This confirms the previous silent-chat regression is resolved in the physical Android build.
 - Separate observation: first Test Connection attempt again returned HTTP 503; retry connected and chat worked. Keep this as an open reliability observation, not as a proven code defect yet.
-- Next gate: record this PASS, then review whether the initial 503 is reproducible/provider-side before final v0.2 release lock. No experimental MCP/Agent work until release gate is closed.
+- Investigation checkpoint: current `Test Connection` performs one visible POST transaction; the historical anti-redundant-request fix remains present. NVIDIA's public LLM API documentation lists 200/202/422/500 for the chat-completions operation and does not document 503 as a normal API response. Therefore no transport/UI code change is justified yet. Treat the observed first-attempt 503 as an unresolved upstream/gateway reliability observation.
+- Next gate: final v0.2 reliability/release review. No experimental MCP/Agent work until the release gate is closed.
