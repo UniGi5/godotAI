@@ -10,7 +10,7 @@
 - Endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`
 
 ## Current Position
-**v0.2 — RELEASE CANDIDATE REBUILD / VERSION METADATA GATE**
+**v0.2 — PHYSICAL VERIFICATION PENDING ON FINAL 4.7.2 APK**
 
 ### Safe Core
 - Provider transport: 🟩🟩
@@ -34,8 +34,8 @@
 - Previous physical baseline: 🟩🟩 confirmed at `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
 - v0.2 candidate CI: 🟩🟩 confirmed
 - Current v0.2 physical regression: 🟩🟩 PASS — user confirmed physical Android test
-- v0.2 release lock: 🟡🟡 reopened for release metadata correction
-- Release: 🟡🟡 release engineering pending; new CI rebuild required
+- v0.2 release lock: 🟡🟡 pending physical verification of final 4.7.2 APK
+- Release: 🟡🟡 release engineering pending; final candidate APK is available
 
 ## Confirmed Physical Baseline
 - Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
@@ -102,7 +102,7 @@ Minimum checklist:
 
 ## Release engineering
 - v0.2 release verification record: `RELEASE_NOTES_v0.2.md`
-- Current task: verify CI for the corrected 4.7.2 metadata and Android version guard, then verify the resulting APK before re-locking.
+- Current task: physical-test `build-ccaaebf77531`; if PASS, re-lock v0.2 and proceed to final release engineering.
 - Do not create a non-prerelease public release until the final build/regression checks are recorded.
 
 ## v0.2 / Release Rules
@@ -117,4 +117,4 @@ Minimum checklist:
 - Do not claim physical verification from CI.
 - Keep experimental work frozen.
 - Every major transition gets a DEBUG checkpoint.
-- Current checkpoint: release metadata corrected in `28d72c9`; Android CI now enforces 4.7.2 Stable in `1878359`; CI/package verification is pending before re-lock.
+- Current checkpoint: Run #250 PASS with 4.7.2 guard; APK `build-ccaaebf77531` is the only current physical-test candidate.
