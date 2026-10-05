@@ -87,10 +87,10 @@ Protected. Behavior-changing Android/runtime modifications require minimal patch
 Mobile UI experiments remain isolated from the release candidate. No keyboard hacks or redesign without real-device evidence.
 
 ### DEVELOPMENT TRACK
-Final v0.2 reliability/release review and documentation consistency.
+Release-lock maintenance and documentation consistency.
 
 ### EXPERIMENTAL
-MCP Bridge, streaming replacement, Agent mode and Safe Editing remain **FROZEN until v0.2 Release Lock**.
+MCP Bridge, streaming replacement, Agent mode and Safe Editing remain **FROZEN until an explicit post-v0.2 unlock decision**.
 
 ## Gemini / Superpowers rules
 
@@ -112,4 +112,4 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing remain **FROZEN u
 - Public non-prerelease release: **NOT YET — explicit release action required**
 
 ### Next action
-Maintain the v0.2 release lock. Experimental MCP/Agent/Safe Editing remain frozen unless a new release decision explicitly changes the gate.
+Maintain the closed v0.2 release lock. Experimental MCP/Agent/Safe Editing remain frozen until an explicit unlock decision.
