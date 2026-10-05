@@ -44,7 +44,7 @@ CI does not count as physical verification.
 - [x] Restart/persistence check
 
 ### Gate
-- v0.2: 🟩 RELEASE LOCKED
+- v0.2: 🟡 VERSION METADATA REBUILD REQUIRED
 - Release: 🟡 RELEASE ENGINEERING PENDING
 - Experimental MCP / Agent / Safe Editing: FROZEN
 
@@ -53,7 +53,7 @@ CI does not count as physical verification.
 User confirmed the Run #188 / `build-c35fc592b3a2` APK passed the required Android physical regression checklist. This supersedes the previous PENDING state.
 
 ## Next checkpoint
-`DEBUG-v0.2-RELEASE-CANDIDATE` is complete and v0.2 is locked. Next: release engineering.
+`DEBUG-v0.2-RELEASE-CANDIDATE` was completed before the release metadata correction; new CI verification is required before re-lock. Next: release engineering.
 
 If regression:
 `REWORK` → smallest targeted fix → new CI APK → new physical test.
@@ -66,3 +66,12 @@ If regression:
 - v0.2 release lock: **LOCKED**
 - Safe transport contract: unchanged
 - Next phase: release engineering
+
+
+## VERSION-METADATA-REWORK-28D72C9
+
+- Commit: `28d72c9351b0940e754e85654182ee8c1d3f4167`
+- Change: restore `version.py` to Godot 4.7.2 Stable (`major=4`, `minor=7`, `patch=2`, `status=stable`, `docs=4.7`).
+- CI: **PENDING**
+- Physical package verification: **PENDING**
+- v0.2 re-lock: **PENDING**
