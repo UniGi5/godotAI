@@ -3,7 +3,7 @@
 ## Status
 
 - Release line: **v0.2**
-- v0.2 state: **RELEASE-CANDIDATE REBUILD REQUIRED**
+- v0.2 state: **FINAL PHYSICAL VERIFICATION PENDING**
 - Branch: `fix/p1-nim-mobile-chat-ui`
 - Godot baseline: **4.7.2 Stable**
 - Android target: **ARM64 Editor APK**
@@ -15,6 +15,10 @@
 - Previous locked runtime commit: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
 - Release metadata correction commit: `28d72c9351b0940e754e85654182ee8c1d3f4167`
 - Android CI version guard: `18783595397c15f69364811af0d04dc2452a1df9`
+- CI run #250: **SUCCESS**
+- Final verification APK: `build-ccaaebf77531`
+- APK size: **192,454,267 bytes**
+- Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-ccaaebf77531/godot-android-editor-arm64.apk
 - CI Run: **#188**
 - Run ID: `37225291853`
 - APK tag: `build-c35fc592b3a2`
