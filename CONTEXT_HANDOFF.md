@@ -13,7 +13,7 @@ Factual checkpoint for continuation. Update after baseline repairs, important im
 - Exact stable commit: `ed1daf0bf001b61586d9930840f2f1394092c079`
 - `development/controlled-baseline` remains based directly on the exact stable root.
 - Current UI patch branch: `ui/v0.2-ux-fixes`
-- Current UI patch HEAD: `299ce5ce8f2f68264db2d25005f2362d4b2cbc2e`
+- Current UI patch HEAD: `46122f2eeabbecfaed54625eb93bc0d7cf43d1ac`
 - The former incorrect 4.8-dev controlled branch remains archived as:
   `archive/controlled-baseline-4.8-dev-2026-10-04`.
 - The legacy `fix/p1-nim-mobile-chat-ui` / PR #1 remains isolated because it is based on `master`.
@@ -36,7 +36,7 @@ PR #2:
 - title: `fix(ui): stabilize mobile chat UX for v0.2`
 - base: `development/controlled-baseline`
 - head: `ui/v0.2-ux-fixes`
-- current source head: `299ce5ce8f2f68264db2d25005f2362d4b2cbc2e`
+- current source head: `46122f2eeabbecfaed54625eb93bc0d7cf43d1ac`
 
 UX fixes included:
 1. Preserve visible chat output during connection/reconnect checks.
@@ -52,7 +52,6 @@ The patch changes only:
 
 v0.2 remains on HOLD until the UX patch has a successful CI build and the exact new APK passes real-device regression.
 
-## EXACT EVIDENCE
 ## EXACT EVIDENCE
 
 ### Baseline mismatch that was corrected
@@ -105,13 +104,18 @@ The old run #90 APK must not be presented as **READY FOR PHYSICAL TEST** for the
 ### Current UX patch CI gate
 
 - PR #2 head: `ui/v0.2-ux-fixes`
-- Current source head: `299ce5ce8f2f68264db2d25005f2362d4b2cbc2e`
+- Current source head: `46122f2eeabbecfaed54625eb93bc0d7cf43d1ac`
 - Earlier PR check run #99 / Run ID `37249141697`: **FAIL**
 - Failure location: `prek` style checks
 - Android stage was skipped after the static-check failure.
 - Root cause identified in the touched C++: include ordering and whitespace-only line.
-- Style correction commit: `90bdef7d7bd3f7ae41d23e639a697464d6c84b16`
-- Documentation synchronization commit: `299ce5ce8f2f68264db2d25005f2362d4b2cbc2e`
+- Style correction commit: `0122eac9a2556ca72bc7474ceae5e54374fb4879`
+- CI concurrency isolation commit: `60eb2ae42feeae8810c254a791dbc3198952a74b`
+- CI event-isolation commit: `46122f2eeabbecfaed54625eb93bc0d7cf43d1ac`
+- CI #128 / Run ID `37374009155`: **FAIL / cancelled before Static Checks**
+- CI #129 / Run ID `37374014584`: **FAIL / cancelled before Static Checks**
+- GitHub Status reported an active Actions incident on 2026-10-05: delayed assignment of GitHub-hosted runners.
+- The earlier Android `Error -15` was separately traced to a runner shutdown signal, not a C++ compile error.
 - New successful CI package: **PENDING**
 
 ### Historical physical baseline
@@ -181,7 +185,7 @@ This evidence strengthens Step 1 / Safe Core validation. It does **not** replace
 
 ## NEXT IMMEDIATE STEP
 
-Get a clean CI result for the UX patch. Once the Android APK is published and its SHA-256 is independently verified, update this file again with the exact package and mark **READY FOR PHYSICAL TEST** before handing it to Gemini.
+Get a clean CI result for the UX patch after GitHub Actions runner assignment recovers. Once the Android APK is published and its SHA-256 is independently verified, update this file again with the exact package and mark **READY FOR PHYSICAL TEST** before handing it to Gemini.
 
 Do not unlock MCP/Agent/Safe Editing.
 
