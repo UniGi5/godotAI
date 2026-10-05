@@ -4,7 +4,7 @@
 
 Основная ветка: `fix/p1-nim-mobile-chat-ui`.
 
-**v0.2 → RELEASE LOCK CLOSED / PRERELEASE READY**
+**v0.2 → FINAL RELEASE / INTEGRATION REVIEW**
 
 ### 0. FOUNDATION
 - 0.1 Godot 4.7.2 Stable: 🟩🟩
@@ -36,11 +36,11 @@
 🟥🟥 Frozen until v0.2 release lock.
 
 ### 5. RELEASE ENGINEERING
-- 5.1 Automated regression: 🟢🟢 candidate CI/package checks passed
+- 5.1 Automated regression: 🟡🟡 candidate checks passed; fresh PR integration check still required
 - 5.2 Physical Android smoke workflow: 🟨🟨 manual physical verification completed
 - 5.3 Versioning: 🟩🟩 4.7.2 Stable enforced
-- 5.4 Release APK: 🟢🟢 exact candidate physically verified; prerelease artifact ready
-- 5.5 Release notes/migration: 🟢🟢 synchronized
+- 5.4 Release APK: 🟡🟡 exact candidate physically verified; release blocked by repository integration
+- 5.5 Release notes/migration: 🟡🟡 synchronized to candidate; final integration state pending
 
 ## Exact verification checkpoint
 
@@ -69,4 +69,4 @@ Do not:
 - publish a public non-prerelease release before final checklist completion.
 
 ### Next engineering action
-Maintain the release lock. Any behavior-changing fix must reopen the gate, rebuild, and physically retest the exact APK.
+Reconcile PR #1 against current `master` using an explicit three-way review. Preserve the verified NIM runtime and do not blind merge/rebase.
