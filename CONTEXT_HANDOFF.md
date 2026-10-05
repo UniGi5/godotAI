@@ -11,7 +11,7 @@
 
 ## v0.2 current position
 
-**FINAL RELIABILITY / RELEASE REVIEW**
+**RELEASE LOCK CLOSED / PRERELEASE READY**
 
 ### Safe Core
 - Engine baseline: 🟢
@@ -108,8 +108,8 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing remain **FROZEN u
 - Chat regression: **PASS**
 - Exact APK physical verification: **PASS**
 - First-attempt HTTP 503: **OPEN OBSERVATION**
-- Final v0.2 reliability/release review: **IN PROGRESS**
-- Public non-prerelease release: **NOT YET**
+- Final v0.2 reliability/release review: **COMPLETE**
+- Public non-prerelease release: **NOT YET — explicit release action required**
 
 ### Next action
-Complete final repository/release consistency review. Do not unlock MCP/Agent/Safe Editing until the v0.2 release gate is explicitly closed.
+Maintain the v0.2 release lock. Experimental MCP/Agent/Safe Editing remain frozen unless a new release decision explicitly changes the gate.
