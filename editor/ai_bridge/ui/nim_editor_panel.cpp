@@ -170,7 +170,7 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	HBoxContainer *clear_row = memnew(HBoxContainer);
 	clear_row->set_h_size_flags(SIZE_EXPAND_FILL);
 	add_child(clear_row);
-	clear_row->add_spacer(false);
+	clear_row->add_spacer(true);
 	clear_button->set_h_size_flags(SIZE_SHRINK_END);
 	clear_row->add_child(clear_button);
 
