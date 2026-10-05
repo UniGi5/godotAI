@@ -74,4 +74,5 @@ If regression:
 - Change: restore `version.py` to Godot 4.7.2 Stable (`major=4`, `minor=7`, `patch=2`, `status=stable`, `docs=4.7`).
 - CI: **PENDING**
 - Physical package verification: **PENDING**
+- CI version guard: `18783595397c15f69364811af0d04dc2452a1df9`
 - v0.2 re-lock: **PENDING**
