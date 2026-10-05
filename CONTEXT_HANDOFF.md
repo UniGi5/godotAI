@@ -134,6 +134,16 @@ Required real-device checks: editor startup, NIM panel opening/closing, API-key 
   - `383e035d9e442f2e2348ab55a04653c2599fc30c` — AI Bridge build integration on the old development line
 - Clean 4.7.2 baseline contains no `editor/ai_bridge/` tree.
 
+## ADDITIONAL VALIDATION EVIDENCE — STEP 1
+
+The latest supplied validation checkpoint confirms the Safe Core/context behavior independently at runtime:
+- Test prompt on `nvidia/nemotron-3-ultra-550b-a55b`: PASS
+- Echo handshake: PASS — `NIM Transport Core Active [4.7.2-stable]`
+- Scene/Node Context Injection: PASS
+- `CharacterBody2D` was detected and valid GDScript 2.0 was generated
+
+This evidence strengthens Step 1 / Safe Core validation. It does **not** replace the Android physical-test gate for the current controlled candidate.
+
 ## FOUNDATION / FINAL-STATE PORT EVIDENCE
 
 - 4.7.2-compatible AI Bridge contracts are present.
