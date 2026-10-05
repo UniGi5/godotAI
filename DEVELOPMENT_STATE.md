@@ -10,7 +10,7 @@
 - Endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`
 
 ## Current Position
-**v0.2 — FINAL RELIABILITY REVIEW AFTER PHYSICAL CHAT PASS**
+**v0.2 — RELEASE LOCK CLOSED / PRERELEASE READY**
 
 ### Safe Core
 - Provider transport: 🟩🟩
@@ -35,8 +35,8 @@
 - v0.2 candidate CI: 🟩🟩 confirmed
 - Current v0.2 physical chat regression: 🟢🟢 **CLEARED — exact fixed APK passed Android chat smoke test**
 - First Test Connection 503: 🟡🟡 **OPEN RELIABILITY OBSERVATION — retry succeeds; no code cause proven**
-- v0.2 release lock: 🟡🟡 **FINAL RELIABILITY REVIEW**
-- Release: 🟡🟡 pending final release checklist
+- v0.2 release lock: 🟢🟢 **CLOSED — physical PASS verified; 503 remains an open observation**
+- Release: 🟡🟡 **PRERELEASE READY — public non-prerelease release still requires explicit release action**
 
 ## Confirmed Physical Baseline
 - Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
@@ -104,14 +104,14 @@ Minimum checklist:
 
 ## Release engineering
 - v0.2 release verification record: `RELEASE_NOTES_v0.2.md`
-- Current task: final v0.2 reliability/release consistency review after physical verification of `build-24215c0ae9d1`.
+- Current task: v0.2 release-lock maintenance; no runtime changes pending.
 - First-attempt HTTP 503 remains an open observation; no deterministic code cause is proven.
 - Do not create a non-prerelease public release until the final checklist is explicitly closed.
 
 ## v0.2 / Release Rules
 - Physical PASS on the current candidate → record DEBUG checkpoint, update handoff/roadmap, then proceed to v0.2 release lock.
 - Physical regression → keep Safe Core protected, apply smallest targeted fix, rebuild, retest.
-- Release packaging starts only after v0.2 lock.
+- Release packaging is permitted only from the verified candidate; public non-prerelease publication remains explicit/manual.
 - v0.2 lock is reopened by physical regression. Release engineering is paused; experimental MCP / Agent / Safe Editing remain frozen.
 
 ## Handoff Rules
@@ -133,7 +133,7 @@ Minimum checklist:
 - SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`
 - Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-24215c0ae9d1/godot-android-editor-arm64.apk
 - Physical Android status: **PASS** — exact APK passed greeting + ECHO-1..ECHO-5 smoke test.
-- Release remains pending final reliability/release review.
+- v0.2 release lock is closed; prerelease artifact remains the verified candidate.
 
 
 ## Physical Android verification — 2026-10-05
