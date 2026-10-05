@@ -196,7 +196,7 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	output->set_v_size_flags(SIZE_EXPAND_FILL);
 	output->set_custom_minimum_size(Vector2(0, 180 * EDSCALE));
 	output->set_autowrap_mode(TextServer::AUTOWRAP_WORD_SMART);
-	output->set_scroll_following(true);
+	output->set_scroll_follow(true);
 	add_child(output);
 
 	HBoxContainer *input_row = memnew(HBoxContainer);
