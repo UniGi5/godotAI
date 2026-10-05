@@ -386,23 +386,37 @@ void AIOpenAICompatibleProvider::_run_request() {
 						Dictionary choice = choices[0];
 						Dictionary message = choice.get("message", Dictionary());
 						Variant reasoning_value = message.get("reasoning_content", Variant());
-						Variant content_value = message.get("content", Variant());
-						if (reasoning_value.get_type() == Variant::STRING) {
-							String reasoning = reasoning_value;
-							if (!reasoning.is_empty()) {
-								_emit_event(AIStreamEventType::DELTA, reasoning, String(), true);
-							}
+						if (reasoning_value.get_type() != Variant::STRING) {
+							reasoning_value = message.get("reasoning", Variant());
 						}
-						if (content_value.get_type() == Variant::STRING) {
-							String content = content_value;
-							if (!content.is_empty()) {
-								_emit_event(AIStreamEventType::DELTA, content);
-							}
+						Variant content_value = message.get("content", Variant());
+						bool emitted_content = false;
+						if (reasoning_value.get_type() == Variant::STRING && !String(reasoning_value).is_empty()) {
+							_emit_event(AIStreamEventType::DELTA, String(reasoning_value), String(), true);
+						}
+						if (content_value.get_type() == Variant::STRING && !String(content_value).is_empty()) {
+							emitted_content = true;
+							_emit_event(AIStreamEventType::DELTA, String(content_value));
+						}
+						if (!emitted_content && reasoning_value.get_type() != Variant::STRING) {
+							_emit_error("empty_response", "NVIDIA NIM returned choices[0] without message.content.");
+							client->close();
+							return;
 						}
 						_emit_event(AIStreamEventType::COMPLETED, String(), choice.get("finish_reason", String("stop")));
 						client->close();
 						return;
 					}
+					_emit_error("invalid_response", "NVIDIA NIM returned an empty choices array.");
+					client->close();
+					return;
+				}
+				// If a complete-looking body cannot be decoded, fail visibly
+				// instead of silently waiting until the 180-second idle timeout.
+				if (pending_body.ends_with("}") || pending_body.ends_with("]")) {
+					_emit_error("invalid_response", "NVIDIA NIM returned a malformed chat completion response.");
+					client->close();
+					return;
 				}
 				continue;
 			}
