@@ -69,4 +69,4 @@ Do not:
 - publish a public non-prerelease release before final checklist completion.
 
 ### Next engineering action
-Reconcile PR #1 against current `master` using an explicit three-way review. Preserve the verified NIM runtime and do not blind merge/rebase.
+Reconcile PR #3 against current `master` using an explicit three-way review. Preserve the verified NIM runtime and do not blind merge/rebase.
