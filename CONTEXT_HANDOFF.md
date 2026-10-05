@@ -104,5 +104,13 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing are **FROZEN unti
 - Android Debugger > Errors: empty.
 - Output: only Debug adapter server port 6006 and GDScript language server port 6005.
 - Fixes applied: `959ba1c` exposes malformed/empty non-stream responses; `f3dce5f` preserves provider reasoning flag into UI; `7a4600e` rejects empty non-stream content explicitly.
-- Current CI: Run #258 / `37341095535` in progress.
-- Required next gate: CI PASS → new direct ARM64 APK → physical Android chat retest. No release lock until PASS.
+- CI #260 / Run ID `37341176576`: **SUCCESS**.
+- Exact current branch HEAD APK: `build-24215c0ae9d1`.
+- SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`.
+- Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-24215c0ae9d1/godot-android-editor-arm64.apk
+- Physical status: **PENDING**.
+- Required next gate: install exact APK → focused physical Android chat retest → record PASS/REWORK. No release lock until PASS.
+
+
+## Exact fixed APK checkpoint — 2026-10-05
+The runtime fixes `959ba1c`, `f3dce5f` and `7a4600e` are now packaged in the current branch HEAD build. CI validates the APK structurally/signature-wise, but this is not physical verification. The only remaining v0.2 gate is the physical Android smoke test of `build-24215c0ae9d1`.
