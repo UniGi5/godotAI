@@ -4,7 +4,7 @@
 
 - Branch: `fix/p1-nim-mobile-chat-ui`
 - Godot baseline: **4.7.2 Stable**
-- v0.2 position: **FINAL RELIABILITY / RELEASE REVIEW**
+- v0.2 position: **RELEASE LOCK CLOSED / PRERELEASE READY**
 - Current packaged runtime checkpoint: `24215c0ae9d1338e49848d2e19d5124c8971d21e`
 - Runtime fixes: `959ba1c`, `f3dce5f`, `7a4600e`
 - CI Run: **#260 / Run ID `37341176576` — SUCCESS**
@@ -44,9 +44,9 @@
 - v0.2 chat regression: **PASS**
 - Exact candidate APK physical verification: **PASS**
 - First-attempt HTTP 503: **OPEN OBSERVATION**
-- Final reliability/release review: **IN PROGRESS**
-- Public non-prerelease release: **NOT YET**
-- MCP / Agent / Safe Editing / streaming replacement: **FROZEN**
+- Final reliability/release review: **COMPLETE**
+- Public non-prerelease release: **NOT YET — explicit release action required**
+- MCP / Agent / Safe Editing / streaming replacement: **FROZEN by release-lock policy**
 
 ## Historical checkpoints
 
@@ -80,6 +80,8 @@
 - First-attempt 503 remained an open reliability observation.
 
 ## Release handling rule
+
+The v0.2 release lock is now closed after exact physical PASS. The intermittent first-attempt 503 remains a documented non-blocking observation and is not treated as fixed.
 
 If a new physical regression appears:
 `REWORK` → smallest targeted fix → new CI APK → exact physical retest → new DEBUG checkpoint.
