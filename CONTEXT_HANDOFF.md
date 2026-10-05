@@ -11,16 +11,12 @@ Factual checkpoint for continuation. Update after baseline repairs, important im
 - Target engine: **Godot 4.7.2 Stable**
 - Upstream tag: `4.7.2-stable`
 - Exact stable commit: `ed1daf0bf001b61586d9930840f2f1394092c079`
-- `development/controlled-baseline` was reset directly to the exact stable commit.
-- Current branch HEAD: `4e2126a3ef0024e1865d213ea0c85ec2d9dfcfa6`
-- Latest product-code checkpoint: `46ba6a621007aefc3c4a8f649230b680246749ac`
-- Direct APK publication implementation commit: `6e6ecc067bce46e93cd1f14c4429d40745834751`
-- Direct APK publication validation: CI run #90 / Run ID `37245928600` — SUCCESS
-- Current HEAD is a governance/documentation commit whose ancestry reaches the exact stable commit.
-- `version.py` on the controlled branch is naturally:
-  `4.7.2 / stable / docs 4.7`.
-- The previous incorrect 4.8-dev controlled branch state was preserved as:
+- `development/controlled-baseline` remains based directly on the exact stable root.
+- Current UI patch branch: `ui/v0.2-ux-fixes`
+- Current UI patch HEAD at candidate packaging: `b5c0624b72f4fea19e0b9d12c0a657b9a010921a`
+- The former incorrect 4.8-dev controlled branch remains archived as:
   `archive/controlled-baseline-4.8-dev-2026-10-04`.
+- The legacy `fix/p1-nim-mobile-chat-ui` / PR #1 remains isolated because it is based on `master`.
 
 ### Core
 🟩🟩 **PROTECTED / CI VALIDATED**
@@ -34,14 +30,27 @@ Safe transport contract remains frozen for v0.2:
 The current Safe Core transport contract remains frozen and was preserved during the controlled final-state port. Android Editor compilation succeeded in run #86.
 
 ### UI
-🟩🟩 **FINAL STATE PORTED / CI VALIDATED**
+🟨🟨 **V0.2 UX PATCH IN PROGRESS**
 
-The NIM mobile panel state, context display, test flow, copy-chat, retry and stop controls are present in the controlled branch and compiled successfully.
+PR #2:
+- title: `fix(ui): stabilize mobile chat UX for v0.2`
+- base: `development/controlled-baseline`
+- head: `ui/v0.2-ux-fixes`
+- current source head at candidate packaging: `b5c0624b72f4fea19e0b9d12c0a657b9a010921a`
+
+UX fixes included:
+1. Preserve visible chat output during connection/reconnect checks.
+2. Move Clear Chat away from adjacent touch controls and require confirmation.
+3. Expand/wrap the chat viewport for readable mobile history/code.
+
+The patch changes only:
+- `editor/ai_bridge/ui/nim_editor_panel.cpp`
+- `editor/ai_bridge/ui/nim_editor_panel.h`
 
 ### Release
-🟥🟥 **NOT READY**
+🟨🟨 **READY FOR PHYSICAL TEST**
 
-A behavior-changing Android candidate is published; real-device validation has not yet been recorded.
+The UX patch has a successful push CI run with Android Editor ARM64 packaging. v0.2 still remains on HOLD until the exact APK passes real-device regression and the PR-wide Linux diagnostics are resolved or explicitly accepted.
 
 ## EXACT EVIDENCE
 
@@ -76,39 +85,69 @@ Verified mobile UI commit inventory:
 - `679425959764caa2966b697a6dd1ee30b7d5eedc`
 - `5908d16db5a42d739ae2fb8780bfb7c9b2ccb762`
 
-### Current Android candidate
+### Previous Android candidate — superseded
 
-- Product-code checkpoint: `46ba6a621007aefc3c4a8f649230b680246749ac`
-- Build/source HEAD: `4e2126a3ef0024e1865d213ea0c85ec2d9dfcfa6`
-- CI run: #90 / Run ID `37245928600`
-- Android Editor ARM64 job: SUCCESS
-- Direct GitHub artifact: `android-editor-arm64-apk` / ID `11318848305`
-- Installable APK: `godot-android-editor-arm64.apk`
-- APK size: 179,514,605 bytes
-- APK SHA-256: `63db6fdd7337eef282cfa9c2c4fd66c7f6d99563dac92cc35d84417f0a204dfe`
-- APK archive integrity check: PASS
-- Run #90 validates the direct APK-only publication path end-to-end.
-- Commits after the product-code checkpoint are workflow/documentation-only; compare shows no product source changes versus `46ba6a621007aefc3c4a8f649230b680246749ac`.
-- This run #90 package is now the authoritative physical-test package.
+The earlier controlled candidate from CI run #90 was physically tested and is no longer the v0.2 candidate because the physical test found three UX issues.
+
+Verified physical result from that package:
+1. Network reconnect / connection checks did not crash the editor.
+2. Copy code inside generated blocks worked.
+3. Project / scene / selected-node context injection worked.
+
+Required UX corrections:
+- preserve chat history during connection state changes;
+- confirmation before Clear Chat;
+- readable full-width/full-height chat viewport.
+
+The old run #90 APK must not be presented as **READY FOR PHYSICAL TEST** for the current UX patch. Its previously recorded SHA is intentionally not repeated because it was not independently reverified.
+
+### Current UX patch CI gate
+
+- PR #2 head: `ui/v0.2-ux-fixes`
+- Current source head: `e70f4fcf3f569321a3be022638d0d4a3e2a17d19`
+- Earlier PR check run #99 / Run ID `37249141697`: **FAIL**
+- Failure location: `prek` style checks
+- Android stage was skipped after the static-check failure.
+- Root cause identified in the touched C++: include ordering and whitespace-only line.
+- Style correction commit: `0122eac9a2556ca72bc7474ceae5e54374fb4879`
+- CI concurrency experiment commits were reverted after log diagnosis showed the cancellations were caused by the external GitHub Actions incident, not repository concurrency.
+- CI #128 / Run ID `37374009155`: **FAIL / cancelled before Static Checks**
+- CI #129 / Run ID `37374014584`: **FAIL / cancelled before Static Checks**
+- CI #126/#127 and #128/#129 were affected by the same hosted-runner assignment degradation window.
+- GitHub Status reported an active Actions incident on 2026-10-05: delayed assignment of GitHub-hosted runners.
+- The earlier Android `Error -15` was separately traced to a runner shutdown signal, not a C++ compile error.
+- Push CI #138 / Run ID `37376302809`: **SUCCESS**
+- Android Editor ARM64: **SUCCESS**
+- Android Template ARM64: **SUCCESS**
+- Android Template arm32: **SUCCESS**
+- Direct artifact: `android-editor-arm64-apk` / ID `11371533448`
+- APK size: `179,514,605` bytes
+- Independently verified APK SHA-256: `6da437400a59f6ffcd19b609c0674ba9d024e0e81300bf95c84f76652227d3c9`
+- Artifact ZIP digest: `sha256:292e8031b6fd46b36c92f783a90c09e74987ab63ba0c2d38f47f271c6bdc05e4`
+- PR CI #139 / Run ID `37376309566`: **FAIL** only in generic Linux diagnostics; Android path is not implicated.
+- PR failures: Linux ASAN `heap-use-after-free` in the generic project test and Linux Mono export log-check failure (`current_edited_scene = -1`).
+- These failures reproduce outside the Android packaging path and the ASAN issue was already present on earlier UI-track runs; no workaround was added to the UI code.
 
 ### Historical physical baseline
-Previously verified physical Android baseline remains protected for reference:
+
+Previously verified physical Android baseline:
 - Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
 - CI: #156 / Run ID `37057401793`
 - APK SHA-256:
   `52e385775ff38585c1e80a556a0c885ef2e9eee4dfa62bca1247fecbcba5fda5`
 
-This historical package is **not** the new 4.7.2 controlled-baseline candidate.
+This package is historical reference only and is not the current 4.7.2 UX candidate.
 
 ## BACKLOG STATE
 
 - Step 0 — clean 4.7.2 Stable baseline: 🟩🟩 COMPLETE
 - Step 1-A — dependency audit: 🟩🟩 COMPLETE
 - Step 1-B — AI Bridge foundation port: 🟩🟩 COMPLETE
-- Step 1-C — approved context transplant: 🟩🟩 COMPLETE — final state ported
-- Step 2 — mobile chat UI transplant: 🟩🟩 COMPLETE — final state ported
-- Step 3 — Android CI + APK + SHA-256: 🟩🟩 COMPLETE
-- Step 4 — real-device Android validation: 🟨🟨 READY FOR PHYSICAL TEST
+- Step 1-C — approved context transplant: 🟩🟩 COMPLETE
+- Step 2 — mobile chat UI transplant: 🟩🟩 COMPLETE
+- Step 3 — Android CI candidate packaging: 🟩🟩 COMPLETE (historical candidate)
+- Step 4 — real-device Android validation: 🟨🟨 COMPLETE WITH UX BACKLOG
+- Step 4B — v0.2 UX patch: 🟨🟨 IN PROGRESS / CI RETRY
 - Step 5 — v0.2 Candidate Lock: 🟥🟥 QUEUED
 - Experimental MCP / Agent / Safe Editing: 🟥🟥 FROZEN until v0.2 lock
 
@@ -116,14 +155,14 @@ This historical package is **not** the new 4.7.2 controlled-baseline candidate.
 
 **READY FOR PHYSICAL TEST: ACTIVE**
 
-Test the exact package:
-- source HEAD `4e2126a3ef0024e1865d213ea0c85ec2d9dfcfa6`
-- product-code checkpoint `46ba6a621007aefc3c4a8f649230b680246749ac`
-- CI run #90 / `37245928600`
-- direct artifact `android-editor-arm64-apk` / `11318848305`
-- APK SHA-256 `63db6fdd7337eef282cfa9c2c4fd66c7f6d99563dac92cc35d84417f0a204dfe`
+Use only the exact APK recorded below. The required device sequence is:
+1. successful CI for the current `ui/v0.2-ux-fixes` head;
+2. exact direct ARM64 APK artifact;
+3. independent APK SHA-256 verification;
+4. fresh `CONTEXT_HANDOFF.md` with those exact package details;
+5. real-device regression test.
 
-Required real-device checks: editor startup, NIM panel opening/closing, API-key persistence, Test Connection recovery, chat send/response, Copy Chat, Retry/Stop, and project/scene/selected-node context. Do not infer physical verification from CI.
+The physical-test report already established the three UX defects on the previous candidate. A new test must use only the newly built UX-fix APK.
 
 ## EXACT STEP 1 EVIDENCE
 
@@ -156,7 +195,7 @@ This evidence strengthens Step 1 / Safe Core validation. It does **not** replace
 
 ## NEXT IMMEDIATE STEP
 
-Physical validation of the exact direct APK from run #90 is the next gate. After the device result is recorded, either fix regressions in an atomic commit or promote the candidate toward v0.2 lock.
+Run the exact physical regression against source checkpoint `b5c0624b72f4fea19e0b9d12c0a657b9a010921a` and APK SHA-256 `6da437400a59f6ffcd19b609c0674ba9d024e0e81300bf95c84f76652227d3c9`. Record the device result here after testing.
 
 Do not unlock MCP/Agent/Safe Editing.
 

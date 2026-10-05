@@ -33,12 +33,12 @@
 #include "core/object/class_db.h"
 #include "editor/ai_bridge/core/interfaces/context_provider.h"
 #include "editor/ai_bridge/runtime/ai_bridge_runtime.h"
-#include "editor/docks/editor_dock.h"
 #include "editor/editor_node.h"
 #include "editor/gui/editor_bottom_panel.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
+#include "scene/gui/dialogs.h"
 #include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/rich_text_label.h"
@@ -51,6 +51,7 @@ void NIMEditorPanel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_send_chat"), &NIMEditorPanel::_send_chat);
 	ClassDB::bind_method(D_METHOD("_copy_chat"), &NIMEditorPanel::_copy_chat);
 	ClassDB::bind_method(D_METHOD("_clear_chat"), &NIMEditorPanel::_clear_chat);
+	ClassDB::bind_method(D_METHOD("_confirm_clear_chat"), &NIMEditorPanel::_confirm_clear_chat);
 	ClassDB::bind_method(D_METHOD("_copy_code"), &NIMEditorPanel::_copy_code);
 	ClassDB::bind_method(D_METHOD("_retry_chat"), &NIMEditorPanel::_retry_chat);
 	ClassDB::bind_method(D_METHOD("_cancel_chat"), &NIMEditorPanel::_cancel_chat);
@@ -149,8 +150,13 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	clear_button = memnew(Button);
 	clear_button->set_text(TTRC("Clear chat"));
 	clear_button->set_custom_minimum_size(Vector2(0, 38 * EDSCALE));
-	clear_button->connect(SceneStringName(pressed), Callable(this, "_clear_chat"));
-	chat_toolbar->add_child(clear_button);
+	clear_button->connect(SceneStringName(pressed), Callable(this, "_confirm_clear_chat"));
+
+	clear_confirmation = memnew(ConfirmationDialog);
+	clear_confirmation->set_text(TTRC("Вы уверены, что хотите очистить историю чата?"));
+	clear_confirmation->set_ok_button_text(TTRC("Clear"));
+	clear_confirmation->connect(SceneStringName(confirmed), Callable(this, "_clear_chat"));
+	add_child(clear_confirmation);
 
 	copy_code_button = memnew(Button);
 	copy_code_button->set_text(TTRC("Copy code"));
@@ -158,6 +164,14 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	copy_code_button->set_disabled(true);
 	copy_code_button->connect(SceneStringName(pressed), Callable(this, "_copy_code"));
 	chat_toolbar->add_child(copy_code_button);
+
+	// Keep destructive chat clearing separated from copy/retry controls on small touch screens.
+	HBoxContainer *clear_row = memnew(HBoxContainer);
+	clear_row->set_h_size_flags(SIZE_EXPAND_FILL);
+	add_child(clear_row);
+	clear_row->add_spacer(true);
+	clear_button->set_h_size_flags(SIZE_SHRINK_END);
+	clear_row->add_child(clear_button);
 
 	retry_button = memnew(Button);
 	retry_button->set_text(TTRC("Retry"));
@@ -179,7 +193,9 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	output->set_selection_enabled(true);
 	output->set_h_size_flags(SIZE_EXPAND_FILL);
 	output->set_v_size_flags(SIZE_EXPAND_FILL);
-	output->set_custom_minimum_size(Vector2(0, 60 * EDSCALE));
+	output->set_custom_minimum_size(Vector2(0, 180 * EDSCALE));
+	output->set_autowrap_mode(TextServer::AUTOWRAP_WORD_SMART);
+	output->set_scroll_follow(true);
 	add_child(output);
 
 	HBoxContainer *input_row = memnew(HBoxContainer);
@@ -246,8 +262,7 @@ void NIMEditorPanel::_test_connection() {
 	message.content = "Hello. Reply with exactly: NIM_OK";
 	request.messages.push_back(message);
 
-	output->clear();
-	output->append_text(TTRC("Waiting for NVIDIA NIM..."));
+	output->append_text(TTRC("\n\n[Connection test] NVIDIA NIM..."));
 	status_label->set_text(TTRC("Connecting..."));
 	test_button->set_disabled(true);
 	test_button->set_text(TTRC("Testing..."));
@@ -326,6 +341,12 @@ void NIMEditorPanel::_copy_code() {
 	}
 	DisplayServer::get_singleton()->clipboard_set(last_code_block);
 	status_label->set_text(TTRC("Code copied"));
+}
+
+void NIMEditorPanel::_confirm_clear_chat() {
+	if (clear_confirmation) {
+		clear_confirmation->popup_centered();
+	}
 }
 
 void NIMEditorPanel::_clear_chat() {
@@ -467,9 +488,6 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 	}
 
 	if (p_type == (int)AIStreamEventType::DELTA) {
-		if (output->get_text().contains(TTRC("Waiting for NVIDIA NIM..."))) {
-			output->clear();
-		}
 		if (active_is_test_connection) {
 			// Any received response proves the request reached NIM. Restore the
 			// test control immediately instead of relying only on a terminal event.
@@ -535,7 +553,9 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 			break;
 	}
 	active_is_chat = false;
-}String NIMEditorPanel::_escape_bbcode(const String &p_text) const {
+}
+
+String NIMEditorPanel::_escape_bbcode(const String &p_text) const {
 	return p_text.replace("[", "[lb]").replace("]", "[rb]");
 }
 
@@ -554,7 +574,9 @@ String NIMEditorPanel::_markdown_to_bbcode(const String &p_text) {
 			String normal = _escape_bbcode(part);
 			PackedStringArray bold_parts = normal.split("**");
 			for (int j = 0; j < bold_parts.size(); j++) {
-				if (j > 0) result += (j % 2 == 1) ? "[b]" : "[/b]";
+				if (j > 0) {
+					result += (j % 2 == 1) ? "[b]" : "[/b]";
+				}
 				result += bold_parts[j];
 			}
 		}
@@ -563,14 +585,20 @@ String NIMEditorPanel::_markdown_to_bbcode(const String &p_text) {
 }
 
 void NIMEditorPanel::_rebuild_chat_output() {
-	if (!output) return;
+	if (!output) {
+		return;
+	}
 	output->clear();
 	last_code_block = String();
 	for (const AIMessage &message : conversation) {
-		if (message.role == AIMessageRole::USER) output->append_text(vformat("[b]You:[/b] %s\n", _escape_bbcode(message.content)));
-		else if (message.role == AIMessageRole::ASSISTANT) output->append_text(vformat("[b]Nemotron:[/b] %s\n", _markdown_to_bbcode(message.content)));
+		if (message.role == AIMessageRole::USER) {
+			output->append_text(vformat("[b]You:[/b] %s\n", _escape_bbcode(message.content)));
+		} else if (message.role == AIMessageRole::ASSISTANT) {
+			output->append_text(vformat("[b]Nemotron:[/b] %s\n", _markdown_to_bbcode(message.content)));
+		}
 	}
 	copy_code_button->set_disabled(last_code_block.is_empty());
-	if (!last_prompt.is_empty() && active_request_id != 0) output->append_text(vformat("[b]You:[/b] %s\n[b]Nemotron:[/b] ", _escape_bbcode(last_prompt)));
+	if (!last_prompt.is_empty() && active_request_id != 0) {
+		output->append_text(vformat("[b]You:[/b] %s\n[b]Nemotron:[/b] ", _escape_bbcode(last_prompt)));
+	}
 }
-

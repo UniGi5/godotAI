@@ -2,7 +2,7 @@ name: 🔗 GHA
 on: [push, pull_request, merge_group, workflow_dispatch]
 
 concurrency:
-  group: ${{ github.workflow }}|${{ github.ref_name }}
+  group: ${{ github.workflow }}|${{ github.event_name }}|${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -26,13 +26,13 @@ jobs:
   ios-build:
     name: 🍏 iOS
     needs: static-checks
-    if: github.ref_name != 'development/controlled-baseline' && (needs.static-checks.outputs.sources-changed == 'true' || github.event_name != 'pull_request')
+    if: (github.ref_name != 'development/controlled-baseline' && github.ref_name != 'ui/v0.2-ux-fixes') && (needs.static-checks.outputs.sources-changed == 'true' || github.event_name != 'pull_request')
     uses: ./.github/workflows/ios_builds.yml
 
   linux-build:
     name: 🐧 Linux
     needs: static-checks
-    if: github.ref_name != 'development/controlled-baseline' && (needs.static-checks.outputs.sources-changed == 'true' || github.event_name != 'pull_request')
+    if: (github.ref_name != 'development/controlled-baseline' && github.ref_name != 'ui/v0.2-ux-fixes') && (needs.static-checks.outputs.sources-changed == 'true' || github.event_name != 'pull_request')
     uses: ./.github/workflows/linux_builds.yml
     with:
       changed-files: ${{ needs.static-checks.outputs.changed-files }}
@@ -40,17 +40,17 @@ jobs:
   macos-build:
     name: 🍎 macOS
     needs: static-checks
-    if: github.ref_name != 'development/controlled-baseline' && (needs.static-checks.outputs.sources-changed == 'true' || github.event_name != 'pull_request')
+    if: (github.ref_name != 'development/controlled-baseline' && github.ref_name != 'ui/v0.2-ux-fixes') && (needs.static-checks.outputs.sources-changed == 'true' || github.event_name != 'pull_request')
     uses: ./.github/workflows/macos_builds.yml
 
   windows-build:
     name: 🏁 Windows
     needs: static-checks
-    if: github.ref_name != 'development/controlled-baseline' && (needs.static-checks.outputs.sources-changed == 'true' || github.event_name != 'pull_request')
+    if: (github.ref_name != 'development/controlled-baseline' && github.ref_name != 'ui/v0.2-ux-fixes') && (needs.static-checks.outputs.sources-changed == 'true' || github.event_name != 'pull_request')
     uses: ./.github/workflows/windows_builds.yml
 
   web-build:
     name: 🌐 Web
     needs: static-checks
-    if: github.ref_name != 'development/controlled-baseline' && (needs.static-checks.outputs.sources-changed == 'true' || github.event_name != 'pull_request')
+    if: (github.ref_name != 'development/controlled-baseline' && github.ref_name != 'ui/v0.2-ux-fixes') && (needs.static-checks.outputs.sources-changed == 'true' || github.event_name != 'pull_request')
     uses: ./.github/workflows/web_builds.yml

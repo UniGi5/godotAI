@@ -35,6 +35,7 @@
 
 class AIBridgeRuntime;
 class Button;
+class ConfirmationDialog;
 class Label;
 class LineEdit;
 class RichTextLabel;
@@ -52,6 +53,7 @@ class NIMEditorPanel : public VBoxContainer {
 	Button *close_button = nullptr;
 	Button *copy_button = nullptr;
 	Button *clear_button = nullptr;
+	ConfirmationDialog *clear_confirmation = nullptr;
 	Button *retry_button = nullptr;
 	Button *stop_button = nullptr;
 	Button *copy_code_button = nullptr;
@@ -70,6 +72,7 @@ class NIMEditorPanel : public VBoxContainer {
 	void _send_chat();
 	void _copy_chat();
 	void _clear_chat();
+	void _confirm_clear_chat();
 	void _retry_chat();
 	void _cancel_chat();
 	bool _start_chat_request(const String &p_prompt, bool p_append_user_message);
