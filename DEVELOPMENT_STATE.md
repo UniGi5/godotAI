@@ -130,3 +130,13 @@ Minimum checklist:
 - Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-24215c0ae9d1/godot-android-editor-arm64.apk
 - Physical Android status: **PENDING**
 - Release remains blocked until this exact APK passes physical chat smoke test.
+
+
+## Physical Android verification — 2026-10-05
+- Exact APK tested: `build-24215c0ae9d1` (CI #260 / Run ID `37341176576`).
+- Chat smoke test: **PASS**.
+- Nemotron returned all 5 requested ECHO results, including `NIM CHAT OK`, model identification, `17 × 23 = 391`, project-context phrase, and `END-OF-TEST`.
+- Simple greeting also received a normal Nemotron response.
+- Therefore the previous physical regression **“Connected but silent chat” is fixed** on the tested APK.
+- Initial Test Connection still showed **HTTP 503 on the first attempt**, then connected successfully on retry. Treat this as a separate connection-reliability observation; do not claim it fixed or release-blocking without further evidence.
+- Release gate: chat regression gate **PASS**; v0.2 release remains pending final review of the intermittent first-attempt 503 and remaining release checks.
