@@ -36,7 +36,7 @@
 - Current v0.2 physical chat regression: 🟢🟢 **CLEARED — exact fixed APK passed Android chat smoke test**
 - First Test Connection 503: 🟡🟡 **OPEN RELIABILITY OBSERVATION — retry succeeds; no code cause proven**
 - v0.2 release lock: 🟡🟡 **OPEN — physical PASS verified, repository integration still unresolved**
-- Release: 🟡🟡 **BLOCKED — PR #1 is open and `mergeable=false`; no public release yet**
+- Release: 🟡🟡 **BLOCKED — PR #3 is open and `mergeable=false`; no public release yet**
 
 ## Confirmed Physical Baseline
 - Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
@@ -104,9 +104,9 @@ Minimum checklist:
 
 ## Release engineering
 - v0.2 release verification record: `RELEASE_NOTES_v0.2.md`
-- Current task: controlled reconciliation of PR #1 with current `master`, without blind merge/rebase.
+- Current task: controlled reconciliation of PR #3 with current `master`, without blind merge/rebase.
 - First-attempt HTTP 503 remains an open observation; no deterministic code cause is proven.
-- Do not create a non-prerelease public release until PR #1 integration is explicitly reconciled and a fresh integration CI check passes.
+- Do not create a non-prerelease public release until PR #3 integration is explicitly reconciled and a fresh integration CI check passes.
 
 ## v0.2 / Release Rules
 - Physical PASS on the current candidate → record DEBUG checkpoint, update handoff/roadmap, then proceed to v0.2 release lock.
