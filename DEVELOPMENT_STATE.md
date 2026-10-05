@@ -204,7 +204,7 @@ The previous controlled candidate was physically tested on a real Android device
 The corrective UI patch is isolated on:
 - branch: `ui/v0.2-ux-fixes`
 - PR: #2 — `fix(ui): stabilize mobile chat UX for v0.2`
-- current head after style fix: `90bdef7d7bd3f7ae41d23e639a697464d6c84b16`
+- current head after style fix: `0122eac9a2556ca72bc7474ceae5e54374fb4879`
 
 Patch scope:
 - preserve visible chat output during connection tests/reconnect checks;
@@ -213,12 +213,14 @@ Patch scope:
 - expand the chat viewport and enable word wrapping / scroll following.
 
 CI gate:
-- PR run #99 / Run ID `37249141697` failed only at `prek` style checks;
-- Android jobs were skipped because the static-check gate failed first;
-- style correction commit: `90bdef7d7bd3f7ae41d23e639a697464d6c84b16`;
+- PR run #99 / Run ID `37249141697` failed at `prek` style checks;
+- style correction commit: `0122eac9a2556ca72bc7474ceae5e54374fb4879`;
+- CI concurrency isolation commits: `60eb2ae42feeae8810c254a791dbc3198952a74b`, `46122f2eeabbecfaed54625eb93bc0d7cf43d1ac`;
+- CI #128 / Run ID `37374009155` and #129 / Run ID `37374014584` were cancelled before Static Checks while GitHub Actions had an active hosted-runner assignment incident;
+- the prior Android `Error -15` was caused by a runner shutdown signal, not a source compile error;
 - exact new Android candidate package is not yet validated/published.
 
-**Current marker: CI RETRY REQUIRED**
+**Current marker: CI BLOCKED BY GITHUB ACTIONS INCIDENT**
 
 ### Step 5 — v0.2 Candidate Lock
 🟥🟥 **QUEUED**
@@ -311,6 +313,6 @@ Never:
 - RELEASE: 🟥🟥 not ready
 
 ### NEXT IMMEDIATE STEP
-Obtain a successful CI run for `ui/v0.2-ux-fixes`, publish the exact ARM64 APK + independently verified SHA-256, then produce a fresh handoff for Gemini before the real-device regression test.
+Obtain a successful CI run for `ui/v0.2-ux-fixes` after GitHub Actions runner assignment recovers, publish the exact ARM64 APK + independently verified SHA-256, then produce a fresh handoff for Gemini before the real-device regression test.
 
 Do not unlock MCP/Agent/Safe Editing.
