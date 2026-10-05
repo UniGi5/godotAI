@@ -398,7 +398,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 							emitted_content = true;
 							_emit_event(AIStreamEventType::DELTA, String(content_value));
 						}
-						if (!emitted_content && reasoning_value.get_type() != Variant::STRING) {
+						if (!emitted_content) {
 							_emit_error("empty_response", "NVIDIA NIM returned choices[0] without message.content.");
 							client->close();
 							return;
