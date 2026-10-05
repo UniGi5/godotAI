@@ -72,7 +72,7 @@ If regression:
 
 - Commit: `28d72c9351b0940e754e85654182ee8c1d3f4167`
 - Change: restore `version.py` to Godot 4.7.2 Stable (`major=4`, `minor=7`, `patch=2`, `status=stable`, `docs=4.7`).
-- CI: **PENDING**
-- Physical package verification: **PENDING**
+- CI: **PASS — Run #250**
+- Physical package verification: **PENDING — `build-ccaaebf77531`**
 - CI version guard: `18783595397c15f69364811af0d04dc2452a1df9`
 - v0.2 re-lock: **PENDING**
