@@ -47,15 +47,16 @@
 - Confirmed: launch, API-key persistence, NIM connection, Nemotron response, Test Connection recovery, Copy Chat, mobile UI.
 
 ## Current v0.2 Candidate
-- Runtime candidate: `d4bced34d95b868c2d87367653ba4d2b7b5a6d75`
-- Scope: debugger/context formatting; real newline separators.
-- CI Run: #188
-- Run ID: `37225291853`
+- Packaged runtime checkpoint: `24215c0ae9d1338e49848d2e19d5124c8971d21e`
+- Runtime fixes: `959ba1c`, `f3dce5f`, `7a4600e`
+- CI Run: #260
+- Run ID: `37341176576`
 - Result: **SUCCESS**
-- APK tag: `build-c35fc592b3a2`
-- APK size: **192,454,271 bytes**
-- SHA-256: `d87c189794942cf84ea7aca1c3bcf83889c5b5e5691e7620143b2863effe84ce`
-- Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-c35fc592b3a2/godot-android-editor-arm64.apk
+- APK tag: `build-24215c0ae9d1`
+- APK size: **192,454,267 bytes**
+- SHA-256: `10119215eb70824752ffaa2c15d53901f769c02e84a6e76bec5c0fcf809a003f`
+- Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-24215c0ae9d1/godot-android-editor-arm64.apk
+- Physical Android verification: **PASS** — exact APK passed greeting + ECHO-1..ECHO-5.
 
 CI job verified:
 - Build native Android editor libraries: success
@@ -103,8 +104,9 @@ Minimum checklist:
 
 ## Release engineering
 - v0.2 release verification record: `RELEASE_NOTES_v0.2.md`
-- Current task: physical Android retest of the exact fixed runtime APK `build-24215c0ae9d1`.
-- Do not create a non-prerelease public release until the final build/regression checks are recorded.
+- Current task: final v0.2 reliability/release consistency review after physical verification of `build-24215c0ae9d1`.
+- First-attempt HTTP 503 remains an open observation; no deterministic code cause is proven.
+- Do not create a non-prerelease public release until the final checklist is explicitly closed.
 
 ## v0.2 / Release Rules
 - Physical PASS on the current candidate → record DEBUG checkpoint, update handoff/roadmap, then proceed to v0.2 release lock.
