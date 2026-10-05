@@ -10,7 +10,7 @@
 - Endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`
 
 ## Current Position
-**v0.2 — RELEASE LOCK CLOSED / PRERELEASE READY**
+**v0.2 — FINAL RELEASE / INTEGRATION REVIEW**
 
 ### Safe Core
 - Provider transport: 🟩🟩
@@ -35,8 +35,8 @@
 - v0.2 candidate CI: 🟩🟩 confirmed
 - Current v0.2 physical chat regression: 🟢🟢 **CLEARED — exact fixed APK passed Android chat smoke test**
 - First Test Connection 503: 🟡🟡 **OPEN RELIABILITY OBSERVATION — retry succeeds; no code cause proven**
-- v0.2 release lock: 🟢🟢 **CLOSED — physical PASS verified; 503 remains an open observation**
-- Release: 🟡🟡 **PRERELEASE READY — public non-prerelease release still requires explicit release action**
+- v0.2 release lock: 🟡🟡 **OPEN — physical PASS verified, repository integration still unresolved**
+- Release: 🟡🟡 **BLOCKED — PR #1 is open and `mergeable=false`; no public release yet**
 
 ## Confirmed Physical Baseline
 - Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
@@ -104,14 +104,14 @@ Minimum checklist:
 
 ## Release engineering
 - v0.2 release verification record: `RELEASE_NOTES_v0.2.md`
-- Current task: v0.2 release-lock maintenance; no runtime changes pending.
+- Current task: controlled reconciliation of PR #1 with current `master`, without blind merge/rebase.
 - First-attempt HTTP 503 remains an open observation; no deterministic code cause is proven.
-- Do not create a non-prerelease public release until the final checklist is explicitly closed.
+- Do not create a non-prerelease public release until PR #1 integration is explicitly reconciled and a fresh integration CI check passes.
 
 ## v0.2 / Release Rules
 - Physical PASS on the current candidate → record DEBUG checkpoint, update handoff/roadmap, then proceed to v0.2 release lock.
 - Physical regression → keep Safe Core protected, apply smallest targeted fix, rebuild, retest.
-- Release packaging is permitted only from the verified candidate; public non-prerelease publication remains explicit/manual.
+- The physically verified APK remains the protected runtime candidate; repository integration requires a reviewed reconciliation before another release build.
 - v0.2 lock is reopened by physical regression. Release engineering is paused; experimental MCP / Agent / Safe Editing remain frozen.
 
 ## Handoff Rules
