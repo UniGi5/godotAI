@@ -105,7 +105,7 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing remain **FROZEN u
 
 ## Repository integration status — 2026-10-06
 
-- PR #1: **OPEN / UNMERGED / `mergeable=false`**.
+- PR #3: **OPEN / UNMERGED / `mergeable=false`**.
 - PR base: `master` (`165856f82fd01ef34d24a272e224a36ab75d3c01` merge base).
 - Current comparison: `master` +25 commits; product branch +145 commits relative to the PR base.
 - Both sides modify NIM/context/release-relevant files.
@@ -118,8 +118,8 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing remain **FROZEN u
 - Chat regression: **PASS**
 - Exact APK physical verification: **PASS**
 - First-attempt HTTP 503: **OPEN OBSERVATION**
-- Final v0.2 reliability/release review: **BLOCKED ON PR #1 INTEGRATION**
-- Public non-prerelease release: **NOT YET — PR #1 integration must be reconciled first**
+- Final v0.2 reliability/release review: **BLOCKED ON PR #3 INTEGRATION**
+- Public non-prerelease release: **NOT YET — PR #3 integration must be reconciled first**
 
 ### Next action
-Reconcile PR #1 with current `master` through explicit three-way review. Do not blind merge/rebase. Keep MCP/Agent/Safe Editing frozen until the integration gate is explicitly closed.
+Reconcile PR #3 with current `master` through explicit three-way review. Do not blind merge/rebase. Keep MCP/Agent/Safe Editing frozen until the integration gate is explicitly closed.
