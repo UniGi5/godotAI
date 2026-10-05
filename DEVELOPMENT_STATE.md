@@ -87,7 +87,7 @@ Current focus: v0.2 context verification and diagnostic-quality reporting.
 MCP / Agent / Safe Editing remain **FROZEN** until v0.2 Release Lock.
 
 ## Physical Test Gate
-The physical test gate for **Run #188 / build-c35fc592b3a2** has been completed successfully.
+The active physical gate is the exact packaged candidate **Run #260 / build-24215c0ae9d1**. Run #188 / build-c35fc592b3a2 is historical and superseded.
 
 Minimum checklist:
 1. Install APK.
@@ -124,7 +124,8 @@ Minimum checklist:
 
 
 ## Exact fixed APK gate — 2026-10-05
-- Branch HEAD: `24215c0ae9d1338e49848d2e19d5124c8971d21e`
+- Packaged runtime checkpoint: `24215c0ae9d1338e49848d2e19d5124c8971d21e`
+- Branch HEAD: `b4b0dad71cbd79ee29fd0fd3144751b34cc89c2d` (documentation-only release reconciliation after the packaged runtime)
 - Runtime fixes included: `959ba1c`, `f3dce5f`, `7a4600e`
 - Android CI Run: #260 / Run ID `37341176576` — **SUCCESS**
 - APK: `godot-android-editor-arm64.apk`
