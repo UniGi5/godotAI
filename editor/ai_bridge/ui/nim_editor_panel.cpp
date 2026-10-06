@@ -298,7 +298,6 @@ void NIMEditorPanel::_test_connection() {
 		send_button->set_disabled(false);
 		stop_button->set_disabled(true);
 		test_button->set_text(TTRC("Test Connection"));
-		analyze_scene_button->set_disabled(false);
 		status_label->set_text(TTRC("Request could not be started"));
 	}
 }
