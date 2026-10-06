@@ -69,7 +69,7 @@ TEST_CASE("[AIAnalysis] Missing required section") {
 	CHECK(!validation.valid);
 }
 
-TEST_CASE("[AIAnalysis] Malformed finding") {
+TEST_CASE("[AIAnalysis] Empty finding field") {
 	const String report =
 			"SUMMARY: Scene has a problem.\n"
 			"FINDINGS:\n"
@@ -77,7 +77,7 @@ TEST_CASE("[AIAnalysis] Malformed finding") {
 			"LIMITATIONS: None.";
 
 	const AIAnalysisValidation validation = AIAnalysisReportValidator::validate(report);
-	CHECK(validation.valid);
+	CHECK(!validation.valid);
 }
 
 TEST_CASE("[AIAnalysis] Malformed severity line") {
