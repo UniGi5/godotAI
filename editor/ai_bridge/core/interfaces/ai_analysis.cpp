@@ -30,12 +30,27 @@
 #include "editor/ai_bridge/core/interfaces/ai_analysis.h"
 
 namespace {
+int _field_value_end(const String &p_line, int p_start) {
+	const int space = p_line.find(" ", p_start);
+	return space < 0 ? p_line.length() : space;
+}
+
+bool _has_nonempty_field(const String &p_line, const String &p_key) {
+	const int key_start = p_line.find(p_key);
+	if (key_start < 0) {
+		return false;
+	}
+	const int value_start = key_start + p_key.length();
+	const int value_end = _field_value_end(p_line, value_start);
+	return !p_line.substr(value_start, value_end - value_start).strip_edges().is_empty();
+}
+
 bool _is_finding_line(const String &p_line) {
 	if (p_line.begins_with("- [INFO]") || p_line.begins_with("- [WARNING]") || p_line.begins_with("- [ERROR]") || p_line.begins_with("- [CRITICAL]")) {
-		return p_line.find("category=") >= 0 &&
-				p_line.find("node=") >= 0 &&
-				p_line.find("issue=") >= 0 &&
-				p_line.find("recommendation=") >= 0;
+		return _has_nonempty_field(p_line, "category=") &&
+				_has_nonempty_field(p_line, "node=") &&
+				_has_nonempty_field(p_line, "issue=") &&
+				_has_nonempty_field(p_line, "recommendation=");
 	}
 	return false;
 }
