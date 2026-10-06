@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  ai_types.h                                                            */
+/*  ai_analysis.cpp                                          */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -27,8 +27,6 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
-
-#pragma once
 
 #include "editor/ai_bridge/core/interfaces/ai_analysis.h"
 #include "core/variant/variant.h"
