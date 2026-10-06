@@ -6,12 +6,17 @@
 
 AIBridgeRuntime::AIBridgeRuntime() :
 		nvidia_provider(&configuration, &secrets),
-		orchestrator(&nvidia_provider) {
+		orchestrator(&nvidia_provider),
+		analysis_orchestrator(&orchestrator, &context_provider) {
 	provider_registry.register_provider(&nvidia_provider);
 }
 
 AIOrchestrator &AIBridgeRuntime::get_orchestrator() {
 	return orchestrator;
+}
+
+AIAnalysisOrchestrator &AIBridgeRuntime::get_analysis_orchestrator() {
+	return analysis_orchestrator;
 }
 
 AIProviderRegistry &AIBridgeRuntime::get_provider_registry() {

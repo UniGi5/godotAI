@@ -47,6 +47,7 @@
 
 void NIMEditorPanel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_test_connection"), &NIMEditorPanel::_test_connection);
+	ClassDB::bind_method(D_METHOD("_analyze_scene"), &NIMEditorPanel::_analyze_scene);
 	ClassDB::bind_method(D_METHOD("_close_panel"), &NIMEditorPanel::_close_panel);
 	ClassDB::bind_method(D_METHOD("_send_chat"), &NIMEditorPanel::_send_chat);
 	ClassDB::bind_method(D_METHOD("_copy_chat"), &NIMEditorPanel::_copy_chat);
@@ -134,6 +135,12 @@ NIMEditorPanel::NIMEditorPanel(AIBridgeRuntime *p_runtime) {
 	test_button->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
 	test_button->connect(SceneStringName(pressed), Callable(this, "_test_connection"));
 	settings->add_child(test_button);
+
+	analyze_scene_button = memnew(Button);
+	analyze_scene_button->set_text(TTRC("Analyze Scene"));
+	analyze_scene_button->set_custom_minimum_size(Vector2(0, 42 * EDSCALE));
+	analyze_scene_button->connect(SceneStringName(pressed), Callable(this, "_analyze_scene"));
+	settings->add_child(analyze_scene_button);
 
 	HBoxContainer *chat_toolbar = memnew(HBoxContainer);
 	chat_toolbar->set_h_size_flags(SIZE_EXPAND_FILL);
@@ -253,8 +260,10 @@ void NIMEditorPanel::_test_connection() {
 	test_button->set_text(TTRC("Testing..."));
 	send_button->set_disabled(true);
 	stop_button->set_disabled(true);
+	analyze_scene_button->set_disabled(true);
 	retry_available = false;
 	active_is_test_connection = true;
+	last_request_was_analysis = false;
 	retry_button->set_disabled(true);
 
 	// The connection check is a real, visible validation transaction.
@@ -285,9 +294,11 @@ void NIMEditorPanel::_test_connection() {
 	if (active_request_id == 0) {
 		active_is_test_connection = false;
 		test_button->set_disabled(false);
+		analyze_scene_button->set_disabled(false);
 		send_button->set_disabled(false);
 		stop_button->set_disabled(true);
 		test_button->set_text(TTRC("Test Connection"));
+		analyze_scene_button->set_disabled(false);
 		status_label->set_text(TTRC("Request could not be started"));
 	}
 }
@@ -341,6 +352,8 @@ void NIMEditorPanel::_clear_chat() {
 	retry_available = false;
 	active_is_chat = false;
 	active_is_test_connection = false;
+	last_request_was_analysis = false;
+	analyze_scene_button->set_disabled(false);
 	retry_button->set_disabled(true);
 	stop_button->set_disabled(true);
 	copy_code_button->set_disabled(true);
@@ -376,6 +389,7 @@ bool NIMEditorPanel::_start_chat_request(const String &p_prompt, bool p_append_u
 	retry_available = false;
 	retry_button->set_disabled(true);
 	active_is_test_connection = false;
+	last_request_was_analysis = false;
 
 	if (p_append_user_message) {
 		AIMessage user_message;
@@ -391,6 +405,7 @@ bool NIMEditorPanel::_start_chat_request(const String &p_prompt, bool p_append_u
 	}
 	status_label->set_text(TTRC("Waiting for NVIDIA NIM..."));
 	test_button->set_disabled(true);
+	analyze_scene_button->set_disabled(true);
 	send_button->set_disabled(true);
 
 	AIRequest request;
@@ -447,7 +462,81 @@ void NIMEditorPanel::_retry_chat() {
 	if (!retry_available || last_prompt.is_empty() || active_request_id != 0) {
 		return;
 	}
-	_start_chat_request(last_prompt, false);
+	if (last_request_was_analysis) {
+		_analyze_scene(false);
+	} else {
+		_start_chat_request(last_prompt, false);
+	}
+}
+
+void NIMEditorPanel::_analyze_scene(bool p_append_user_message) {
+	if (!runtime || active_request_id != 0) {
+		return;
+	}
+
+	String api_key = api_key_edit->get_text().strip_edges();
+	if (api_key.is_empty()) {
+		status_label->set_text(TTRC("API key required"));
+		return;
+	}
+
+	runtime->get_secret_storage().set_secret("ai.providers.nvidia_nemotron.api_key", api_key);
+
+	const String prompt = TTRC("Analyze the current Godot scene and return a concise diagnostic report.");
+	current_response = String();
+	last_prompt = prompt;
+	last_request_was_analysis = true;
+	retry_available = false;
+	retry_button->set_disabled(true);
+
+	if (p_append_user_message) {
+		AIMessage user_message;
+		user_message.role = AIMessageRole::USER;
+		user_message.content = prompt;
+		conversation.push_back(user_message);
+		copy_button->set_disabled(false);
+	}
+
+	output->append_text(vformat("\n\nYou: %s\nNemotron: ", prompt));
+	status_label->set_text(TTRC("Analyzing scene..."));
+	test_button->set_disabled(true);
+	analyze_scene_button->set_disabled(true);
+	send_button->set_disabled(true);
+
+	active_is_chat = true;
+	active_is_test_connection = false;
+	const ObjectID panel_id = get_instance_id();
+	active_request_id = runtime->get_analysis_orchestrator().analyze_scene(prompt, [panel_id](const AIStreamEvent &p_event) {
+		Object *object = ObjectDB::get_instance(panel_id);
+		NIMEditorPanel *panel = Object::cast_to<NIMEditorPanel>(object);
+		if (!panel) {
+			return;
+		}
+		panel->call_deferred(
+				"_handle_event",
+				(uint64_t)p_event.request_id,
+				(int)p_event.type,
+				p_event.delta,
+				p_event.finish_reason,
+				p_event.error_code,
+				p_event.error_message,
+				p_event.reasoning);
+	});
+
+	if (active_request_id == 0) {
+		if (p_append_user_message && !conversation.is_empty()) {
+			conversation.remove_at(conversation.size() - 1);
+		}
+		active_is_chat = false;
+		test_button->set_disabled(false);
+		analyze_scene_button->set_disabled(false);
+		send_button->set_disabled(false);
+		stop_button->set_disabled(true);
+		status_label->set_text(TTRC("Scene analysis could not be started"));
+		return;
+	}
+
+	stop_button->set_disabled(false);
 }
 
 void NIMEditorPanel::_send_chat() {
@@ -477,7 +566,7 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 			// test control immediately instead of relying only on a terminal event.
 			test_button->set_disabled(false);
 			test_button->set_text(TTRC("Test Connection"));
-			status_label->set_text(TTRC("Connected"));
+			status_label->set_text(last_request_was_analysis ? TTRC("Scene analysis complete") : TTRC("Connected"));
 		}
 		if (active_is_chat && !p_reasoning) {
 			current_response += p_delta;
@@ -494,6 +583,7 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 	active_request_id = 0;
 	active_is_test_connection = false;
 	test_button->set_disabled(false);
+	analyze_scene_button->set_disabled(false);
 	send_button->set_disabled(false);
 	stop_button->set_disabled(true);
 	retry_available = false;

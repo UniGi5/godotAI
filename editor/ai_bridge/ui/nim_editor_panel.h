@@ -33,6 +33,8 @@
 #include "editor/ai_bridge/core/interfaces/ai_types.h"
 #include "scene/gui/box_container.h"
 
+#include <cstdint>
+
 class AIBridgeRuntime;
 class Button;
 class Label;
@@ -48,6 +50,7 @@ class NIMEditorPanel : public VBoxContainer {
 	Label *status_label = nullptr;
 	RichTextLabel *output = nullptr;
 	Button *test_button = nullptr;
+	Button *analyze_scene_button = nullptr;
 	Button *send_button = nullptr;
 	Button *close_button = nullptr;
 	Button *copy_button = nullptr;
@@ -64,8 +67,10 @@ class NIMEditorPanel : public VBoxContainer {
 	String last_code_block;
 	bool retry_available = false;
 	bool active_is_test_connection = false;
+	bool last_request_was_analysis = false;
 
 	void _test_connection();
+	void _analyze_scene(bool p_append_user_message = true);
 	void _close_panel();
 	void _send_chat();
 	void _copy_chat();
