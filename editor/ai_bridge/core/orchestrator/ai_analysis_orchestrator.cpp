@@ -28,14 +28,6 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-/**************************************************************************/
-/*  ai_analysis_orchestrator.cpp                                          */
-/**************************************************************************/
-/*                         This file is part of:                          */
-/*                             GODOT ENGINE                               */
-/*                        https://godotengine.org                         */
-/**************************************************************************/
-
 #include "editor/ai_bridge/core/orchestrator/ai_analysis_orchestrator.h"
 
 namespace {
