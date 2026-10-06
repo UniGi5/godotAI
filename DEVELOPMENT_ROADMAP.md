@@ -78,7 +78,7 @@ Do not:
 - publish a public non-prerelease release before final checklist completion.
 
 ### Next engineering action
-Run CI for the current `feat/v0.3-analysis-orchestrator` head, review the resulting diagnostics path, then package and physically verify the exact APK. Keep Safe Editing/autonomous mutation locked.
+CI recheck is running for `1603ea675ce33bd01f123bafbfb1a3023f0b587c`. If Android passes, retain the exact APK as the physical verification candidate; then perform the first real Scene Analysis smoke test and add deterministic report-contract validation. Keep Safe Editing/autonomous mutation locked.
 
 
 ## v0.3 physical verification checkpoint
