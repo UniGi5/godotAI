@@ -58,6 +58,18 @@ void _append_scene_node_snapshot(Node *p_node, int32_t p_depth, AISceneSnapshot 
 	node_snapshot.depth = p_depth;
 	node_snapshot.child_count = p_node->get_child_count();
 
+	// Keep the analysis snapshot intentionally small: these values are useful for
+	// diagnostics while avoiding serialization of arbitrary/custom properties.
+	node_snapshot.diagnostic_properties = vformat(
+			"process_mode=%d process_priority=%d process_physics_priority=%d unique_name_in_owner=%s",
+				(int)p_node->get_process_mode(),
+				p_node->get_process_priority(),
+				p_node->get_process_physics_priority(),
+				p_node->is_unique_name_in_owner() ? "true" : "false");
+	if (!p_node->get_editor_description().is_empty()) {
+		node_snapshot.diagnostic_properties += vformat(" editor_description=%s", p_node->get_editor_description());
+	}
+
 	if (p_node->is_inside_tree()) {
 		node_snapshot.path = String(p_node->get_path());
 	}
@@ -106,6 +118,9 @@ String _format_scene_snapshot(const AISceneSnapshot &p_snapshot) {
 			text += vformat(" path=%s", node.path);
 		}
 		text += vformat(" children=%d", node.child_count);
+		if (!node.diagnostic_properties.is_empty()) {
+			text += vformat(" properties={%s}", node.diagnostic_properties);
+		}
 		if (!node.script_path.is_empty()) {
 			text += vformat(" script=%s", node.script_path);
 		}
