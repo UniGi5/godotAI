@@ -2,7 +2,8 @@
 
 ## Project Identity
 - Repository: `UniGi5/godotAI`
-- Active product branch: `fix/p1-nim-mobile-chat-ui`
+- Active product branch: `fix/p1-nim-mobile-chat-ui` (stable product baseline)
+- Active v0.3 development branch: `feat/v0.3-analysis-orchestrator`
 - Godot baseline: **4.7.2 Stable**
 - Product: native Godot Android Editor fork with integrated NVIDIA NIM / Nemotron
 - Target: Android ARM64 + Desktop
@@ -174,4 +175,6 @@ Minimum checklist:
 - Physical result: **PASS**
 - Same exact APK recovered after an initial HTTP 503 and application restart; Nemotron response was available afterward.
 - 503 remains **non-blocking / not reproduced as a deterministic code defect**.
-- Next target: provider-independent diagnostic/reporting layer in `feat/v0.3-analysis-orchestrator`.
+- Analysis orchestrator implementation is active on `feat/v0.3-analysis-orchestrator`.
+- Latest development commits: `eb6ea13e`, `e778becf`.
+- Scene snapshot now includes a bounded diagnostic property subset (process mode/priority, unique-name flag, optional editor description); arbitrary properties remain excluded.
