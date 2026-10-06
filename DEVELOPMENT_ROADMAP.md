@@ -2,7 +2,8 @@
 
 ## Current position — 2026-10-06
 
-Основная ветка: `fix/p1-nim-mobile-chat-ui`.
+Стабильная продуктовая ветка: `fix/p1-nim-mobile-chat-ui`.
+Текущая development-ветка v0.3: `feat/v0.3-analysis-orchestrator`.
 
 **v0.2 COMPLETE → v0.3 SCENE ANALYSIS FOUNDATION → ANALYSIS ORCHESTRATOR**
 
@@ -32,10 +33,10 @@
 ### 3. SCENE ANALYSIS — v0.3
 🟨🟨 Next development target.
 - 3.1 structured scene snapshot: 🟩🟩 CI + exact APK physical verification passed;
-- 3.2 node hierarchy + properties relevant to analysis: 🟨🟨 next implementation unit;
-- 3.3 diagnostic/report schema: 🟨🟨 next implementation unit;
-- 3.4 context budget and truncation: 🟨🟨 bounded design required;
-- 3.5 Nemotron analysis request using the existing stable transport: 🟨🟨 next after schema.
+- 3.2 node hierarchy + bounded diagnostic properties: 🟩🟩 implemented on `feat/v0.3-analysis-orchestrator`;
+- 3.3 diagnostic/report schema: 🟩🟩 implemented;
+- 3.4 context budget and truncation: 🟩🟩 bounded at 24,000 chars/message;
+- 3.5 Nemotron analysis request using existing stable non-stream transport: 🟩🟩 implemented; exact packaged physical verification of this development branch remains pending.
 
 ### 4. SAFE EDITING
 🟥🟥 Locked until Scene Analysis is verified.
@@ -77,7 +78,7 @@ Do not:
 - publish a public non-prerelease release before final checklist completion.
 
 ### Next engineering action
-Implement the provider-independent diagnostic/report schema and a bounded Nemotron analysis request on `feat/v0.3-analysis-orchestrator`, preserving the existing transport contract. Keep Safe Editing/autonomous mutation locked.
+Run CI for the current `feat/v0.3-analysis-orchestrator` head, review the resulting diagnostics path, then package and physically verify the exact APK. Keep Safe Editing/autonomous mutation locked.
 
 
 ## v0.3 physical verification checkpoint
