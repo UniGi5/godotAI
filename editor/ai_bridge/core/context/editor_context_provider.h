@@ -9,4 +9,5 @@
 class AIEditorContextProvider : public IContextProvider {
 public:
 	AIContext build_context(const String &p_scope) override;
+	AISceneSnapshot build_scene_snapshot() override;
 };

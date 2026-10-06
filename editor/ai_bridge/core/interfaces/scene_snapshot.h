@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  context_provider.h                                                    */
+/*  scene_snapshot.h                                                       */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -23,25 +23,33 @@
 /* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
 /* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
 /* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
-/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,    */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
 #pragma once
 
-#include "editor/ai_bridge/core/interfaces/ai_types.h"
-#include "editor/ai_bridge/core/interfaces/scene_snapshot.h"
+#include "core/string/ustring.h"
+#include "core/templates/vector.h"
 
-struct AIContext {
-	Vector<AIMessage> messages;
-	String source;
+#include <cstdint>
+
+struct AISceneNodeSnapshot {
+	String name;
+	String type;
+	String path;
+	String script_path;
+	int32_t depth = 0;
+	int32_t child_count = 0;
 };
 
-class IContextProvider {
-public:
-	virtual ~IContextProvider() = default;
-
-	virtual AIContext build_context(const String &p_scope) = 0;
-	virtual AISceneSnapshot build_scene_snapshot() { return AISceneSnapshot(); }
+struct AISceneSnapshot {
+	String scene_path;
+	String root_name;
+	String root_type;
+	String root_path;
+	int32_t node_count = 0;
+	bool truncated = false;
+	Vector<AISceneNodeSnapshot> nodes;
 };
