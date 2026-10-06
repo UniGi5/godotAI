@@ -121,4 +121,9 @@ CI success alone never counts as physical verification.
 - Physical Android: **PASS**
 - Observed: initial HTTP 503 on the same v0.3 build; after application restart, Nemotron response returned normally.
 - Classification: **intermittent connection/API reliability observation; no deterministic code cause proven**.
-- Development gate: proceed to Analysis Orchestrator / diagnostic reporting.
+- Development gate: Analysis Orchestrator implementation is active on `feat/v0.3-analysis-orchestrator`.
+- CI #174 / PR #9: Static checks passed; Android compile failed only on `Dictionary::operator[]` in `ai_analysis_orchestrator.cpp`.
+- Fix `becd02b6`: switch analysis request dictionaries to `Dictionary::set(StringName(...), ...)`.
+- Fix `1603ea67`: preserve `Scene analysis complete` terminal status.
+- Current Android push run: #360 / run ID `37504553764`, HEAD `1603ea67`, **IN PROGRESS**.
+- Physical verification: pending for the resulting exact APK.
