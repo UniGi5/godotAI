@@ -28,6 +28,7 @@
 /**************************************************************************/
 
 #include "editor/ai_bridge/core/interfaces/ai_analysis.h"
+#include "core/string/print_string.h"
 
 namespace {
 int _field_value_end(const String &p_line, int p_start) {
@@ -64,7 +65,7 @@ AIAnalysisValidation AIAnalysisReportValidator::validate(const String &p_respons
 		return result;
 	}
 
-	const PackedStringArray lines = response.split("\n");
+	const auto lines = response.split("\n");
 	int summary_line = -1;
 	int findings_line = -1;
 	int limitations_line = -1;
