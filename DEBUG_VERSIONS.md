@@ -113,7 +113,7 @@ CI success alone never counts as physical verification.
 
 
 ### DEBUG-v0.3-SNAPSHOT-ANDROID-PASS-20261006
- 
+
 - Date: 2026-10-06
 - Exact APK: `build-9338f0d6002e`
 - CI #337 / Run ID `37410662064`: **SUCCESS**
