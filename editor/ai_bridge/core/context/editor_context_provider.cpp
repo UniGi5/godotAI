@@ -62,10 +62,10 @@ void _append_scene_node_snapshot(Node *p_node, int32_t p_depth, AISceneSnapshot 
 	// diagnostics while avoiding serialization of arbitrary/custom properties.
 	node_snapshot.diagnostic_properties = vformat(
 			"process_mode=%d process_priority=%d process_physics_priority=%d unique_name_in_owner=%s",
-				(int)p_node->get_process_mode(),
-				p_node->get_process_priority(),
-				p_node->get_process_physics_priority(),
-				p_node->is_unique_name_in_owner() ? "true" : "false");
+			(int)p_node->get_process_mode(),
+			p_node->get_process_priority(),
+			p_node->get_process_physics_priority(),
+			p_node->is_unique_name_in_owner() ? "true" : "false");
 	if (!p_node->get_editor_description().is_empty()) {
 		node_snapshot.diagnostic_properties += vformat(" editor_description=%s", p_node->get_editor_description());
 	}
