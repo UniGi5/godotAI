@@ -9,9 +9,13 @@
 - Model: `nvidia/nemotron-3-ultra-550b-a55b`
 - Endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`
 
-## v0.2 current position
+## v0.2 baseline
 
-**FINAL RELEASE / INTEGRATION REVIEW**
+**VERIFIED / INTEGRATED — PRERELEASE CANDIDATE**
+
+## v0.3 current position
+
+**AUTONOMOUS SCENE ANALYSIS FOUNDATION**
 
 ### Safe Core
 - Engine baseline: 🟢
@@ -87,10 +91,10 @@ Protected. Behavior-changing Android/runtime modifications require minimal patch
 Mobile UI experiments remain isolated from the release candidate. No keyboard hacks or redesign without real-device evidence.
 
 ### DEVELOPMENT TRACK
-Release-lock maintenance and documentation consistency.
+v0.3 Scene Analysis foundation: structured, bounded, provider-independent scene snapshot.
 
 ### EXPERIMENTAL
-MCP Bridge, streaming replacement, Agent mode and Safe Editing remain **FROZEN until an explicit post-v0.2 unlock decision**.
+MCP Bridge, streaming replacement and Agent mode may be developed in isolation. Safe Editing/autonomous mutation remain locked until Scene Analysis and reporting are verified.
 
 ## Gemini / Superpowers rules
 
@@ -123,4 +127,4 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing remain **FROZEN u
 - Public non-prerelease release: **NOT YET — current artifact remains a prerelease candidate**
 
 ### Next action
-Begin post-v0.2 development in an isolated branch. First target: a provider-independent Scene Analysis foundation that can assemble a structured snapshot of the current Godot scene/editor state for Nemotron. Keep the stable chat path unchanged; do not unlock Safe Editing or autonomous mutation yet.
+Run CI for `feat/v0.3-scene-analysis-foundation`, then merge the smallest verified snapshot foundation into `fix/p1-nim-mobile-chat-ui`. Keep the stable chat path unchanged and Safe Editing/autonomous mutation locked.
