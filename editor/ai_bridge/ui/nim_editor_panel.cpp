@@ -599,7 +599,7 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 				}
 				break;
 			}
-			status_label->set_text(TTRC("Connected"));
+			status_label->set_text(last_request_was_analysis ? TTRC("Scene analysis complete") : TTRC("Connected"));
 			if (was_chat) {
 				AIMessage assistant_message;
 				assistant_message.role = AIMessageRole::ASSISTANT;
