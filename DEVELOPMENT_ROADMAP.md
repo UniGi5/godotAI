@@ -31,7 +31,7 @@
 
 ### 3. SCENE ANALYSIS — v0.3
 🟨🟨 Next development target.
-- 3.1 structured scene snapshot: 🟨🟨 implementation ready for CI verification;
+- 3.1 structured scene snapshot: 🟩🟨 CI verified; exact APK physical verification pending;
 - 3.2 node hierarchy + properties relevant to analysis;
 - 3.3 diagnostic/report schema;
 - 3.4 context budget and truncation;
@@ -67,7 +67,7 @@
 
 Current flow:
 
-**Foundation → NIM baseline → v0.2 context → chat regression rework → exact APK physical PASS → repository integration CLOSED → v0.3 Scene Analysis**
+**Foundation → NIM baseline → v0.2 context → chat regression rework → exact APK physical PASS → repository integration CLOSED → v0.3 snapshot CI PASS → exact APK physical PASS → Analysis Orchestrator**
 
 Do not:
 - change the working NIM transport without reproducible evidence;
@@ -77,4 +77,4 @@ Do not:
 - publish a public non-prerelease release before final checklist completion.
 
 ### Next engineering action
-Validate `feat/v0.3-scene-analysis-foundation` in CI. The first implementation unit is committed and does not change the verified transport contract. Review snapshot bounds before advancing to property capture or a Nemotron analysis request.
+Physically validate exact APK `build-9338f0d6002e`. After PASS, continue on `feat/v0.3-analysis-orchestrator` with provider-independent diagnostic/report schema and a bounded Nemotron analysis request. Keep Safe Editing/autonomous mutation locked.

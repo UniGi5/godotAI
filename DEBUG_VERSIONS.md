@@ -5,7 +5,7 @@
 - Branch: `fix/p1-nim-mobile-chat-ui`
 - Godot baseline: **4.7.2 Stable**
 - v0.2 position: **INTEGRATION CLOSED / VERIFIED**
-- v0.3 position: **SCENE ANALYSIS FOUNDATION — CI VERIFICATION**
+- v0.3 position: **SCENE SNAPSHOT CI VERIFIED — PHYSICAL TEST PENDING**
 - Current packaged runtime checkpoint: `24215c0ae9d1338e49848d2e19d5124c8971d21e`
 - Runtime fixes: `959ba1c`, `f3dce5f`, `7a4600e`
 - CI Run: **#260 / Run ID `37341176576` — SUCCESS**
@@ -51,6 +51,19 @@
 - MCP / Agent / Safe Editing / streaming replacement: **AVAILABLE FOR ISOLATED DEVELOPMENT; MUTATION FEATURES REMAIN LOCKED**
 
 ## v0.3 implementation checkpoint
+
+### DEBUG-v0.3-SNAPSHOT-9338
+
+- Date: 2026-10-06
+- Product branch HEAD: `9338f0d6002ecf2d2c24bac8f1e6b59ee2660170`
+- PR: #8 — **CLOSED / MERGED**
+- CI #337 / Run ID `37410662064`: **SUCCESS**
+- APK: `build-9338f0d6002e`
+- SHA-256: `05f95288fae9555cc15f5ae4ed44d7e1c7d9fdccc58aca945814380134d53fa8`
+- Size: **192,470,651 bytes**
+- Scope: bounded provider-independent hierarchy snapshot; 128 nodes / depth 16; no property values; no mutation.
+- Physical Android verification: **PENDING** — exact APK is the active gate.
+- Next branch: `feat/v0.3-analysis-orchestrator` (created from product HEAD).
 
 - Branch: `feat/v0.3-scene-analysis-foundation`
 - Commit: `3e3c8b4d39e5540876b851d23af5fc34658a6d14`

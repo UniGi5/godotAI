@@ -4,6 +4,7 @@
 
 - Repository: `UniGi5/godotAI`
 - Product branch: `fix/p1-nim-mobile-chat-ui`
+- Product branch HEAD: `9338f0d6002ecf2d2c24bac8f1e6b59ee2660170`
 - Godot baseline: **4.7.2 Stable** — do not switch.
 - Architecture: `Godot Core → AI Orchestrator → AIProvider → NvidiaProvider → NVIDIA NIM`
 - Model: `nvidia/nemotron-3-ultra-550b-a55b`
@@ -15,7 +16,7 @@
 
 ## v0.3 current position
 
-**AUTONOMOUS SCENE ANALYSIS FOUNDATION**
+**SCENE ANALYSIS FOUNDATION — CI VERIFIED / PHYSICAL TEST PENDING**
 
 ### Safe Core
 - Engine baseline: 🟢
@@ -91,7 +92,7 @@ Protected. Behavior-changing Android/runtime modifications require minimal patch
 Mobile UI experiments remain isolated from the release candidate. No keyboard hacks or redesign without real-device evidence.
 
 ### DEVELOPMENT TRACK
-v0.3 Scene Analysis foundation: structured, bounded, provider-independent scene snapshot.
+v0.3 snapshot is integrated and CI-verified. Next implementation branch: `feat/v0.3-analysis-orchestrator`.
 
 ### EXPERIMENTAL
 MCP Bridge, streaming replacement and Agent mode may be developed in isolation. Safe Editing/autonomous mutation remain locked until Scene Analysis and reporting are verified.
@@ -114,8 +115,12 @@ MCP Bridge, streaming replacement and Agent mode may be developed in isolation. 
 - Product/integration divergence merge-base: `165856f82fd01ef34d24a272e224a36ab75d3c01`.
 - Product branch was reconciled through controlled file-level synchronization; no blind merge/rebase was used.
 - PR #6: **CLOSED / MERGED** into `fix/p1-nim-mobile-chat-ui` with squash merge commit `b9cdd98e0c8f22326858c7cde40bc562d9679433`.
+- PR #8: **CLOSED / MERGED** into `fix/p1-nim-mobile-chat-ui` with squash merge commit `9338f0d6002ecf2d2c24bac8f1e6b59ee2660170`.
 - Reconciliation CI #151 / Run ID `37405054580`: **SUCCESS**.
 - Ruleset-required checks are now represented by the protected CI gate jobs.
+- PR #8 required CI: Static, Android ARM64 and Security — **PASS**.
+- Android CI #337 / Run ID `37410662064`: **SUCCESS**; exact APK `build-9338f0d6002e`, SHA-256 `05f95288fae9555cc15f5ae4ed44d7e1c7d9fdccc58aca945814380134d53fa8`.
+- Physical verification of this exact v0.3 APK: **PENDING**.
 - Exact physical APK remains `build-24215c0ae9d1`; no runtime change is authorized merely to resolve the branch divergence.
 
 ## Release gate
@@ -127,4 +132,4 @@ MCP Bridge, streaming replacement and Agent mode may be developed in isolation. 
 - Public non-prerelease release: **NOT YET — current artifact remains a prerelease candidate**
 
 ### Next action
-Run CI for `feat/v0.3-scene-analysis-foundation`, then merge the smallest verified snapshot foundation into `fix/p1-nim-mobile-chat-ui`. Keep the stable chat path unchanged and Safe Editing/autonomous mutation locked.
+Physically verify exact APK `build-9338f0d6002e`. On PASS, continue on `feat/v0.3-analysis-orchestrator` with the provider-independent analysis/reporting layer; keep stable chat and Safe Editing/autonomous mutation locked.
