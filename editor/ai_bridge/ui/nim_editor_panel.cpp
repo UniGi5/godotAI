@@ -30,6 +30,7 @@
 
 #include "nim_editor_panel.h"
 
+#include "editor/ai_bridge/core/interfaces/ai_analysis.h"
 #include "core/object/class_db.h"
 #include "editor/ai_bridge/core/interfaces/context_provider.h"
 #include "editor/ai_bridge/runtime/ai_bridge_runtime.h"
@@ -599,7 +600,6 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 				}
 				break;
 			}
-			status_label->set_text(last_request_was_analysis ? TTRC("Scene analysis complete") : TTRC("Connected"));
 			if (was_chat) {
 				AIMessage assistant_message;
 				assistant_message.role = AIMessageRole::ASSISTANT;
@@ -608,6 +608,20 @@ void NIMEditorPanel::_handle_event(uint64_t p_request_id, int p_type, const Stri
 					conversation.push_back(assistant_message);
 				}
 				_rebuild_chat_output();
+
+				if (last_request_was_analysis) {
+					const AIAnalysisValidation validation = AIAnalysisReportValidator::validate(current_response);
+					if (validation.valid) {
+						status_label->set_text(TTRC("Scene analysis complete"));
+					} else {
+						status_label->set_text(TTRC("Scene analysis format warning"));
+						output->append_text(vformat("\n\n[Report format warning] %s\nPlease retry the analysis.", validation.error));
+						retry_available = true;
+						retry_button->set_disabled(false);
+					}
+				} else {
+					status_label->set_text(TTRC("Connected"));
+				}
 			}
 			break;
 		case AIStreamEventType::ERROR:
