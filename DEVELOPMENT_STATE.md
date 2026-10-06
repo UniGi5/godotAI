@@ -4,6 +4,7 @@
 - Repository: `UniGi5/godotAI`
 - Active product branch: `fix/p1-nim-mobile-chat-ui` (stable product baseline)
 - Active v0.3 development branch: `feat/v0.3-analysis-orchestrator`
+- Current v0.3 development HEAD: `1603ea675ce33bd01f123bafbfb1a3023f0b587c`
 - Godot baseline: **4.7.2 Stable**
 - Product: native Godot Android Editor fork with integrated NVIDIA NIM / Nemotron
 - Target: Android ARM64 + Desktop
@@ -11,7 +12,7 @@
 - Endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`
 
 ## Current Position
-**v0.3 — SCENE ANALYSIS FOUNDATION — PHYSICAL VERIFICATION PASSED**
+**v0.3 — READ-ONLY SCENE ANALYSIS / ANALYSIS ORCHESTRATOR — CI RECHECK PENDING**
 
 ### Safe Core
 - Provider transport: 🟩🟩
@@ -176,5 +177,7 @@ Minimum checklist:
 - Same exact APK recovered after an initial HTTP 503 and application restart; Nemotron response was available afterward.
 - 503 remains **non-blocking / not reproduced as a deterministic code defect**.
 - Analysis orchestrator implementation is active on `feat/v0.3-analysis-orchestrator`.
-- Latest development commits: `eb6ea13e`, `e778becf`.
+- Latest development commits: `eb6ea13e`, `e778becf`, `95cb952b`, `becd02b6`, `1603ea67`.
+- CI #174 exposed and confirmed a Godot 4.7.2 `Dictionary::operator[]` compile issue; fixed in `becd02b6` by using `Dictionary::set(StringName(...), ...)`.
+- `1603ea67` preserves `Scene analysis complete` status after the terminal event.
 - Scene snapshot now includes a bounded diagnostic property subset (process mode/priority, unique-name flag, optional editor description); arbitrary properties remain excluded.
