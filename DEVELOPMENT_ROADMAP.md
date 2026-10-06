@@ -2,9 +2,10 @@
 
 ## Current position — 2026-10-06
 
-Основная ветка: `fix/p1-nim-mobile-chat-ui`.
+Стабильная продуктовая ветка: `fix/p1-nim-mobile-chat-ui`.
+Текущая development-ветка v0.3: `feat/v0.3-analysis-orchestrator`.
 
-**v0.2 COMPLETE → v0.3 AUTONOMOUS SCENE ANALYSIS FOUNDATION**
+**v0.2 COMPLETE → v0.3 SCENE ANALYSIS FOUNDATION → ANALYSIS ORCHESTRATOR**
 
 ### 0. FOUNDATION
 - 0.1 Godot 4.7.2 Stable: 🟩🟩
@@ -31,11 +32,11 @@
 
 ### 3. SCENE ANALYSIS — v0.3
 🟨🟨 Next development target.
-- 3.1 structured scene snapshot: 🟨🟨 implementation ready for CI verification;
-- 3.2 node hierarchy + properties relevant to analysis;
-- 3.3 diagnostic/report schema;
-- 3.4 context budget and truncation;
-- 3.5 Nemotron analysis request using the existing stable transport.
+- 3.1 structured scene snapshot: 🟩🟩 CI + exact APK physical verification passed;
+- 3.2 node hierarchy + bounded diagnostic properties: 🟩🟩 implemented on `feat/v0.3-analysis-orchestrator`;
+- 3.3 diagnostic/report schema: 🟩🟩 implemented;
+- 3.4 context budget and truncation: 🟩🟩 bounded at 24,000 chars/message;
+- 3.5 Nemotron analysis request using existing stable non-stream transport: 🟩🟩 implemented; exact packaged physical verification of this development branch remains pending.
 
 ### 4. SAFE EDITING
 🟥🟥 Locked until Scene Analysis is verified.
@@ -45,7 +46,7 @@
 
 ### 6. RELEASE ENGINEERING
 - 6.1 Automated regression: 🟩🟩 integration CI passed
-- 6.2 Physical Android smoke workflow: 🟩🟩 candidate physically verified
+- 6.2 Physical Android smoke workflow: 🟩🟩 v0.2 baseline + v0.3 snapshot candidate verified
 - 6.3 Versioning: 🟩🟩 4.7.2 Stable enforced
 - 6.4 Release APK: 🟨🟨 verified prerelease candidate retained
 - 6.5 Release notes/migration: 🟩🟩 synchronized
@@ -67,7 +68,7 @@
 
 Current flow:
 
-**Foundation → NIM baseline → v0.2 context → chat regression rework → exact APK physical PASS → repository integration CLOSED → v0.3 Scene Analysis**
+**Foundation → NIM baseline → v0.2 context → chat regression rework → exact APK physical PASS → repository integration CLOSED → v0.3 snapshot CI PASS → exact APK physical PASS → Analysis Orchestrator**
 
 Do not:
 - change the working NIM transport without reproducible evidence;
@@ -77,4 +78,11 @@ Do not:
 - publish a public non-prerelease release before final checklist completion.
 
 ### Next engineering action
-Validate `feat/v0.3-scene-analysis-foundation` in CI. The first implementation unit is committed and does not change the verified transport contract. Review snapshot bounds before advancing to property capture or a Nemotron analysis request.
+CI recheck is running for `1603ea675ce33bd01f123bafbfb1a3023f0b587c`. If Android passes, retain the exact APK as the physical verification candidate; then perform the first real Scene Analysis smoke test and add deterministic report-contract validation. Keep Safe Editing/autonomous mutation locked.
+
+
+## v0.3 physical verification checkpoint
+
+- Exact APK `build-9338f0d6002e`: **PHYSICAL PASS**
+- Initial HTTP 503 later recovered on the same build after restart.
+- Treat 503 as an intermittent reliability observation until a deterministic code cause is reproduced.

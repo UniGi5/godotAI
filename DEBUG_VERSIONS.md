@@ -5,7 +5,7 @@
 - Branch: `fix/p1-nim-mobile-chat-ui`
 - Godot baseline: **4.7.2 Stable**
 - v0.2 position: **INTEGRATION CLOSED / VERIFIED**
-- v0.3 position: **SCENE ANALYSIS FOUNDATION — CI VERIFICATION**
+- v0.3 position: **SCENE SNAPSHOT CI + PHYSICAL PASS**
 - Current packaged runtime checkpoint: `24215c0ae9d1338e49848d2e19d5124c8971d21e`
 - Runtime fixes: `959ba1c`, `f3dce5f`, `7a4600e`
 - CI Run: **#260 / Run ID `37341176576` — SUCCESS**
@@ -52,6 +52,19 @@
 
 ## v0.3 implementation checkpoint
 
+### DEBUG-v0.3-SNAPSHOT-9338
+
+- Date: 2026-10-06
+- Product branch HEAD: `9338f0d6002ecf2d2c24bac8f1e6b59ee2660170`
+- PR: #8 — **CLOSED / MERGED**
+- CI #337 / Run ID `37410662064`: **SUCCESS**
+- APK: `build-9338f0d6002e`
+- SHA-256: `05f95288fae9555cc15f5ae4ed44d7e1c7d9fdccc58aca945814380134d53fa8`
+- Size: **192,470,651 bytes**
+- Scope: bounded provider-independent hierarchy snapshot; 128 nodes / depth 16; no property values; no mutation.
+- Physical Android verification: **PASS** — exact APK verified on a real Android device.
+- Next branch: `feat/v0.3-analysis-orchestrator` (created from product HEAD).
+
 - Branch: `feat/v0.3-scene-analysis-foundation`
 - Commit: `3e3c8b4d39e5540876b851d23af5fc34658a6d14`
 - Scope: provider-independent bounded scene snapshot + `scene_analysis` context scope.
@@ -91,9 +104,26 @@
 
 ## Release handling rule
 
-The v0.2 repository integration lock is closed. The exact runtime candidate remains physically verified, and the product branch is reconciled through protected PRs with passing required checks. The intermittent first-attempt 503 remains a documented non-blocking observation and is not treated as fixed.
+The v0.2 repository integration lock is closed. The v0.3 snapshot candidate is now physically verified. The intermittent HTTP 503/recovery remains a documented non-blocking observation and is not treated as a deterministic application defect.
 
 If a new physical regression appears:
 `REWORK` → smallest targeted fix → new CI APK → exact physical retest → new DEBUG checkpoint.
 
 CI success alone never counts as physical verification.
+
+
+### DEBUG-v0.3-SNAPSHOT-ANDROID-PASS-20261006
+
+- Date: 2026-10-06
+- Exact APK: `build-9338f0d6002e`
+- CI #337 / Run ID `37410662064`: **SUCCESS**
+- SHA-256: `05f95288fae9555cc15f5ae4ed44d7e1c7d9fdccc58aca945814380134d53fa8`
+- Physical Android: **PASS**
+- Observed: initial HTTP 503 on the same v0.3 build; after application restart, Nemotron response returned normally.
+- Classification: **intermittent connection/API reliability observation; no deterministic code cause proven**.
+- Development gate: Analysis Orchestrator implementation is active on `feat/v0.3-analysis-orchestrator`.
+- CI #174 / PR #9: Static checks passed; Android compile failed only on `Dictionary::operator[]` in `ai_analysis_orchestrator.cpp`.
+- Fix `becd02b6`: switch analysis request dictionaries to `Dictionary::set(StringName(...), ...)`.
+- Fix `1603ea67`: preserve `Scene analysis complete` terminal status.
+- Current Android push run: #360 / run ID `37504553764`, HEAD `1603ea67`, **IN PROGRESS**.
+- Physical verification: pending for the resulting exact APK.
