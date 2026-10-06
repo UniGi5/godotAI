@@ -28,7 +28,7 @@
 /**************************************************************************/
 
 #include "editor/ai_bridge/core/interfaces/ai_analysis.h"
-#include "core/string/print_string.h"
+#include "core/variant/variant.h"
 
 namespace {
 int _field_value_end(const String &p_line, int p_start) {
