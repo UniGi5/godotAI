@@ -1,11 +1,37 @@
 /**************************************************************************/
-/*  openai_compatible_provider.cpp                                       */
+/*  openai_compatible_provider.cpp                                        */
+/**************************************************************************/
+/*                         This file is part of:                          */
+/*                             GODOT ENGINE                               */
+/*                        https://godotengine.org                         */
+/**************************************************************************/
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
+/*                                                                        */
+/* Permission is hereby granted, free of charge, to any person obtaining  */
+/* a copy of this software and associated documentation files (the        */
+/* "Software"), to deal in the Software without restriction, including    */
+/* without limitation the rights to use, copy, modify, merge, publish,    */
+/* distribute, sublicense, and/or sell copies of the Software, and to     */
+/* permit persons to whom the Software is furnished to do so, subject to  */
+/* the following conditions:                                              */
+/*                                                                        */
+/* The above copyright notice and this permission notice shall be         */
+/* included in all copies or substantial portions of the Software.        */
+/*                                                                        */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,        */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
 #include "editor/ai_bridge/core/providers/openai_compatible_provider.h"
 
-#include "core/io/http_client.h"
 #include "core/crypto/crypto.h"
+#include "core/io/http_client.h"
 #include "core/io/json.h"
 #include "core/os/os.h"
 #include "core/string/ustring.h"
@@ -145,8 +171,8 @@ void AIOpenAICompatibleProvider::_emit_event(AIStreamEventType p_type, const Str
 	event.type = p_type;
 	event.request_id = active_request.request_id;
 	event.delta = p_delta;
-	event.finish_reason = p_finish_reason;
 	event.reasoning = p_reasoning;
+	event.finish_reason = p_finish_reason;
 	if (active_callback) {
 		active_callback(event);
 	}
@@ -162,11 +188,11 @@ bool AIOpenAICompatibleProvider::start_chat(const AIRequest &p_request, StreamCa
 	}
 
 	active_request = p_request;
-	active_callback = p_callback;
 	if (_get_api_key().is_empty()) {
 		_emit_error("missing_api_key", "Provider API key is not configured.");
 		return false;
 	}
+	active_callback = p_callback;
 	cancel_requested.store(false);
 	request_thread.start(_thread_entry, this);
 	return true;
@@ -227,7 +253,6 @@ void AIOpenAICompatibleProvider::_run_request() {
 
 	String json_body = JSON::stringify(body);
 	String pending_sse;
-	String pending_sse_event;
 	String pending_body;
 
 	Ref<HTTPClient> client = Ref<HTTPClient>(HTTPClient::create());
@@ -255,11 +280,6 @@ void AIOpenAICompatibleProvider::_run_request() {
 		}
 
 		err = client->poll();
-		if (err != OK) {
-			_emit_error("connect_poll_failed", vformat("HTTP connection polling failed: %d.", err));
-			client->close();
-			return;
-		}
 		HTTPClient::Status status = client->get_status();
 		if (status == HTTPClient::STATUS_CONNECTED) {
 			break;
@@ -308,8 +328,8 @@ void AIOpenAICompatibleProvider::_run_request() {
 
 	const uint64_t response_started_msec = OS::get_singleton()->get_ticks_msec();
 	uint64_t last_data_msec = response_started_msec;
-	const uint64_t response_timeout_msec = 120000;
-	const uint64_t idle_timeout_msec = 45000;
+	const uint64_t response_timeout_msec = 600000;
+	const uint64_t idle_timeout_msec = 180000;
 
 	while (true) {
 		if (cancel_requested.load()) {
@@ -327,7 +347,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 
 		const uint64_t now_msec = OS::get_singleton()->get_ticks_msec();
 		if (now_msec - response_started_msec > response_timeout_msec) {
-			_emit_error("response_timeout", "NVIDIA NIM did not complete a response within 120 seconds.");
+			_emit_error("response_timeout", "NVIDIA NIM did not complete a response within 10 minutes.");
 			client->close();
 			return;
 		}
@@ -335,7 +355,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 		HTTPClient::Status status = client->get_status();
 		if (status == HTTPClient::STATUS_BODY) {
 			int response_code = client->get_response_code();
-			if (response_code < 200 || response_code >= 300) {
+			if (response_code != 200) {
 				PackedByteArray error_body = client->read_response_body_chunk();
 				String error_text = String::utf8((const char *)error_body.ptr(), error_body.size());
 				_emit_error(_error_from_http(response_code), error_text);
@@ -366,23 +386,37 @@ void AIOpenAICompatibleProvider::_run_request() {
 						Dictionary choice = choices[0];
 						Dictionary message = choice.get("message", Dictionary());
 						Variant reasoning_value = message.get("reasoning_content", Variant());
-						Variant content_value = message.get("content", Variant());
-						if (reasoning_value.get_type() == Variant::STRING) {
-							String reasoning = reasoning_value;
-							if (!reasoning.is_empty()) {
-								_emit_event(AIStreamEventType::DELTA, reasoning, String(), true);
-							}
+						if (reasoning_value.get_type() != Variant::STRING) {
+							reasoning_value = message.get("reasoning", Variant());
 						}
-						if (content_value.get_type() == Variant::STRING) {
-							String content = content_value;
-							if (!content.is_empty()) {
-								_emit_event(AIStreamEventType::DELTA, content);
-							}
+						Variant content_value = message.get("content", Variant());
+						bool emitted_content = false;
+						if (reasoning_value.get_type() == Variant::STRING && !String(reasoning_value).is_empty()) {
+							_emit_event(AIStreamEventType::DELTA, String(reasoning_value), String(), true);
+						}
+						if (content_value.get_type() == Variant::STRING && !String(content_value).is_empty()) {
+							emitted_content = true;
+							_emit_event(AIStreamEventType::DELTA, String(content_value));
+						}
+						if (!emitted_content) {
+							_emit_error("empty_response", "NVIDIA NIM returned choices[0] without message.content.");
+							client->close();
+							return;
 						}
 						_emit_event(AIStreamEventType::COMPLETED, String(), choice.get("finish_reason", String("stop")));
 						client->close();
 						return;
 					}
+					_emit_error("invalid_response", "NVIDIA NIM returned an empty choices array.");
+					client->close();
+					return;
+				}
+				// If a complete-looking body cannot be decoded, fail visibly
+				// instead of silently waiting until the 180-second idle timeout.
+				if (pending_body.ends_with("}") || pending_body.ends_with("]")) {
+					_emit_error("invalid_response", "NVIDIA NIM returned a malformed chat completion response.");
+					client->close();
+					return;
 				}
 				continue;
 			}
@@ -392,79 +426,48 @@ void AIOpenAICompatibleProvider::_run_request() {
 				if (newline < 0) {
 					break;
 				}
-
-				String line = pending_sse.substr(0, newline);
+				String line = pending_sse.substr(0, newline).strip_edges();
 				pending_sse = pending_sse.substr(newline + 1);
-				line = line.strip_edges();
-
-				// SSE events are terminated by a blank line. Keep data fields
-				// together so JSON is parsed only after the complete event arrives.
-				if (line.is_empty()) {
-					if (pending_sse_event.is_empty()) {
-						continue;
-					}
-					String data = pending_sse_event;
-					pending_sse_event = String();
-
-					if (data.is_empty()) {
-						continue;
-					}
-					if (data == "[DONE]") {
-						_emit_event(AIStreamEventType::COMPLETED, String(), "stop");
-						client->close();
-						return;
-					}
-
-					Variant parsed = JSON::parse_string(data);
-					if (parsed.get_type() != Variant::DICTIONARY) {
-						_emit_error("invalid_sse_json", "NVIDIA NIM returned an invalid SSE JSON event.");
-						client->close();
-						return;
-					}
-
-					Dictionary payload = parsed;
-					Array choices = payload.get("choices", Array());
-					if (choices.is_empty()) {
-						continue;
-					}
-
-					Dictionary choice = choices[0];
-					Dictionary delta = choice.get("delta", Dictionary());
-					Variant reasoning_value = delta.get("reasoning_content", Variant());
-					Variant content_value = delta.get("content", Variant());
-					String finish_reason = choice.get("finish_reason", String());
-
-					if (reasoning_value.get_type() == Variant::STRING) {
-						String reasoning = reasoning_value;
-						if (!reasoning.is_empty()) {
-							_emit_event(AIStreamEventType::DELTA, reasoning, String(), true);
-						}
-					}
-					if (content_value.get_type() == Variant::STRING) {
-						String content = content_value;
-						if (!content.is_empty()) {
-							_emit_event(AIStreamEventType::DELTA, content, String(), false);
-						}
-					}
-
-					if (!finish_reason.is_empty()) {
-						_emit_event(AIStreamEventType::COMPLETED, String(), finish_reason);
-						client->close();
-						return;
-					}
-					continue;
-				}
-
 				if (!line.begins_with("data:")) {
 					continue;
 				}
-			String data_line = line.substr(5).strip_edges();
-			if (!pending_sse_event.is_empty()) {
-				pending_sse_event += "\\n";
-			}
-			pending_sse_event += data_line;
-			}
 
+				String data = line.substr(5).strip_edges();
+				if (data == "[DONE]") {
+					_emit_event(AIStreamEventType::COMPLETED, String(), "stop");
+					client->close();
+					return;
+				}
+
+				Variant parsed = JSON::parse_string(data);
+				if (parsed.get_type() != Variant::DICTIONARY) {
+					continue;
+				}
+				Dictionary payload = parsed;
+				Array choices = payload.get("choices", Array());
+				if (choices.is_empty()) {
+					continue;
+				}
+				Dictionary choice = choices[0];
+				Dictionary delta = choice.get("delta", Dictionary());
+				String reasoning = delta.get("reasoning_content", String());
+				if (reasoning.is_empty()) {
+					reasoning = delta.get("reasoning", String());
+				}
+				String content = delta.get("content", String());
+				if (!reasoning.is_empty()) {
+					_emit_event(AIStreamEventType::DELTA, reasoning, String(), true);
+				}
+				String finish_reason = choice.get("finish_reason", String());
+				if (!content.is_empty()) {
+					_emit_event(AIStreamEventType::DELTA, content);
+				}
+				if (!finish_reason.is_empty()) {
+					_emit_event(AIStreamEventType::COMPLETED, String(), finish_reason);
+					client->close();
+					return;
+				}
+			}
 		} else if (status == HTTPClient::STATUS_DISCONNECTED) {
 			_emit_error("connection_lost", "NVIDIA NIM connection closed before a complete response was received.");
 			client->close();
@@ -472,7 +475,7 @@ void AIOpenAICompatibleProvider::_run_request() {
 		}
 
 		if (now_msec - last_data_msec > idle_timeout_msec) {
-			_emit_error("response_idle_timeout", "NVIDIA NIM stopped sending data for 45 seconds.");
+			_emit_error("response_idle_timeout", "NVIDIA NIM stopped sending data for 180 seconds.");
 			client->close();
 			return;
 		}

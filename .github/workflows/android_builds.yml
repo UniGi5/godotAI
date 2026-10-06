@@ -30,6 +30,39 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Verify Godot release version
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          values = {}
+          for line in Path("version.py").read_text().splitlines():
+              if " = " in line:
+                  key, value = line.split(" = ", 1)
+                  values[key] = value.strip().strip('"')
+
+          expected = {
+              "major": "4",
+              "minor": "7",
+              "patch": "2",
+              "status": "stable",
+              "docs": "4.7",
+          }
+
+          mismatches = {
+              key: (values.get(key), value)
+              for key, value in expected.items()
+              if values.get(key) != value
+          }
+
+          if mismatches:
+              print("Godot release version mismatch:", mismatches)
+              raise SystemExit(1)
+
+          print("Godot release version verified: 4.7.2 stable")
+          PY
+
       - name: Restore Godot build cache
         uses: ./.github/actions/godot-cache-restore
         with:
@@ -145,8 +178,14 @@ jobs:
 
           echo "APK ready and structurally/signature validated: $APK"
 
+      - name: Calculate APK SHA-256
+        shell: bash
+        run: |
+          APK="dist/godot-android-editor-arm64.apk"
+          sha256sum "$APK" | tee "dist/godot-android-editor-arm64.apk.sha256"
+
       - name: Publish direct APK release
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -157,6 +196,7 @@ jobs:
             echo "Release $TAG already exists; refreshing APK asset."
             gh release upload "$TAG" \
               dist/godot-android-editor-arm64.apk \
+              dist/godot-android-editor-arm64.apk.sha256 \
               --repo "${GITHUB_REPOSITORY}" \
               --clobber
           else
@@ -165,7 +205,7 @@ jobs:
               --repo "${GITHUB_REPOSITORY}" \
               --target "${GITHUB_SHA}" \
               --title "Android APK ${GITHUB_SHA:0:12}" \
-              --notes "Automatic Android ARM64 release build for commit ${GITHUB_SHA}." \
+              --notes "Automatic Android ARM64 release build for commit ${GITHUB_SHA}. SHA-256 is included in the release asset." \
               --prerelease
           fi
 
@@ -173,12 +213,15 @@ jobs:
         shell: bash
         run: |
           APK_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/build-${GITHUB_SHA:0:12}/godot-android-editor-arm64.apk"
+          SHA256="$(cut -d" " -f1 dist/godot-android-editor-arm64.apk.sha256)"
           {
             echo "## 📱 Android APK"
             echo
             echo "[Download APK directly]($APK_URL)"
             echo
-            echo "`godot-android-editor-arm64.apk`"
+            echo "godot-android-editor-arm64.apk"
+            echo
+            printf '%s\n' "**SHA-256:** `$SHA256`"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Save Godot build cache
