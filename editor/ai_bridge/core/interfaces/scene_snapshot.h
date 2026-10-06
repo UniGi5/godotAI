@@ -42,6 +42,7 @@ struct AISceneNodeSnapshot {
 	String script_path;
 	int32_t depth = 0;
 	int32_t child_count = 0;
+	String diagnostic_properties;
 };
 
 struct AISceneSnapshot {
