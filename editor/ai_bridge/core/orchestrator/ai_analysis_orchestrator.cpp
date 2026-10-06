@@ -30,6 +30,8 @@
 
 #include "editor/ai_bridge/core/orchestrator/ai_analysis_orchestrator.h"
 
+#include "core/variant/variant.h"
+
 namespace {
 constexpr int32_t MAX_SCENE_ANALYSIS_CONTEXT_CHARS = 24000;
 
