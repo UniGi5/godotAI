@@ -67,7 +67,7 @@ CI job verified:
 - Direct APK publication: success
 
 ## Safe Transport Contract
-Do not change during v0.2 lock:
+Preserve during v0.3 analysis work unless reproducible evidence justifies a change:
 - `stream=false`
 - `max_tokens=256`
 - `chat_template_kwargs.enable_thinking=false`
@@ -81,10 +81,10 @@ Protected. Changes require minimal patch, CI, regression review and physical And
 Experimental mobile UI improvements remain isolated from Safe Core until physically verified. Do not add Android keyboard hacks without observing real device behavior first.
 
 ### DEVELOPMENT TRACK
-Current focus: v0.2 context verification and diagnostic-quality reporting.
+Current focus: v0.3 Scene Analysis foundation and diagnostic-quality reporting.
 
 ### EXPERIMENTAL
-MCP / Agent / Safe Editing remain **FROZEN** until v0.2 Release Lock.
+MCP / Agent / Safe Editing are available for isolated development; Safe Editing/autonomous mutation remain locked until Scene Analysis is verified.
 
 ## Physical Test Gate
 The active physical gate is the exact packaged candidate **Run #260 / build-24215c0ae9d1**. Run #188 / build-c35fc592b3a2 is historical and superseded.
@@ -108,20 +108,22 @@ Minimum checklist:
 - PR #3 merge commit: `04505a3815a539a293cfb6e67ced11662fa40dbf`.
 - PR #6 squash commit: `b9cdd98e0c8f22326858c7cde40bc562d9679433`.
 - Product branch HEAD after reconciliation: `b9cdd98e0c8f22326858c7cde40bc562d9679433`.
+- v0.3 foundation branch: `feat/v0.3-scene-analysis-foundation`.
+- v0.3 snapshot implementation commit: `3e3c8b4d39e5540876b851d23af5fc34658a6d14`.
 - First-attempt HTTP 503 remains an open observation; no deterministic code cause is proven.
 - Do not publish a public non-prerelease release until a release-specific checklist is completed; the current prerelease artifact remains the verified physical candidate.
 
 ## v0.2 / Release Rules
-- Physical PASS on the current candidate → record DEBUG checkpoint, update handoff/roadmap, then proceed to v0.2 release lock.
+- Physical PASS on the current candidate remains the v0.2 baseline; the v0.2 integration lock is closed.
 - Physical regression → keep Safe Core protected, apply smallest targeted fix, rebuild, retest.
-- The physically verified APK remains the protected runtime candidate; repository integration requires a reviewed reconciliation before another release build.
-- v0.2 lock is reopened by physical regression. Release engineering is paused; experimental MCP / Agent / Safe Editing remain frozen.
+- The physically verified APK remains the protected v0.2 runtime candidate; v0.3 changes require CI and, when the packaged runtime changes, a fresh exact-APK physical test.
+- v0.2 lock is reopened only by a physical regression. For v0.3, keep Safe Editing/autonomous mutation locked and require CI before integration.
 
 ## Handoff Rules
 - Never switch away from Godot 4.7.2 stable.
 - Never blindly merge/rebase `master`.
 - Do not claim physical verification from CI.
-- Keep experimental work frozen.
+- Keep Safe Editing/autonomous mutation locked; isolated analysis work is permitted.
 - Every major transition gets a DEBUG checkpoint.
 - Regression checkpoint: final APK `build-ccaaebf77531` physically failed chat smoke test. Fix commits: `959ba1cf7983d705645bd4a4d88213efdd62afa9`, `f3dce5fddbcc41de0c193d6cabf2b00f2b9d17b3`, `7a4600e8b8a5b00b268f1d447fd16cfdbf6afc2b`. CI #260 is the current Android packaging verification run; exact APK for current branch HEAD is `build-24215c0ae9d1`.
 
@@ -146,5 +148,5 @@ Minimum checklist:
 - Simple greeting also received a normal Nemotron response.
 - Therefore the previous physical regression **“Connected but silent chat” is fixed** on the tested APK.
 - Initial Test Connection still showed **HTTP 503 on the first attempt**, then connected successfully on retry. Treat this as a separate connection-reliability observation; do not claim it fixed or release-blocking without further evidence.
-- Release gate: chat regression gate **PASS**; v0.2 remains in final reliability/release review.
+- Release gate: v0.2 integration is **CLOSED**; prerelease candidate remains unchanged. v0.3 snapshot foundation is **PENDING CI VERIFICATION**.
 - Investigation: `Test Connection` issues one POST request; historical redundant-request protection is present. NVIDIA's public API docs document 200/202/422/500 for this operation, not 503. No transport change is justified without reproducible evidence tying the 503 to our code.

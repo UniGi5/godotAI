@@ -38,12 +38,114 @@
 #include "editor/editor_node.h"
 #include "scene/main/node.h"
 
+namespace {
+constexpr int32_t MAX_SCENE_SNAPSHOT_NODES = 128;
+constexpr int32_t MAX_SCENE_SNAPSHOT_DEPTH = 16;
+
+void _append_scene_node_snapshot(Node *p_node, int32_t p_depth, AISceneSnapshot &r_snapshot) {
+	if (!p_node) {
+		return;
+	}
+
+	if (r_snapshot.nodes.size() >= MAX_SCENE_SNAPSHOT_NODES) {
+		r_snapshot.truncated = true;
+		return;
+	}
+
+	AISceneNodeSnapshot node_snapshot;
+	node_snapshot.name = p_node->get_name();
+	node_snapshot.type = p_node->get_class();
+	node_snapshot.depth = p_depth;
+	node_snapshot.child_count = p_node->get_child_count();
+
+	if (p_node->is_inside_tree()) {
+		node_snapshot.path = String(p_node->get_path());
+	}
+
+	Ref<Script> script = p_node->get_script();
+	if (script.is_valid()) {
+		node_snapshot.script_path = script->get_path();
+	}
+
+	r_snapshot.nodes.push_back(node_snapshot);
+
+	if (p_depth >= MAX_SCENE_SNAPSHOT_DEPTH) {
+		if (p_node->get_child_count() > 0) {
+			r_snapshot.truncated = true;
+		}
+		return;
+	}
+
+	for (int i = 0; i < p_node->get_child_count(); i++) {
+		if (r_snapshot.nodes.size() >= MAX_SCENE_SNAPSHOT_NODES) {
+			r_snapshot.truncated = true;
+			return;
+		}
+		_append_scene_node_snapshot(p_node->get_child(i), p_depth + 1, r_snapshot);
+	}
+}
+
+String _format_scene_snapshot(const AISceneSnapshot &p_snapshot) {
+	String text = "Structured scene snapshot:";
+	text += vformat("\nScene path: %s", p_snapshot.scene_path.is_empty() ? "<unsaved>" : p_snapshot.scene_path);
+	text += vformat("\nRoot: %s (%s)", p_snapshot.root_name, p_snapshot.root_type);
+	if (!p_snapshot.root_path.is_empty()) {
+		text += vformat("\nRoot path: %s", p_snapshot.root_path);
+	}
+	text += vformat("\nNodes captured: %d", p_snapshot.node_count);
+	text += vformat("\nTruncated: %s", p_snapshot.truncated ? "true" : "false");
+	text += "\nHierarchy:";
+
+	for (const AISceneNodeSnapshot &node : p_snapshot.nodes) {
+		String indent;
+		for (int32_t i = 0; i < node.depth; i++) {
+			indent += "  ";
+		}
+		text += vformat("\n%s- %s [%s]", indent, node.name, node.type);
+		if (!node.path.is_empty()) {
+			text += vformat(" path=%s", node.path);
+		}
+		text += vformat(" children=%d", node.child_count);
+		if (!node.script_path.is_empty()) {
+			text += vformat(" script=%s", node.script_path);
+		}
+	}
+
+	return text;
+}
+} // namespace
+
+AISceneSnapshot AIEditorContextProvider::build_scene_snapshot() {
+	AISceneSnapshot snapshot;
+
+	if (!EditorNode::get_singleton()) {
+		return snapshot;
+	}
+
+	Node *scene_root = EditorNode::get_editor_data().get_edited_scene_root();
+	if (!scene_root) {
+		return snapshot;
+	}
+
+	snapshot.scene_path = scene_root->get_scene_file_path();
+	snapshot.root_name = scene_root->get_name();
+	snapshot.root_type = scene_root->get_class();
+	if (scene_root->is_inside_tree()) {
+		snapshot.root_path = String(scene_root->get_path());
+	}
+
+	_append_scene_node_snapshot(scene_root, 0, snapshot);
+	snapshot.node_count = snapshot.nodes.size();
+	return snapshot;
+}
+
 AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 	AIContext context;
 	context.source = p_scope;
 	const bool identity_only = p_scope == "project_identity";
 	const bool debugger_only = p_scope == "debugger_context";
 	const bool scene_only = p_scope == "scene_context";
+	const bool scene_analysis_only = p_scope == "scene_analysis";
 	const bool selection_only = p_scope == "selection_context";
 	const bool script_only = p_scope == "script_context";
 
@@ -88,6 +190,15 @@ AIContext AIEditorContextProvider::build_context(const String &p_scope) {
 				context.messages.push_back(debugger_message);
 			}
 		}
+		return context;
+	}
+
+	if (scene_analysis_only) {
+		AISceneSnapshot snapshot = build_scene_snapshot();
+		AIMessage snapshot_message;
+		snapshot_message.role = AIMessageRole::SYSTEM;
+		snapshot_message.content = _format_scene_snapshot(snapshot);
+		context.messages.push_back(snapshot_message);
 		return context;
 	}
 

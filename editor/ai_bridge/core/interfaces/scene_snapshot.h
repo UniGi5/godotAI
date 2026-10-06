@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  editor_context_provider.h                                             */
+/*  scene_snapshot.h                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,10 +30,26 @@
 
 #pragma once
 
-#include "editor/ai_bridge/core/interfaces/context_provider.h"
+#include "core/string/ustring.h"
+#include "core/templates/vector.h"
 
-class AIEditorContextProvider : public IContextProvider {
-public:
-	AIContext build_context(const String &p_scope) override;
-	AISceneSnapshot build_scene_snapshot() override;
+#include <cstdint>
+
+struct AISceneNodeSnapshot {
+	String name;
+	String type;
+	String path;
+	String script_path;
+	int32_t depth = 0;
+	int32_t child_count = 0;
+};
+
+struct AISceneSnapshot {
+	String scene_path;
+	String root_name;
+	String root_type;
+	String root_path;
+	int32_t node_count = 0;
+	bool truncated = false;
+	Vector<AISceneNodeSnapshot> nodes;
 };

@@ -31,6 +31,7 @@
 #pragma once
 
 #include "editor/ai_bridge/core/interfaces/ai_types.h"
+#include "editor/ai_bridge/core/interfaces/scene_snapshot.h"
 
 struct AIContext {
 	Vector<AIMessage> messages;
@@ -42,4 +43,5 @@ public:
 	virtual ~IContextProvider() = default;
 
 	virtual AIContext build_context(const String &p_scope) = 0;
+	virtual AISceneSnapshot build_scene_snapshot() { return AISceneSnapshot(); }
 };

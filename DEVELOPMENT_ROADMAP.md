@@ -31,7 +31,7 @@
 
 ### 3. SCENE ANALYSIS — v0.3
 🟨🟨 Next development target.
-- 3.1 structured scene snapshot;
+- 3.1 structured scene snapshot: 🟨🟨 implementation ready for CI verification;
 - 3.2 node hierarchy + properties relevant to analysis;
 - 3.3 diagnostic/report schema;
 - 3.4 context budget and truncation;
@@ -73,8 +73,8 @@ Do not:
 - change the working NIM transport without reproducible evidence;
 - reopen the cleared chat regression without new evidence;
 - switch to Godot master;
-- unlock MCP/Agent/Safe Editing;
+- unlock Safe Editing/autonomous mutation;
 - publish a public non-prerelease release before final checklist completion.
 
 ### Next engineering action
-Create the isolated v0.3 Scene Analysis foundation without changing the verified transport contract. First implementation unit: a structured provider-independent scene snapshot assembled from the existing editor context layer.
+Validate `feat/v0.3-scene-analysis-foundation` in CI. The first implementation unit is committed and does not change the verified transport contract. Review snapshot bounds before advancing to property capture or a Nemotron analysis request.
