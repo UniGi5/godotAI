@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  ai_bridge_runtime.h                                                 */
+/*  ai_bridge_runtime.h                                                   */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,8 +30,8 @@
 
 #pragma once
 
-#include "editor/ai_bridge/core/config/in_memory_configuration_manager.h"
 #include "editor/ai_bridge/core/config/file_secret_storage.h"
+#include "editor/ai_bridge/core/config/in_memory_configuration_manager.h"
 #include "editor/ai_bridge/core/context/editor_context_provider.h"
 #include "editor/ai_bridge/core/orchestrator/ai_analysis_orchestrator.h"
 #include "editor/ai_bridge/core/orchestrator/ai_orchestrator.h"
