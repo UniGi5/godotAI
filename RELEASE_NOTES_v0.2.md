@@ -3,7 +3,7 @@
 ## Status
 
 - Release line: **v0.2**
-- State: **FINAL RELEASE / INTEGRATION REVIEW**
+- State: **VERIFIED / INTEGRATED — PRERELEASE CANDIDATE**
 - Branch: `fix/p1-nim-mobile-chat-ui`
 - Godot baseline: **4.7.2 Stable**
 - Android target: **ARM64 Editor APK**
@@ -70,14 +70,15 @@ Behavior-changing modifications require a new CI build and physical regression c
 
 ## Experimental tracks
 
-MCP Bridge, Agent mode, Safe Editing and streaming replacement remain **FROZEN while v0.2 integration review is open**.
+MCP Bridge, Agent mode, Safe Editing and streaming replacement are no longer blocked by the v0.2 integration review, but they remain isolated from the verified runtime. Safe Editing/autonomous mutation stay locked until analysis/reporting is verified.
 
 ## Release gate
 
 - physical chat regression: **PASS**
 - exact candidate APK: **PASS**
 - first-attempt 503: **OPEN OBSERVATION**
-- final reliability/release review: **BLOCKED ON PR INTEGRATION**
-- public non-prerelease release: **NOT YET — PR #3 integration must be reconciled first**
+- repository integration: **CLOSED — PR #3 and PR #6 merged**
+- reconciliation CI #151: **SUCCESS**
+- public non-prerelease release: **NOT YET — current artifact remains a prerelease candidate**
 
 Do not treat the intermittent 503 as fixed without reproducible evidence. It remains non-blocking for the physically verified runtime candidate.

@@ -1,10 +1,10 @@
 # DEBUG_VERSIONS.md — Verification Ledger
 
-## CANONICAL RELEASE CHECKPOINT — 2026-10-05
+## CANONICAL RELEASE CHECKPOINT — 2026-10-06
 
 - Branch: `fix/p1-nim-mobile-chat-ui`
 - Godot baseline: **4.7.2 Stable**
-- v0.2 position: **FINAL RELEASE / INTEGRATION REVIEW**
+- v0.2 position: **INTEGRATION CLOSED / VERIFIED**
 - Current packaged runtime checkpoint: `24215c0ae9d1338e49848d2e19d5124c8971d21e`
 - Runtime fixes: `959ba1c`, `f3dce5f`, `7a4600e`
 - CI Run: **#260 / Run ID `37341176576` — SUCCESS**
@@ -44,9 +44,10 @@
 - v0.2 chat regression: **PASS**
 - Exact candidate APK physical verification: **PASS**
 - First-attempt HTTP 503: **OPEN OBSERVATION**
-- Final reliability/release review: **BLOCKED ON PR INTEGRATION**
-- Public non-prerelease release: **NOT YET — PR #3 integration must be reconciled first**
-- MCP / Agent / Safe Editing / streaming replacement: **FROZEN by release-lock policy**
+- PR #3 integration: **CLOSED / MERGED** (`04505a3815a539a293cfb6e67ced11662fa40dbf`)
+- Product reconciliation PR #6: **CLOSED / MERGED** (`b9cdd98e0c8f22326858c7cde40bc562d9679433`)
+- Reconciliation CI #151: **SUCCESS**
+- MCP / Agent / Safe Editing / streaming replacement: **AVAILABLE FOR ISOLATED DEVELOPMENT; MUTATION FEATURES REMAIN LOCKED**
 
 ## Historical checkpoints
 
@@ -81,7 +82,7 @@
 
 ## Release handling rule
 
-The v0.2 release lock remains open because PR #3 is still open and reports `mergeable=false`. The exact runtime candidate is physically verified, but repository integration has not been safely reconciled. The intermittent first-attempt 503 remains a documented non-blocking observation and is not treated as fixed.
+The v0.2 repository integration lock is closed. The exact runtime candidate remains physically verified, and the product branch is reconciled through protected PRs with passing required checks. The intermittent first-attempt 503 remains a documented non-blocking observation and is not treated as fixed.
 
 If a new physical regression appears:
 `REWORK` → smallest targeted fix → new CI APK → exact physical retest → new DEBUG checkpoint.

@@ -1,6 +1,6 @@
 # CONTEXT_HANDOFF.md — Gemini / Superpowers
 
-## Canonical checkpoint — 2026-10-05
+## Canonical checkpoint — 2026-10-06
 
 - Repository: `UniGi5/godotAI`
 - Product branch: `fix/p1-nim-mobile-chat-ui`
@@ -105,15 +105,13 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing remain **FROZEN u
 
 ## Repository integration status — 2026-10-06
 
-- PR #3: **OPEN / UNMERGED / `mergeable=true`**.
+- PR #3: **CLOSED / MERGED** (merge commit `04505a3815a539a293cfb6e67ced11662fa40dbf`).
 - PR base: `master` at `2a69de75186a28a1503ea9f1d0eb2d28505dbd92`.
 - Product/integration divergence merge-base: `165856f82fd01ef34d24a272e224a36ab75d3c01`.
-- Current integration branch comparison: `integration/v0.2-release-reconciliation` is **22 commits ahead / 0 behind** `master`.
-- Product branch comparison: `fix/p1-nim-mobile-chat-ui` is **151 commits ahead / 47 behind** the integration branch.
-- Both sides modify NIM/context/release-relevant files.
-- No blind merge/rebase of `master`.
-- Required integration method: explicit three-way reconciliation with the verified NIM runtime preserved, followed by fresh integration CI.
-- Latest integration CI: **Run #148 / Run ID `37400915478` — SUCCESS**; static checks and Android ARM64 build/validation passed. Direct release publication was skipped because the run was a PR validation event.
+- Product branch was reconciled through controlled file-level synchronization; no blind merge/rebase was used.
+- PR #6: **CLOSED / MERGED** into `fix/p1-nim-mobile-chat-ui` with squash merge commit `b9cdd98e0c8f22326858c7cde40bc562d9679433`.
+- Reconciliation CI #151 / Run ID `37405054580`: **SUCCESS**.
+- Ruleset-required checks are now represented by the protected CI gate jobs.
 - Exact physical APK remains `build-24215c0ae9d1`; no runtime change is authorized merely to resolve the branch divergence.
 
 ## Release gate
@@ -121,8 +119,8 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing remain **FROZEN u
 - Chat regression: **PASS**
 - Exact APK physical verification: **PASS**
 - First-attempt HTTP 503: **OPEN OBSERVATION**
-- Final v0.2 reliability/release review: **BLOCKED ON PR #3 INTEGRATION**
-- Public non-prerelease release: **NOT YET — PR #3 integration must be reconciled first**
+- v0.2 repository integration: **CLOSED — PR #3 and PR #6 merged**
+- Public non-prerelease release: **NOT YET — current artifact remains a prerelease candidate**
 
 ### Next action
-Reconcile PR #3 with current `master` through explicit three-way review. Do not blind merge/rebase. Keep MCP/Agent/Safe Editing frozen until the integration gate is explicitly closed.
+Begin post-v0.2 development in an isolated branch. First target: a provider-independent Scene Analysis foundation that can assemble a structured snapshot of the current Godot scene/editor state for Nemotron. Keep the stable chat path unchanged; do not unlock Safe Editing or autonomous mutation yet.
