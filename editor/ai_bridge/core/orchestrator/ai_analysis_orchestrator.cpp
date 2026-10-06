@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  ai_analysis_orchestrator.cpp                                          */
+/*  ai_analysis_orchestrator.cpp                                                 */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -54,14 +54,14 @@ AIAnalysisOrchestrator::AIAnalysisOrchestrator(IAIOrchestrator *p_orchestrator, 
 
 String AIAnalysisOrchestrator::_build_report_instructions() {
 	return "You are the Godot scene analysis assistant. Analyze only the supplied current scene snapshot. "
-			"Do not invent nodes, properties, scripts, or runtime behavior that are not present in the supplied context. "
-			"Do not modify the project or suggest that you already changed anything. "
-			"Return a concise diagnostic report using this structure:\n"
-			"SUMMARY: <overall assessment>\n"
-			"FINDINGS:\n"
-			"- [INFO|WARNING|ERROR|CRITICAL] category=<category> node=<node path or <scene>> issue=<specific issue> recommendation=<concrete recommendation>\n"
-			"LIMITATIONS: <missing or truncated information that affects confidence>\n"
-			"Prioritize actionable findings over generic advice.";
+				"Do not invent nodes, properties, scripts, or runtime behavior that are not present in the supplied context. "
+				"Do not modify the project or suggest that you already changed anything. "
+				"Return a concise diagnostic report using this structure:\n"
+				"SUMMARY: <overall assessment>\n"
+				"FINDINGS:\n"
+				"- [INFO|WARNING|ERROR|CRITICAL] category=<category> node=<node path or <scene>> issue=<specific issue> recommendation=<concrete recommendation>\n"
+				"LIMITATIONS: <missing or truncated information that affects confidence>\n"
+				"Prioritize actionable findings over generic advice.";
 }
 
 uint64_t AIAnalysisOrchestrator::analyze_scene(const String &p_instruction, IAIOrchestrator::StreamCallback p_callback) {

@@ -111,7 +111,7 @@ If a new physical regression appears:
 
 CI success alone never counts as physical verification.
 
- 
+
 ### DEBUG-v0.3-SNAPSHOT-ANDROID-PASS-20261006
  
 - Date: 2026-10-06
