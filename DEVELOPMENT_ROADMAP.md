@@ -4,7 +4,7 @@
 
 Основная ветка: `fix/p1-nim-mobile-chat-ui`.
 
-**v0.2 COMPLETE → v0.3 AUTONOMOUS SCENE ANALYSIS FOUNDATION**
+**v0.2 COMPLETE → v0.3 SCENE ANALYSIS FOUNDATION → ANALYSIS ORCHESTRATOR**
 
 ### 0. FOUNDATION
 - 0.1 Godot 4.7.2 Stable: 🟩🟩
@@ -31,11 +31,11 @@
 
 ### 3. SCENE ANALYSIS — v0.3
 🟨🟨 Next development target.
-- 3.1 structured scene snapshot: 🟩🟨 CI verified; exact APK physical verification pending;
-- 3.2 node hierarchy + properties relevant to analysis;
-- 3.3 diagnostic/report schema;
-- 3.4 context budget and truncation;
-- 3.5 Nemotron analysis request using the existing stable transport.
+- 3.1 structured scene snapshot: 🟩🟩 CI + exact APK physical verification passed;
+- 3.2 node hierarchy + properties relevant to analysis: 🟨🟨 next implementation unit;
+- 3.3 diagnostic/report schema: 🟨🟨 next implementation unit;
+- 3.4 context budget and truncation: 🟨🟨 bounded design required;
+- 3.5 Nemotron analysis request using the existing stable transport: 🟨🟨 next after schema.
 
 ### 4. SAFE EDITING
 🟥🟥 Locked until Scene Analysis is verified.
@@ -45,7 +45,7 @@
 
 ### 6. RELEASE ENGINEERING
 - 6.1 Automated regression: 🟩🟩 integration CI passed
-- 6.2 Physical Android smoke workflow: 🟩🟩 v0.2 baseline verified; v0.3 candidate pending
+- 6.2 Physical Android smoke workflow: 🟩🟩 v0.2 baseline + v0.3 snapshot candidate verified
 - 6.3 Versioning: 🟩🟩 4.7.2 Stable enforced
 - 6.4 Release APK: 🟨🟨 verified prerelease candidate retained
 - 6.5 Release notes/migration: 🟩🟩 synchronized
@@ -77,4 +77,11 @@ Do not:
 - publish a public non-prerelease release before final checklist completion.
 
 ### Next engineering action
-Physically validate exact APK `build-9338f0d6002e`. After PASS, continue on `feat/v0.3-analysis-orchestrator` with provider-independent diagnostic/report schema and a bounded Nemotron analysis request. Keep Safe Editing/autonomous mutation locked.
+Implement the provider-independent diagnostic/report schema and a bounded Nemotron analysis request on `feat/v0.3-analysis-orchestrator`, preserving the existing transport contract. Keep Safe Editing/autonomous mutation locked.
+
+
+## v0.3 physical verification checkpoint
+
+- Exact APK `build-9338f0d6002e`: **PHYSICAL PASS**
+- Initial HTTP 503 later recovered on the same build after restart.
+- Treat 503 as an intermittent reliability observation until a deterministic code cause is reproduced.

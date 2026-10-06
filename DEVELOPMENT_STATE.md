@@ -10,7 +10,7 @@
 - Endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`
 
 ## Current Position
-**v0.3 — SCENE ANALYSIS FOUNDATION — CI VERIFIED / PHYSICAL TEST PENDING**
+**v0.3 — SCENE ANALYSIS FOUNDATION — PHYSICAL VERIFICATION PASSED**
 
 ### Safe Core
 - Provider transport: 🟩🟩
@@ -36,7 +36,7 @@
 - Current v0.2 physical chat regression: 🟢🟢 **CLEARED — exact fixed APK passed Android chat smoke test**
 - First Test Connection 503: 🟡🟡 **OPEN RELIABILITY OBSERVATION — retry succeeds; no code cause proven**
 - v0.2 release lock: 🟢🟢 **CLOSED — physical PASS + repository integration complete**
-- Release: 🟡🟡 **PRERELEASE VERIFIED — public non-prerelease release not yet published**
+- Release: 🟡🟡 **PRERELEASE VERIFIED — v0.3 snapshot physically verified; public non-prerelease release not yet published**
 
 ## Confirmed Physical Baseline
 - Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
@@ -75,7 +75,7 @@ CI job verified:
 - SHA-256: `05f95288fae9555cc15f5ae4ed44d7e1c7d9fdccc58aca945814380134d53fa8`
 - Direct APK: https://github.com/UniGi5/godotAI/releases/download/build-9338f0d6002e/godot-android-editor-arm64.apk
 - Scope: bounded provider-independent scene snapshot; 128 nodes / depth 16; hierarchy/node metadata only; no property mutation.
-- Physical Android verification: **PENDING** — this exact APK is the active physical gate.
+- Physical Android verification: **PASS** — exact APK was tested on a real Android device; NIM chat responded after the transient connection failure.
 
 ## Safe Transport Contract
 Preserve during v0.3 analysis work unless reproducible evidence justifies a change:
@@ -92,13 +92,13 @@ Protected. Changes require minimal patch, CI, regression review and physical And
 Experimental mobile UI improvements remain isolated from Safe Core until physically verified. Do not add Android keyboard hacks without observing real device behavior first.
 
 ### DEVELOPMENT TRACK
-Current focus: v0.3 snapshot validation, then Analysis Orchestrator / diagnostic reporting.
+Current focus: v0.3 Analysis Orchestrator / diagnostic reporting; keep Safe Editing/autonomous mutation locked.
 
 ### EXPERIMENTAL
 MCP / Agent / Safe Editing are available for isolated development; Safe Editing/autonomous mutation remain locked until Scene Analysis is verified.
 
 ## Physical Test Gate
-The active physical gate is the exact v0.3 packaged candidate **Run #337 / build-9338f0d6002e**. The previously verified v0.2 candidate remains historical baseline.
+The exact v0.3 packaged candidate **Run #337 / build-9338f0d6002e** is physically verified and becomes the v0.3 analysis baseline. The previously verified v0.2 candidate remains the regression baseline.
 
 Minimum checklist:
 1. Install APK.
@@ -111,7 +111,7 @@ Minimum checklist:
 8. Confirm no regression in Test Connection, Copy Chat and mobile UI.
 9. Restart editor and confirm persistence.
 
-**No physical result for this exact v0.3 APK has been reported yet; this gate remains PENDING. CI alone is never treated as physical verification.**
+**Physical result for this exact v0.3 APK: PASS. The first observed HTTP 503 later recovered on the same APK after restart. This is treated as an intermittent connection reliability observation, not a proven application regression.**
 
 ## Release engineering
 - v0.2 release verification record: `RELEASE_NOTES_v0.2.md`
@@ -128,9 +128,9 @@ Minimum checklist:
 
 ## v0.3 / Release Rules
 - The v0.2 physical PASS remains the protected baseline; its integration lock is closed.
-- v0.3 snapshot CI is **PASS**, but physical verification of `build-9338f0d6002e` is still pending.
+- v0.3 snapshot CI is **PASS** and exact APK `build-9338f0d6002e` is **physically verified**.
 - Physical regression → keep Safe Core protected, apply smallest targeted fix, rebuild, retest.
-- The previously physically verified v0.2 APK remains the protected regression baseline; v0.3 packaged-runtime changes require CI and fresh physical verification of the exact resulting APK.
+- The previously physically verified v0.2 APK remains the protected regression baseline; future v0.3 packaged-runtime changes require CI and fresh physical verification of the exact resulting APK.
 - Keep Safe Editing/autonomous mutation locked. Do not advance to mutation before Scene Analysis/reporting is physically validated.
 
 ## Handoff Rules
@@ -164,3 +164,14 @@ Minimum checklist:
 - Initial Test Connection still showed **HTTP 503 on the first attempt**, then connected successfully on retry. Treat this as a separate connection-reliability observation; do not claim it fixed or release-blocking without further evidence.
 - Release gate: v0.2 integration is **CLOSED**; v0.3 snapshot foundation is **CI VERIFIED** and awaits exact-APK physical verification.
 - Investigation: `Test Connection` issues one POST request; historical redundant-request protection is present. NVIDIA's public API docs document 200/202/422/500 for this operation, not 503. No transport change is justified without reproducible evidence tying the 503 to our code.
+
+
+## v0.3 Physical Android Verification — 2026-10-06
+
+- Exact APK: `build-9338f0d6002e`
+- CI: #337 / Run ID `37410662064` — **SUCCESS**
+- SHA-256: `05f95288fae9555cc15f5ae4ed44d7e1c7d9fdccc58aca945814380134d53fa8`
+- Physical result: **PASS**
+- Same exact APK recovered after an initial HTTP 503 and application restart; Nemotron response was available afterward.
+- 503 remains **non-blocking / not reproduced as a deterministic code defect**.
+- Next target: provider-independent diagnostic/reporting layer in `feat/v0.3-analysis-orchestrator`.

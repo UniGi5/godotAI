@@ -16,7 +16,7 @@
 
 ## v0.3 current position
 
-**SCENE ANALYSIS FOUNDATION — CI VERIFIED / PHYSICAL TEST PENDING**
+**SCENE ANALYSIS FOUNDATION — CI + PHYSICAL TEST VERIFIED**
 
 ### Safe Core
 - Engine baseline: 🟢
@@ -92,7 +92,7 @@ Protected. Behavior-changing Android/runtime modifications require minimal patch
 Mobile UI experiments remain isolated from the release candidate. No keyboard hacks or redesign without real-device evidence.
 
 ### DEVELOPMENT TRACK
-v0.3 snapshot is integrated and CI-verified. Next implementation branch: `feat/v0.3-analysis-orchestrator`.
+v0.3 snapshot is integrated, CI-verified and physically tested. Continue implementation on `feat/v0.3-analysis-orchestrator`.
 
 ### EXPERIMENTAL
 MCP Bridge, streaming replacement and Agent mode may be developed in isolation. Safe Editing/autonomous mutation remain locked until Scene Analysis and reporting are verified.
@@ -120,8 +120,8 @@ MCP Bridge, streaming replacement and Agent mode may be developed in isolation. 
 - Ruleset-required checks are now represented by the protected CI gate jobs.
 - PR #8 required CI: Static, Android ARM64 and Security — **PASS**.
 - Android CI #337 / Run ID `37410662064`: **SUCCESS**; exact APK `build-9338f0d6002e`, SHA-256 `05f95288fae9555cc15f5ae4ed44d7e1c7d9fdccc58aca945814380134d53fa8`.
-- Physical verification of this exact v0.3 APK: **PENDING**.
-- Exact physical APK remains `build-24215c0ae9d1`; no runtime change is authorized merely to resolve the branch divergence.
+- Physical verification of this exact v0.3 APK: **PASS**.
+- Exact physical APK `build-24215c0ae9d1` remains the v0.2 regression baseline; v0.3 snapshot APK `build-9338f0d6002e` is now physically verified.
 
 ## Release gate
 
@@ -132,4 +132,13 @@ MCP Bridge, streaming replacement and Agent mode may be developed in isolation. 
 - Public non-prerelease release: **NOT YET — current artifact remains a prerelease candidate**
 
 ### Next action
-Physically verify exact APK `build-9338f0d6002e`. On PASS, continue on `feat/v0.3-analysis-orchestrator` with the provider-independent analysis/reporting layer; keep stable chat and Safe Editing/autonomous mutation locked.
+Exact v0.3 snapshot physical gate passed. Continue on `feat/v0.3-analysis-orchestrator` with provider-independent analysis/reporting; keep stable chat and Safe Editing/autonomous mutation locked.
+
+
+## v0.3 Physical Verification — 2026-10-06
+
+- Exact APK tested: `build-9338f0d6002e`
+- Result: **PASS**
+- Nemotron response was available after an initial HTTP 503 and application restart.
+- No deterministic code regression identified; transport remains frozen.
+- Next: diagnostic/report schema → bounded analysis request → physical verification of resulting runtime.
