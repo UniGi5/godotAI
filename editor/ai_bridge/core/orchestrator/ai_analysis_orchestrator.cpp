@@ -78,12 +78,12 @@ uint64_t AIAnalysisOrchestrator::analyze_scene(const String &p_instruction, IAIO
 	// Let the selected provider supply its configured/default analysis model.
 	request.temperature = 0.2;
 	request.max_tokens = 256;
-	request.extra_parameters["stream"] = false;
+	request.extra_parameters.set(StringName("stream"), false);
 
 	Dictionary chat_template_kwargs;
-	chat_template_kwargs["enable_thinking"] = false;
-	chat_template_kwargs["force_nonempty_content"] = true;
-	request.extra_parameters["chat_template_kwargs"] = chat_template_kwargs;
+	chat_template_kwargs.set(StringName("enable_thinking"), false);
+	chat_template_kwargs.set(StringName("force_nonempty_content"), true);
+	request.extra_parameters.set(StringName("chat_template_kwargs"), chat_template_kwargs);
 
 	for (const AIMessage &message : context.messages) {
 		AIMessage bounded_message = message;
