@@ -30,8 +30,8 @@
 
 #include "nim_editor_panel.h"
 
-#include "editor/ai_bridge/core/interfaces/ai_analysis.h"
 #include "core/object/class_db.h"
+#include "editor/ai_bridge/core/interfaces/ai_analysis.h"
 #include "editor/ai_bridge/core/interfaces/context_provider.h"
 #include "editor/ai_bridge/runtime/ai_bridge_runtime.h"
 #include "editor/docks/editor_dock.h"
