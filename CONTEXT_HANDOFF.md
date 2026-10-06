@@ -105,12 +105,15 @@ MCP Bridge, streaming replacement, Agent mode and Safe Editing remain **FROZEN u
 
 ## Repository integration status — 2026-10-06
 
-- PR #3: **OPEN / UNMERGED / `mergeable=false`**.
-- PR base: `master` (`165856f82fd01ef34d24a272e224a36ab75d3c01` merge base).
-- Current comparison: `master` +25 commits; product branch +145 commits relative to the PR base.
+- PR #3: **OPEN / UNMERGED / `mergeable=true`**.
+- PR base: `master` at `2a69de75186a28a1503ea9f1d0eb2d28505dbd92`.
+- Product/integration divergence merge-base: `165856f82fd01ef34d24a272e224a36ab75d3c01`.
+- Current integration branch comparison: `integration/v0.2-release-reconciliation` is **22 commits ahead / 0 behind** `master`.
+- Product branch comparison: `fix/p1-nim-mobile-chat-ui` is **151 commits ahead / 47 behind** the integration branch.
 - Both sides modify NIM/context/release-relevant files.
 - No blind merge/rebase of `master`.
 - Required integration method: explicit three-way reconciliation with the verified NIM runtime preserved, followed by fresh integration CI.
+- Latest integration CI: **Run #148 / Run ID `37400915478` — SUCCESS**; static checks and Android ARM64 build/validation passed. Direct release publication was skipped because the run was a PR validation event.
 - Exact physical APK remains `build-24215c0ae9d1`; no runtime change is authorized merely to resolve the branch divergence.
 
 ## Release gate
