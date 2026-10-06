@@ -45,7 +45,7 @@
 
 ### 6. RELEASE ENGINEERING
 - 6.1 Automated regression: 🟩🟩 integration CI passed
-- 6.2 Physical Android smoke workflow: 🟩🟩 candidate physically verified
+- 6.2 Physical Android smoke workflow: 🟩🟩 v0.2 baseline verified; v0.3 candidate pending
 - 6.3 Versioning: 🟩🟩 4.7.2 Stable enforced
 - 6.4 Release APK: 🟨🟨 verified prerelease candidate retained
 - 6.5 Release notes/migration: 🟩🟩 synchronized

@@ -111,7 +111,7 @@ Minimum checklist:
 8. Confirm no regression in Test Connection, Copy Chat and mobile UI.
 9. Restart editor and confirm persistence.
 
-**Physical result has now been reported by the user; this gate is PASS. CI alone is never treated as physical verification.**
+**No physical result for this exact v0.3 APK has been reported yet; this gate remains PENDING. CI alone is never treated as physical verification.**
 
 ## Release engineering
 - v0.2 release verification record: `RELEASE_NOTES_v0.2.md`
