@@ -56,3 +56,14 @@ struct AIAnalysisReport {
 	Vector<AIAnalysisFinding> findings;
 	String limitations;
 };
+
+struct AIAnalysisValidation {
+	bool valid = false;
+	int32_t finding_count = 0;
+	String error;
+};
+
+class AIAnalysisReportValidator {
+public:
+	static AIAnalysisValidation validate(const String &p_response);
+};
