@@ -10,7 +10,7 @@
 - Endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`
 
 ## Current Position
-**v0.2 — FINAL RELEASE / INTEGRATION REVIEW**
+**v0.3 — AUTONOMOUS SCENE ANALYSIS FOUNDATION**
 
 ### Safe Core
 - Provider transport: 🟩🟩
@@ -35,8 +35,8 @@
 - v0.2 candidate CI: 🟩🟩 confirmed
 - Current v0.2 physical chat regression: 🟢🟢 **CLEARED — exact fixed APK passed Android chat smoke test**
 - First Test Connection 503: 🟡🟡 **OPEN RELIABILITY OBSERVATION — retry succeeds; no code cause proven**
-- v0.2 release lock: 🟡🟡 **OPEN — physical PASS verified, repository integration still unresolved**
-- Release: 🟡🟡 **BLOCKED — PR #3 is open and unmerged; integration/release closure still pending**
+- v0.2 release lock: 🟢🟢 **CLOSED — physical PASS + repository integration complete**
+- Release: 🟡🟡 **PRERELEASE VERIFIED — public non-prerelease release not yet published**
 
 ## Confirmed Physical Baseline
 - Commit: `0201ff8138d89a265176c1a79c1c6e8f918f05fd`
@@ -104,12 +104,12 @@ Minimum checklist:
 
 ## Release engineering
 - v0.2 release verification record: `RELEASE_NOTES_v0.2.md`
-- Current task: controlled reconciliation of PR #3 with current `master`, without blind merge/rebase.
-- PR #3 current GitHub status: **OPEN / UNMERGED / mergeable=true**.
-- Latest integration CI: **Run #148 / Run ID `37400915478` — SUCCESS**; style/docs checks and Android ARM64 build/validation passed.
-- The integration branch is 22 commits ahead and 0 behind `master`; the product branch remains divergent from the integration branch (151 ahead / 47 behind from the shared merge-base).
+- Repository integration: **CLOSED** via PR #3 + PR #6.
+- PR #3 merge commit: `04505a3815a539a293cfb6e67ced11662fa40dbf`.
+- PR #6 squash commit: `b9cdd98e0c8f22326858c7cde40bc562d9679433`.
+- Product branch HEAD after reconciliation: `b9cdd98e0c8f22326858c7cde40bc562d9679433`.
 - First-attempt HTTP 503 remains an open observation; no deterministic code cause is proven.
-- Do not create a non-prerelease public release until PR #3 integration is explicitly reconciled and a fresh integration CI check passes.
+- Do not publish a public non-prerelease release until a release-specific checklist is completed; the current prerelease artifact remains the verified physical candidate.
 
 ## v0.2 / Release Rules
 - Physical PASS on the current candidate → record DEBUG checkpoint, update handoff/roadmap, then proceed to v0.2 release lock.

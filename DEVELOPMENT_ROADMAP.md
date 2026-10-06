@@ -1,10 +1,10 @@
 # DEVELOPMENT_ROADMAP.md
 
-## Current position — 2026-10-05
+## Current position — 2026-10-06
 
 Основная ветка: `fix/p1-nim-mobile-chat-ui`.
 
-**v0.2 → FINAL RELEASE / INTEGRATION REVIEW**
+**v0.2 COMPLETE → v0.3 AUTONOMOUS SCENE ANALYSIS FOUNDATION**
 
 ### 0. FOUNDATION
 - 0.1 Godot 4.7.2 Stable: 🟩🟩
@@ -29,18 +29,26 @@
 - 2.5 Debugger/errors context: 🟩🟩
 - 2.6 Controlled context scopes: 🟩🟩
 
-### 3. SAFE EDITING
-🟥🟥 Frozen until v0.2 release lock.
+### 3. SCENE ANALYSIS — v0.3
+🟨🟨 Next development target.
+- 3.1 structured scene snapshot;
+- 3.2 node hierarchy + properties relevant to analysis;
+- 3.3 diagnostic/report schema;
+- 3.4 context budget and truncation;
+- 3.5 Nemotron analysis request using the existing stable transport.
 
-### 4. AGENT
-🟥🟥 Frozen until v0.2 release lock.
+### 4. SAFE EDITING
+🟥🟥 Locked until Scene Analysis is verified.
 
-### 5. RELEASE ENGINEERING
-- 5.1 Automated regression: 🟡🟡 candidate checks passed; fresh PR integration check still required
-- 5.2 Physical Android smoke workflow: 🟨🟨 manual physical verification completed
-- 5.3 Versioning: 🟩🟩 4.7.2 Stable enforced
-- 5.4 Release APK: 🟡🟡 exact candidate physically verified; release blocked by repository integration
-- 5.5 Release notes/migration: 🟡🟡 synchronized to candidate; final integration state pending
+### 5. AGENT
+🟥🟥 Locked until analysis/reporting is reliable.
+
+### 6. RELEASE ENGINEERING
+- 6.1 Automated regression: 🟩🟩 integration CI passed
+- 6.2 Physical Android smoke workflow: 🟩🟩 candidate physically verified
+- 6.3 Versioning: 🟩🟩 4.7.2 Stable enforced
+- 6.4 Release APK: 🟨🟨 verified prerelease candidate retained
+- 6.5 Release notes/migration: 🟩🟩 synchronized
 
 ## Exact verification checkpoint
 
@@ -59,7 +67,7 @@
 
 Current flow:
 
-**Foundation → NIM baseline → v0.2 context → chat regression rework → exact APK physical PASS → final reliability/release review**
+**Foundation → NIM baseline → v0.2 context → chat regression rework → exact APK physical PASS → repository integration CLOSED → v0.3 Scene Analysis**
 
 Do not:
 - change the working NIM transport without reproducible evidence;
@@ -69,4 +77,4 @@ Do not:
 - publish a public non-prerelease release before final checklist completion.
 
 ### Next engineering action
-Reconcile PR #3 against current `master` using an explicit three-way review. Preserve the verified NIM runtime and do not blind merge/rebase.
+Create the isolated v0.3 Scene Analysis foundation without changing the verified transport contract. First implementation unit: a structured provider-independent scene snapshot assembled from the existing editor context layer.
