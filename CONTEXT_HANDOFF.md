@@ -5,6 +5,7 @@
 - Repository: `UniGi5/godotAI`
 - Stable product branch: `fix/p1-nim-mobile-chat-ui`
 - Active v0.3 development branch: `feat/v0.3-analysis-orchestrator`
+- Current v0.3 development HEAD: `1603ea675ce33bd01f123bafbfb1a3023f0b587c`
 - Product branch HEAD: `9338f0d6002ecf2d2c24bac8f1e6b59ee2660170`
 - Godot baseline: **4.7.2 Stable** — do not switch.
 - Architecture: `Godot Core → AI Orchestrator → AIProvider → NvidiaProvider → NVIDIA NIM`
@@ -133,7 +134,7 @@ MCP Bridge, streaming replacement and Agent mode may be developed in isolation. 
 - Public non-prerelease release: **NOT YET — current artifact remains a prerelease candidate**
 
 ### Next action
-The read-only analysis vertical slice is implemented: Current Scene → bounded Scene Snapshot → Analysis Orchestrator → existing AIOrchestrator/NIM → diagnostic report. The latest change adds a small bounded diagnostic property subset without arbitrary property serialization. Next gate is CI, then exact-APK physical verification. Safe Editing/autonomous mutation remains locked.
+The read-only analysis vertical slice is implemented: Current Scene → bounded Scene Snapshot → Analysis Orchestrator → existing AIOrchestrator/NIM → diagnostic report. The snapshot includes bounded diagnostic node properties; arbitrary properties remain excluded. CI #174 exposed a `Dictionary::operator[]` incompatibility, fixed in `becd02b6`; `1603ea67` also preserves the analysis completion status. Current Android push build is run #360 for HEAD `1603ea67`; do not treat it as verified until it finishes. Next gate is exact-APK physical verification, then deterministic report-contract validation. Safe Editing/autonomous mutation remains locked.
 
 
 ## v0.3 Physical Verification — 2026-10-06
