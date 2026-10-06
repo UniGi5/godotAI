@@ -25,3 +25,29 @@ jobs:
     name: 📱 Android ARM64 APK
     needs: static-checks
     uses: ./.github/workflows/android_builds.yml
+
+  required-static-check:
+    name: 📊 Static Checks
+    needs: static-checks
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Confirm static checks passed
+        run: echo "Static Checks gate passed."
+
+  required-android-check:
+    name: 📱 Android APK
+    needs: android-build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Confirm Android APK check passed
+        run: echo "Android APK gate passed."
+
+  required-orchestrator-check:
+    name: 🧪 Godot AI CI Orchestrator
+    needs:
+      - static-checks
+      - android-build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Confirm orchestrator gate passed
+        run: echo "Godot AI CI Orchestrator gate passed."
