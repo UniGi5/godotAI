@@ -75,7 +75,7 @@ uint64_t AIAnalysisOrchestrator::analyze_scene(const String &p_instruction, IAIO
 	}
 
 	AIRequest request;
-	request.model = "nvidia/nemotron-3-ultra-550b-a55b";
+	// Let the selected provider supply its configured/default analysis model.
 	request.temperature = 0.2;
 	request.max_tokens = 256;
 	request.extra_parameters["stream"] = false;
